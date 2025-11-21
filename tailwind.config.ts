@@ -13,7 +13,16 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        pixel: ['"Press Start 2P"', 'monospace'],
+      },
       colors: {
+        'dungeon-stone': 'hsl(var(--dungeon-stone))',
+        'gold': 'hsl(var(--gold))',
+        'gold-glow': 'hsl(var(--gold-glow))',
+        'emerald': 'hsl(var(--emerald))',
+        'emerald-glow': 'hsl(var(--emerald-glow))',
+        'treasure': 'hsl(var(--treasure))',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
