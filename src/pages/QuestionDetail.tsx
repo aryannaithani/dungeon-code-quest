@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,17 +10,43 @@ const QuestionDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Placeholder question data - will be fetched from backend later
-  const question = {
-    id,
-    title: `Quest #${id}`,
-    difficulty: "Medium",
-    xp: 100,
-    description: "Write a function that solves this epic coding challenge...",
-    examples: [
-      { input: "example input", output: "example output" }
-    ]
-  };
+  const [question, setQuestion] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/questions/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch question");
+
+        const data = await response.json();
+        setQuestion(data);
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load question.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestion();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gold font-pixel text-2xl">
+        Loading quest...
+      </div>
+    );
+  }
+
+  if (!question) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500 font-pixel text-2xl">
+        Quest not found.
+      </div>
+    );
+  }
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -65,15 +92,17 @@ const QuestionDetail = () => {
                 <p className="text-sm leading-relaxed">{question.description}</p>
               </div>
 
-              <div>
-                <h2 className="text-lg font-pixel text-gold mb-2">Examples</h2>
-                {question.examples.map((example, idx) => (
-                  <div key={idx} className="bg-muted p-3 rounded mb-2 font-mono text-xs">
-                    <div><strong>Input:</strong> {example.input}</div>
-                    <div><strong>Output:</strong> {example.output}</div>
-                  </div>
-                ))}
-              </div>
+              {question.examples?.length > 0 && (
+                <div>
+                  <h2 className="text-lg font-pixel text-gold mb-2">Examples</h2>
+                  {question.examples.map((example, idx) => (
+                    <div key={idx} className="bg-muted p-3 rounded mb-2 font-mono text-xs">
+                      <div><strong>Input:</strong> {example.input}</div>
+                      <div><strong>Output:</strong> {example.output}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </Card>
 

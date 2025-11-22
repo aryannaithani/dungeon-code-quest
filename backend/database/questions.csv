@@ -1,18 +1,18 @@
-id,title,description,difficulty,xp,status,category
-1,xyz,Find two numbers that add up to target,Easy,100,available,Arrays
-2,abc,Reverse a string in place,Easy,100,available,Strings
-3,grumpy bookstore,Implement binary search algorithm,Medium,250,available,Search
-4,Merge Sort,Implement merge sort algorithm,Medium,300,available,Sorting
-5,Dynamic Programming,Solve using DP techniques,Hard,500,locked,DP
-6,Graph Traversal,BFS and DFS implementation,Hard,500,locked,Graphs
-7,Tree Traversal,In-order pre-order post-order traversal,Hard,500,locked,Trees
-8,Math,Find the nth Fibonacci number,Easy,100,available,Math
-9,String Matching,KMP algorithm,Medium,250,available,Strings
-10,Sorting,Bubble sort,Easy,100,available,Sorting
-11,Searching,Binary search,Medium,250,available,Search
-12,Dynamic Programming,Longest Common Subsequence,Medium,300,available,DP
-13,Graphs,Dijkstra's algorithm,Hard,500,locked,Graphs
-14,Trees,AVL tree,Hard,500,locked,Trees
-15,Math,Prime factorization,Easy,100,available,Math
-16,String Matching,Rabin-Karp algorithm,Medium,250,available,Strings
-17,Sorting,Selection sort,Easy,100,available,Sorting
+id,title,description,difficulty,xp,status,category,examples
+1,Two Sum,Find two numbers...,Easy,100,available,Arrays,"[{""input"": ""[2,7,11,15], 9"", ""output"": ""[0,1]""}]"
+2,Reverse String,Reverse the given string,Easy,100,available,Strings,"[{""input"": ""hello"", ""output"": ""olleh""}]"
+3,Binary Search,Implement binary search,Medium,250,available,Search,"[{""input"": ""[1,2,3,4,5], 4"", ""output"": ""3""}]"
+4,Merge Sort,Implement merge sort,Medium,300,available,Sorting,"[{""input"": ""[5,2,3,1,4]"", ""output"": ""[1,2,3,4,5]""}]"
+5,Dynamic Programming,Solve using DP techniques,Hard,500,locked,DP,"[{""input"": ""[1,2,3,4,5]"", ""output"": ""15""}]"
+6,Graph Traversal,BFS and DFS implementation,Hard,500,locked,Graphs,"[{""input"": ""[1,2,3,4,5]"", ""output"": ""15""}]"
+7,Tree Traversal,In-order pre-order post-order traversal,Hard,500,locked,Trees,"[{""input"": ""[1,2,3,4,5]"", ""output"": ""15""}]"
+8,Math,Find the nth Fibonacci number,Easy,100,available,Math,"[{""input"": ""5"", ""output"": ""5""}]"
+9,String Matching,KMP algorithm,Medium,250,available,Strings,"[{""input"": ""hello"", ""output"": ""olleh""}]"
+10,Sorting,Bubble sort,Easy,100,available,Sorting,"[{""input"": ""[5,2,3,1,4]"", ""output"": ""[1,2,3,4,5]""}]"
+11,Searching,Binary search,Medium,250,available,Search,"[{""input"": ""[1,2,3,4,5], 4"", ""output"": ""3""}]"
+12,Dynamic Programming,Longest Common Subsequence,Medium,300,available,DP,"[{""input"": ""hello"", ""output"": ""olleh""}]"
+13,Graphs,Dijkstra's algorithm,Hard,500,locked,Graphs,"[{""input"": ""[1,2,3,4,5]"", ""output"": ""15""}]"
+14,Trees,AVL tree,Hard,500,locked,Trees,"[{""input"": ""[1,2,3,4,5]"", ""output"": ""15""}]"
+15,Math,Prime factorization,Easy,100,available,Math,"[{""input"": ""5"", ""output"": ""5""}]"
+16,String Matching,Rabin-Karp algorithm,Medium,250,available,Strings,"[{""input"": ""hello"", ""output"": ""olleh""}]"
+17,Sorting,Selection sort,Easy,100,available,Sorting,"[{""input"": ""[5,2,3,1,4]"", ""output"": ""[1,2,3,4,5]""}]"

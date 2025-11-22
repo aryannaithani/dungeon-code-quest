@@ -26,7 +26,7 @@ const Navigation = () => {
     { to: "/profile", icon: User, label: "Profile" },
   ];
 
-  const navItems = (isLanding && !isLoggedIn) ? authItems : mainItems;
+  const navItems = isLoggedIn ? mainItems : authItems;
 
   return (
     <nav className="bg-dungeon-stone pixel-border-gold sticky top-0 z-50">

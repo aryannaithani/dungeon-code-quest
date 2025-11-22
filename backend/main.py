@@ -6,6 +6,7 @@ from datetime import datetime
 import csv
 import os
 import bcrypt
+import json
 
 CSV_PATH = "database/users.csv"
 
@@ -20,7 +21,15 @@ def read_questions():
         for row in reader:
             row["id"] = int(row["id"])
             row["xp"] = int(row["xp"])
+
+            # Parse JSON examples
+            if row.get("examples"):
+                row["examples"] = json.loads(row["examples"])
+            else:
+                row["examples"] = []
+
             questions.append(row)
+
     return questions
 
 def get_leaderboard_users(limit=100):
@@ -322,13 +331,16 @@ async def get_questions(difficulty: Optional[str] = None, category: Optional[str
     return questions
 
 
-@app.get("/api/questions/{question_id}", response_model=Question, tags=["Questions"])
+@app.get("/api/questions/{question_id}", tags=["Questions"])
 async def get_question(question_id: int):
-    """Get single question details"""
-    for q in PLACEHOLDER_QUESTIONS:
-        if q.id == question_id:
+    questions = read_questions()
+
+    for q in questions:
+        if q["id"] == question_id:
             return q
-    raise HTTPException(status_code=404, detail="Question not found")
+
+    raise HTTPException(404, "Question not found")
+
 
 @app.get("/api/questions/{question_id}/hints", tags=["Questions"])
 async def get_question_hints(question_id: int):
