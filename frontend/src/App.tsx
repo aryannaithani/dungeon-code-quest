@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import Questions from "./pages/Questions";
+import QuestionDetail from "./pages/QuestionDetail";
 import Learn from "./pages/Learn";
 import Leaderboard from "./pages/Leaderboard";
 import NotFound from "./pages/NotFound";
@@ -27,10 +28,11 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/questions" element={<Questions />} />
-              <Route path="/learn" element={<Learn />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/questions" element={<Questions />} />
+          <Route path="/questions/:id" element={<QuestionDetail />} />
+          <Route path="/learn" element={<Learn />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

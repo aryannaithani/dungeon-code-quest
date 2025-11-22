@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Scroll, Lock, CheckCircle } from "lucide-react";
 
 const Questions = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,7 +64,7 @@ const Questions = () => {
               className={`bg-card p-4 md:p-6 pixel-border transition-all ${
                 quest.status === "locked"
                   ? "opacity-50"
-                  : "hover:pixel-border-gold hover:glow-gold cursor-pointer"
+                  : "hover:pixel-border-gold hover:glow-gold"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
@@ -90,6 +93,15 @@ const Questions = () => {
                     </Badge>
                   </div>
                 </div>
+
+                {quest.status !== "locked" && (
+                  <Button
+                    onClick={() => navigate(`/questions/${quest.id}`)}
+                    className="bg-gold hover:bg-gold-glow text-background font-pixel text-xs glow-gold"
+                  >
+                    Attempt
+                  </Button>
+                )}
               </div>
             </Card>
           ))}

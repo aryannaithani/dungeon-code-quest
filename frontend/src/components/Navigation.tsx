@@ -1,14 +1,25 @@
 import { NavLink } from "./NavLink";
-import { Sword, User, Scroll, Trophy, Map, Home } from "lucide-react";
+import { Sword, User, Scroll, Trophy, Map, Home, LogIn, UserPlus } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const Navigation = () => {
-  const navItems = [
+  const location = useLocation();
+  const isLanding = location.pathname === "/";
+
+  const authItems = [
+    { to: "/login", icon: LogIn, label: "Login" },
+    { to: "/signup", icon: UserPlus, label: "Sign Up" },
+  ];
+
+  const mainItems = [
     { to: "/", icon: Home, label: "Home" },
     { to: "/questions", icon: Scroll, label: "Quests" },
     { to: "/learn", icon: Map, label: "Arena" },
     { to: "/leaderboard", icon: Trophy, label: "Hall of Fame" },
     { to: "/profile", icon: User, label: "Profile" },
   ];
+
+  const navItems = isLanding ? authItems : mainItems;
 
   return (
     <nav className="bg-dungeon-stone pixel-border-gold sticky top-0 z-50">
