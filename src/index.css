@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Dungeon Theme Colors */
+    --background: 220 15% 8%;
+    --foreground: 45 100% 85%;
+
+    --card: 220 15% 12%;
+    --card-foreground: 45 100% 85%;
+
+    --popover: 220 15% 12%;
+    --popover-foreground: 45 100% 85%;
+
+    --primary: 45 100% 60%;
+    --primary-foreground: 220 15% 8%;
+
+    --secondary: 160 70% 45%;
+    --secondary-foreground: 220 15% 8%;
+
+    --muted: 220 15% 18%;
+    --muted-foreground: 45 50% 65%;
+
+    --accent: 160 70% 45%;
+    --accent-foreground: 220 15% 8%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 45 100% 85%;
+
+    --border: 45 30% 30%;
+    --input: 220 15% 18%;
+    --ring: 45 100% 60%;
+
+    --radius: 0rem;
+
+    /* Custom dungeon colors */
+    --dungeon-stone: 220 15% 15%;
+    --gold: 45 100% 60%;
+    --gold-glow: 45 100% 70%;
+    --emerald: 160 70% 45%;
+    --emerald-glow: 160 70% 55%;
+    --treasure: 45 100% 50%;
+
+    /* Effects */
+    --shadow-glow: 0 0 20px hsl(var(--gold) / 0.3);
+    --shadow-emerald: 0 0 20px hsl(var(--emerald) / 0.3);
+    --transition-dungeon: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 220 15% 10%;
+    --sidebar-foreground: 45 100% 85%;
+    --sidebar-primary: 45 100% 60%;
+    --sidebar-primary-foreground: 220 15% 8%;
+    --sidebar-accent: 220 15% 18%;
+    --sidebar-accent-foreground: 45 100% 85%;
+    --sidebar-border: 45 30% 30%;
+    --sidebar-ring: 45 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-pixel;
+    background-image: 
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        hsl(var(--dungeon-stone)) 2px,
+        hsl(var(--dungeon-stone)) 4px
+      );
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-pixel;
+  }
+}
+
+@layer utilities {
+  .pixel-border {
+    box-shadow: 
+      0 -4px 0 0 hsl(var(--border)),
+      0 4px 0 0 hsl(var(--border)),
+      -4px 0 0 0 hsl(var(--border)),
+      4px 0 0 0 hsl(var(--border));
+  }
+
+  .pixel-border-gold {
+    box-shadow: 
+      0 -4px 0 0 hsl(var(--gold)),
+      0 4px 0 0 hsl(var(--gold)),
+      -4px 0 0 0 hsl(var(--gold)),
+      4px 0 0 0 hsl(var(--gold));
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(var(--gold) / 0.5);
+  }
+
+  .glow-emerald {
+    box-shadow: 0 0 20px hsl(var(--emerald) / 0.5);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+}
