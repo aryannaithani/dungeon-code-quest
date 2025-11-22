@@ -1,10 +1,17 @@
 import { NavLink } from "./NavLink";
 import { Sword, User, Scroll, Trophy, Map, Home, LogIn, UserPlus } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 const Navigation = () => {
   const location = useLocation();
   const isLanding = location.pathname === "/";
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, [location]);
 
   const authItems = [
     { to: "/login", icon: LogIn, label: "Login" },
@@ -19,7 +26,7 @@ const Navigation = () => {
     { to: "/profile", icon: User, label: "Profile" },
   ];
 
-  const navItems = isLanding ? authItems : mainItems;
+  const navItems = (isLanding && !isLoggedIn) ? authItems : mainItems;
 
   return (
     <nav className="bg-dungeon-stone pixel-border-gold sticky top-0 z-50">
