@@ -1,18 +1,38 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Crown } from "lucide-react";
 
 const Leaderboard = () => {
-  // Placeholder leaderboard data
-  const players = [
-    { rank: 1, username: "DragonSlayer", level: 50, xp: 25000, title: "Grandmaster" },
-    { rank: 2, username: "CodeNinja", level: 45, xp: 22500, title: "Master" },
-    { rank: 3, username: "BugHunter", level: 42, xp: 21000, title: "Expert" },
-    { rank: 4, username: "AlgoWizard", level: 38, xp: 19000, title: "Veteran" },
-    { rank: 5, username: "SyntaxKnight", level: 35, xp: 17500, title: "Veteran" },
-    { rank: 6, username: "LoopMaster", level: 32, xp: 16000, title: "Adept" },
-    { rank: 7, username: "CodeWarrior", level: 30, xp: 15000, title: "Adept" },
-  ];
+  const [players, setPlayers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/leaderboard");
+        if (!response.ok) throw new Error("Failed to fetch leaderboard");
+
+        const data = await response.json();
+        setPlayers(data);
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load leaderboard.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLeaderboard();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gold font-pixel text-2xl">
+        Loading leaderboard...
+      </div>
+    );
+  }
 
   const getRankIcon = (rank: number) => {
     switch (rank) {

@@ -1,17 +1,38 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Scroll, Lock, CheckCircle } from "lucide-react";
 
 const Questions = () => {
-  // Placeholder questions data
-  const questions = [
-    { id: 1, title: "Two Sum", difficulty: "Easy", xp: 100, status: "completed" },
-    { id: 2, title: "Reverse String", difficulty: "Easy", xp: 100, status: "completed" },
-    { id: 3, title: "Binary Search", difficulty: "Medium", xp: 250, status: "available" },
-    { id: 4, title: "Merge Sort", difficulty: "Medium", xp: 300, status: "available" },
-    { id: 5, title: "Dynamic Programming", difficulty: "Hard", xp: 500, status: "locked" },
-    { id: 6, title: "Graph Traversal", difficulty: "Hard", xp: 500, status: "locked" },
-  ];
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/questions");
+        if (!response.ok) throw new Error("Failed to fetch questions");
+
+        const data = await response.json();
+        setQuestions(data);
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load questions.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gold font-pixel text-2xl">
+        Loading quests...
+      </div>
+    );
+  }
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
