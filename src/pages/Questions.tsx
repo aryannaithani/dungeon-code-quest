@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Scroll, Lock, CheckCircle } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Questions = () => {
   const navigate = useNavigate();
@@ -20,7 +21,11 @@ const Questions = () => {
         setQuestions(data);
       } catch (err) {
         console.error(err);
-        alert("Failed to load questions.");
+        toast({
+          title: "📜 Quest Board Error",
+          description: "Failed to load questions.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }

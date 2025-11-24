@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const QuestionDetail = () => {
   const { id } = useParams();
@@ -24,7 +25,11 @@ const QuestionDetail = () => {
         setQuestion(data);
       } catch (err) {
         console.error(err);
-        alert("Failed to load question.");
+        toast({
+          title: "📜 Quest Loading Failed",
+          description: "Failed to load question.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
@@ -50,14 +55,25 @@ const QuestionDetail = () => {
       const data = await response.json();
   
       if (!response.ok) {
-        alert(data.detail || "Submission failed.");
+        toast({
+          title: "⚔️ Submission Failed",
+          description: data.detail || "Submission failed.",
+          variant: "destructive",
+        });
         return;
       }
   
-      alert(data.message);
+      toast({
+        title: "✨ Quest Complete!",
+        description: data.message,
+      });
     } catch (err) {
       console.error(err);
-      alert("Submission failed.");
+      toast({
+        title: "⚔️ Submission Error",
+        description: "Submission failed.",
+        variant: "destructive",
+      });
     }
   };  
 

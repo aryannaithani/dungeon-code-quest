@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sword } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -38,7 +39,11 @@ const Login = () => {
       navigate("/profile");
     } catch (error) {
       console.error(error);
-      alert("Login failed. Check your username or password.");
+      toast({
+        title: "⚔️ Quest Failed",
+        description: "Login failed. Check your username or password.",
+        variant: "destructive",
+      });
     }
   };
   

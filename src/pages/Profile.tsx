@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Zap, Award, Target } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -27,7 +28,11 @@ const Profile = () => {
         setUser(data);
       } catch (err) {
         console.error(err);
-        alert("Failed to load profile.");
+        toast({
+          title: "🛡️ Profile Error",
+          description: "Failed to load hero profile.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
