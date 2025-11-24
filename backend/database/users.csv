@@ -1,3 +1,2 @@
-id,username,email,password_hash,created_at,level,xp,xp_to_next,rank,quests_completed,total_quests,win_streak
-1,aryannaithani,aryannaithani1085@gmail.com,$2b$12$fqE1MMK7XNeiAD0iJAoOIu8zM7AfkoWof2y3YxWlzRhKiVQJnzc5a,2025-11-23T00:12:17.557055,10,0,100,Novice,0,100,69
-2,RajatShukla12,shuklarocks8210@gmail.com,$2b$12$2h3XLmh8jjV.ZfIC6h1WXOK38MOByUc4WNEqX6ZTV6ZakQ6lhdhKO,2025-11-23T00:43:00.921547,1,0,100,Novice,0,100,0
+id,username,email,password_hash,created_at,level,xp,xp_to_next,rank,quests_completed,total_quests,win_streak,completed_questions
+1,aryannaithani,aryannaithani1085@gmail.com,$2b$12$ux37p0ME4/l8qQenUwZYZ.XTusbdoZuTdCiOb8uN01Cev.5e7R.8y,2025-11-24T22:59:47.665594,1,200,100,Novice,2,100,0,[2]

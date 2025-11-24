@@ -12,6 +12,7 @@ const QuestionDetail = () => {
 
   const [question, setQuestion] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [code, setCode] = useState("");
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -31,6 +32,34 @@ const QuestionDetail = () => {
 
     fetchQuestion();
   }, [id]);
+
+  const submitSolution = async () => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/questions/${id}/submit`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: localStorage.getItem("user_id"),
+          code,
+          language: "python"
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (!response.ok) {
+        alert(data.detail || "Submission failed.");
+        return;
+      }
+  
+      alert(data.message);
+    } catch (err) {
+      console.error(err);
+      alert("Submission failed.");
+    }
+  };  
 
   if (loading) {
     return (
@@ -95,10 +124,10 @@ const QuestionDetail = () => {
               {question.examples?.length > 0 && (
                 <div>
                   <h2 className="text-lg font-pixel text-gold mb-2">Examples</h2>
-                  {question.examples.map((example, idx) => (
+                  {question.examples.map((example: any, idx: number) => (
                     <div key={idx} className="bg-muted p-3 rounded mb-2 font-mono text-xs">
-                      <div><strong>Input:</strong> {example.input}</div>
-                      <div><strong>Output:</strong> {example.output}</div>
+                      <div><strong>Input:</strong> {JSON.stringify(example.input)}</div>
+                      <div><strong>Output:</strong> {JSON.stringify(example.output)}</div>
                     </div>
                   ))}
                 </div>
@@ -111,13 +140,21 @@ const QuestionDetail = () => {
             <h2 className="text-lg font-pixel text-gold mb-4">Your Solution</h2>
             <Textarea
               placeholder="// Write your code here..."
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               className="font-mono text-sm min-h-[400px] bg-muted border-gold/30 text-foreground"
             />
             <div className="flex gap-4 mt-4">
-              <Button className="bg-gold hover:bg-gold-glow text-background font-pixel glow-gold">
+              <Button
+                onClick={submitSolution}
+                className="bg-gold hover:bg-gold-glow text-background font-pixel glow-gold"
+              >
                 Submit
               </Button>
-              <Button variant="outline" className="border-gold text-gold hover:bg-gold hover:text-background font-pixel">
+              <Button
+                variant="outline"
+                className="border-gold text-gold hover:bg-gold hover:text-background font-pixel"
+              >
                 Test
               </Button>
             </div>

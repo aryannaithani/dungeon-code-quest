@@ -10,23 +10,87 @@ import json
 
 CSV_PATH = "database/users.csv"
 
+def save_users(users_list: list[dict]):
+    """
+    Overwrite users.csv with the given users_list (list of dicts).
+    Each dict must have the same keys as the CSV header.
+    """
+    fieldnames = [
+        "id",
+        "username",
+        "email",
+        "password_hash",
+        "created_at",
+        "level",
+        "xp",
+        "xp_to_next",
+        "rank",
+        "quests_completed",
+        "total_quests",
+        "win_streak",
+        "completed_questions",
+    ]
+
+    # Ensure directory exists
+    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)
+
+    with open(CSV_PATH, mode="w", newline="", encoding="utf-8") as file:
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        for u in users_list:
+            # Ensure all keys exist (convert to strings because CSV)
+            row = {k: (u.get(k, "") if u.get(k, None) is not None else "") for k in fieldnames}
+            # If completed_questions is a list, dump to JSON string
+            if isinstance(row.get("completed_questions"), (list, dict)):
+                row["completed_questions"] = json.dumps(row["completed_questions"])
+            writer.writerow(row)
+
 def read_questions():
     questions = []
     path = "database/questions.csv"
+
     if not os.path.exists(path):
         return questions
-    
+
     with open(path, mode="r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
+
         for row in reader:
+            # Convert numeric fields
             row["id"] = int(row["id"])
             row["xp"] = int(row["xp"])
 
-            # Parse JSON examples
-            if row.get("examples"):
-                row["examples"] = json.loads(row["examples"])
-            else:
+            # Parse examples
+            examples_raw = row.get("examples", "")
+            try:
+                row["examples"] = json.loads(examples_raw) if examples_raw else []
+            except:
                 row["examples"] = []
+
+            # Parse tests (THIS FIXES YOUR PROBLEM)
+            tests_raw = row.get("tests", "")
+
+            # Step 1: try decoding once
+            try:
+                decoded = json.loads(tests_raw)
+            except:
+                decoded = tests_raw
+
+            # Step 2: if still string, decode again
+            if isinstance(decoded, str):
+                try:
+                    decoded = json.loads(decoded)
+                except:
+                    decoded = []
+
+            # Final sanity check
+            if isinstance(decoded, list):
+                row["tests"] = decoded
+            else:
+                row["tests"] = []
+
+            # function_name
+            row["function_name"] = row.get("function_name", "").strip()
 
             questions.append(row)
 
@@ -68,6 +132,12 @@ def read_users():
     with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         for row in reader:
+            # parse JSON field
+            if "completed_questions" in row:
+                try:
+                    row["completed_questions"] = json.loads(row["completed_questions"])
+                except:
+                    row["completed_questions"] = []
             users.append(row)
     return users
 
@@ -87,11 +157,16 @@ def write_user(user_data: dict):
             "rank",
             "quests_completed",
             "total_quests",
-            "win_streak"
+            "win_streak",
+            "completed_questions"
         ])
 
         if not file_exists or os.stat(CSV_PATH).st_size == 0:
             writer.writeheader()
+
+        # Ensure completed_questions is JSON before writing
+        if isinstance(user_data.get("completed_questions"), list):
+            user_data["completed_questions"] = json.dumps(user_data["completed_questions"])
 
         writer.writerow(user_data)
 
@@ -141,7 +216,7 @@ class Question(BaseModel):
     category: str
 
 class QuestionSubmit(BaseModel):
-    question_id: int
+    user_id: int
     code: str
     language: str
 
@@ -355,16 +430,93 @@ async def get_question_hints(question_id: int):
         "max_hints": 3
     }
 
-@app.post("/api/questions/{question_id}/submit", response_model=SubmissionResult, tags=["Questions"])
+@app.post("/api/questions/{question_id}/submit", tags=["Questions"])
 async def submit_solution(question_id: int, submission: QuestionSubmit):
-    """Submit solution for a question"""
-    return SubmissionResult(
-        success=True,
-        passed=5,
-        total=5,
-        xp_earned=100,
-        message="All test cases passed! Quest completed!"
-    )
+
+    questions = read_questions()
+
+    # Find question
+    question = None
+    for q in questions:
+        if q["id"] == question_id:
+            question = q
+            break
+
+    if not question:
+        raise HTTPException(404, "Question not found")
+
+    tests = question.get("tests", [])
+    function_name = question.get("function_name")
+
+    if not function_name:
+        raise HTTPException(500, "Question missing function_name")
+
+    # =============== EXECUTE THE USER CODE ===============
+    restricted_globals = {
+        "__builtins__": {
+            "range": range,
+            "len": len,
+            "print": print,
+            "abs": abs,
+            "min": min,
+            "max": max
+        }
+    }
+
+    restricted_locals = {}
+
+    try:
+        # Execute user code safely-ish
+        exec(submission.code, restricted_globals, restricted_locals)
+    except Exception as e:
+        return {
+            "success": False,
+            "passed": 0,
+            "total": len(tests),
+            "xp_earned": 0,
+            "message": f"Code error: {str(e)}"
+        }
+
+    # Check function existence
+    if function_name not in restricted_locals:
+        return {
+            "success": False,
+            "passed": 0,
+            "total": len(tests),
+            "xp_earned": 0,
+            "message": f"Function '{function_name}' not found in submitted code."
+        }
+
+    user_function = restricted_locals[function_name]
+
+    passed = 0
+
+    # =============== RUN THROUGH TEST CASES ===============
+    for test in tests:
+        test_input = test["input"]
+        expected_output = test["output"]
+
+        try:
+            if isinstance(test_input, list):
+                result = user_function(*test_input)
+            else:
+                result = user_function(test_input)
+        except Exception as e:
+            continue
+
+        if result == expected_output:
+            passed += 1
+
+    success = passed == len(tests)
+
+    return {
+        "success": success,
+        "passed": passed,
+        "total": len(tests),
+        "xp_earned": question["xp"] if success else 0,
+        "message": "All test cases passed!" if success else "Some test cases failed."
+    }
+
 
 @app.get("/api/questions/{question_id}/submissions", tags=["Questions"])
 async def get_submissions(question_id: int):
