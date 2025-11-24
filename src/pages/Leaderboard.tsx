@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Medal, Crown } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Leaderboard = () => {
   const [players, setPlayers] = useState<any[]>([]);
@@ -17,7 +18,11 @@ const Leaderboard = () => {
         setPlayers(data);
       } catch (err) {
         console.error(err);
-        alert("Failed to load leaderboard.");
+        toast({
+          title: "🏆 Hall of Fame Error",
+          description: "Failed to load leaderboard.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }

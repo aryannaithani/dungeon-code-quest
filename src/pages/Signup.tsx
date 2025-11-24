@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sparkles } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -42,7 +43,11 @@ const Signup = () => {
   
     } catch (err) {
       console.error(err);
-      alert("Signup failed. Try again.");
+      toast({
+        title: "✨ Hero Creation Failed",
+        description: "Signup failed. Try again.",
+        variant: "destructive",
+      });
     }
   };
   
