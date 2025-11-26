@@ -10,6 +10,43 @@ import json
 
 CSV_PATH = "database/users.csv"
 
+def update_user_progress(user_id: int, question_id: int, xp_reward: int):
+    users = read_users()
+    updated = False
+
+    for user in users:
+        if int(user["id"]) == user_id:
+            # Convert types properly
+            user["xp"] = int(user["xp"])
+            user["level"] = int(user["level"])
+            user["xp_to_next"] = int(user["xp_to_next"])
+            user["quests_completed"] = int(user["quests_completed"])
+            completed_qs = user.get("completed_questions", [])
+            if not isinstance(completed_qs, list):
+                try:
+                    completed_qs = json.loads(completed_qs)
+                except:
+                    completed_qs = []
+
+            # Only reward if not already completed
+            if question_id not in completed_qs:
+                user["xp"] += xp_reward
+                user["quests_completed"] += 1
+                completed_qs.append(question_id)
+
+                # Level up logic
+                while user["xp"] >= user["xp_to_next"]:
+                    user["level"] += 1
+                    user["xp_to_next"] = user["level"] * 500   # level formula
+
+                user["completed_questions"] = completed_qs
+
+            updated = True
+            break
+
+    if updated:
+        save_users(users)
+
 def save_users(users_list: list[dict]):
     """
     Overwrite users.csv with the given users_list (list of dicts).
@@ -297,7 +334,8 @@ async def signup(user: UserCreate):
         "rank": "Novice",
         "quests_completed": 0,
         "total_quests": 100,
-        "win_streak": 0
+        "win_streak": 0,
+        "completed_questions": []
     }
 
     write_user(new_user)
@@ -445,13 +483,46 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
     if not question:
         raise HTTPException(404, "Question not found")
 
+    # Load user
+    users = read_users()
+    user = None
+    for u in users:
+        if int(u["id"]) == submission.user_id:
+            user = u
+            break
+
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    # Convert completed_questions to list if string
+    if isinstance(user.get("completed_questions"), str):
+        try:
+            user["completed_questions"] = json.loads(user["completed_questions"])
+        except:
+            user["completed_questions"] = []
+
+    if user["completed_questions"] is None:
+        user["completed_questions"] = []
+
+    # ------------- CHECK IF ALREADY COMPLETED -------------
+    if question_id in user["completed_questions"]:
+        return {
+            "success": False,
+            "passed": 0,
+            "total": len(question.get("tests", [])),
+            "xp_earned": 0,
+            "message": "You have already completed this quest. No XP rewarded."
+        }
+
+    # ======================================================
+    # RUN USER CODE (same as before)
+    # ======================================================
     tests = question.get("tests", [])
     function_name = question.get("function_name")
 
     if not function_name:
         raise HTTPException(500, "Question missing function_name")
 
-    # =============== EXECUTE THE USER CODE ===============
     restricted_globals = {
         "__builtins__": {
             "range": range,
@@ -466,7 +537,6 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
     restricted_locals = {}
 
     try:
-        # Execute user code safely-ish
         exec(submission.code, restricted_globals, restricted_locals)
     except Exception as e:
         return {
@@ -477,7 +547,6 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
             "message": f"Code error: {str(e)}"
         }
 
-    # Check function existence
     if function_name not in restricted_locals:
         return {
             "success": False,
@@ -491,7 +560,6 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
 
     passed = 0
 
-    # =============== RUN THROUGH TEST CASES ===============
     for test in tests:
         test_input = test["input"]
         expected_output = test["output"]
@@ -501,7 +569,7 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
                 result = user_function(*test_input)
             else:
                 result = user_function(test_input)
-        except Exception as e:
+        except:
             continue
 
         if result == expected_output:
@@ -509,11 +577,26 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
 
     success = passed == len(tests)
 
+    # ======================================================
+    # Award XP + save completion (only if success)
+    # ======================================================
+    xp_earned = 0
+
+    if success:
+        xp_earned = question["xp"]
+        user["xp"] = int(user["xp"]) + xp_earned
+
+        user["quests_completed"] = int(user["quests_completed"]) + 1
+        user["completed_questions"].append(question_id)
+
+        # SAVE USERS BACK
+        save_users(users)
+
     return {
         "success": success,
         "passed": passed,
         "total": len(tests),
-        "xp_earned": question["xp"] if success else 0,
+        "xp_earned": xp_earned,
         "message": "All test cases passed!" if success else "Some test cases failed."
     }
 
