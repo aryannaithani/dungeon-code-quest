@@ -49,7 +49,7 @@ const Profile = () => {
       title: "👋 Farewell Hero",
       description: "You have successfully logged out.",
     });
-    navigate("/login");
+    navigate("/");
   };
 
   if (loading) {
