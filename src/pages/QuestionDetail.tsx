@@ -3,9 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import Editor from "@monaco-editor/react";
 
 const QuestionDetail = () => {
   const { id } = useParams();
@@ -13,7 +13,13 @@ const QuestionDetail = () => {
 
   const [question, setQuestion] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(
+    `def solve(*args):
+        # Write your code here
+        pass
+    `
+    );
+    
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -48,12 +54,12 @@ const QuestionDetail = () => {
         body: JSON.stringify({
           user_id: localStorage.getItem("user_id"),
           code,
-          language: "python"
+          language: "python",
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!response.ok) {
         toast({
           title: "⚔️ Submission Failed",
@@ -62,7 +68,7 @@ const QuestionDetail = () => {
         });
         return;
       }
-  
+
       toast({
         title: "✨ Quest Complete!",
         description: data.message,
@@ -75,7 +81,7 @@ const QuestionDetail = () => {
         variant: "destructive",
       });
     }
-  };  
+  };
 
   if (loading) {
     return (
@@ -142,8 +148,12 @@ const QuestionDetail = () => {
                   <h2 className="text-lg font-pixel text-gold mb-2">Examples</h2>
                   {question.examples.map((example: any, idx: number) => (
                     <div key={idx} className="bg-muted p-3 rounded mb-2 font-mono text-xs">
-                      <div><strong>Input:</strong> {JSON.stringify(example.input)}</div>
-                      <div><strong>Output:</strong> {JSON.stringify(example.output)}</div>
+                      <div>
+                        <strong>Input:</strong> {JSON.stringify(example.input)}
+                      </div>
+                      <div>
+                        <strong>Output:</strong> {JSON.stringify(example.output)}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -154,12 +164,23 @@ const QuestionDetail = () => {
           {/* Code Editor Area */}
           <Card className="bg-card p-6 pixel-border">
             <h2 className="text-lg font-pixel text-gold mb-4">Your Solution</h2>
-            <Textarea
-              placeholder="// Write your code here..."
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="font-mono text-sm min-h-[400px] bg-muted border-gold/30 text-foreground"
-            />
+
+            <Editor
+  height="450px"
+  defaultLanguage="python"
+  theme="vs-dark"
+  value={code}
+  onChange={(value) => setCode(value || "")}
+  options={{
+    fontSize: 14,
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    wordWrap: "on",
+    automaticLayout: true,
+  }}
+/>
+
+
             <div className="flex gap-4 mt-4">
               <Button
                 onClick={submitSolution}
@@ -167,6 +188,7 @@ const QuestionDetail = () => {
               >
                 Submit
               </Button>
+
               <Button
                 variant="outline"
                 className="border-gold text-gold hover:bg-gold hover:text-background font-pixel"
