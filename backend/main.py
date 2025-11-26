@@ -384,7 +384,15 @@ async def get_profile(user_id: int):
     if not user:
         raise HTTPException(404, "User not found")
 
-    # Convert values from CSV (they’re strings) to correct types
+    # Parse completed_questions if it's a string
+    completed_questions = user.get("completed_questions", [])
+    if isinstance(completed_questions, str):
+        try:
+            completed_questions = json.loads(completed_questions)
+        except:
+            completed_questions = []
+
+    # Convert values from CSV (they're strings) to correct types
     return {
         "id": int(user["id"]),
         "username": user["username"],
@@ -396,7 +404,8 @@ async def get_profile(user_id: int):
         "quests_completed": int(user["quests_completed"]),
         "total_quests": int(user["total_quests"]),
         "win_streak": int(user["win_streak"]),
-        "created_at": user["created_at"]
+        "created_at": user["created_at"],
+        "completed_questions": completed_questions
     }
 
 @app.put("/api/profile/{user_id}", tags=["Profile"])

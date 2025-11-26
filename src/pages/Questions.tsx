@@ -10,15 +10,36 @@ const Questions = () => {
   const navigate = useNavigate();
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [completedQuestions, setCompletedQuestions] = useState<number[]>([]);
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8000/api/questions");
-        if (!response.ok) throw new Error("Failed to fetch questions");
+        // Fetch questions
+        const questionsResponse = await fetch("http://localhost:8000/api/questions");
+        if (!questionsResponse.ok) throw new Error("Failed to fetch questions");
+        const questionsData = await questionsResponse.json();
 
-        const data = await response.json();
-        setQuestions(data);
+        // Fetch user profile to get completed questions
+        const userId = localStorage.getItem("user_id");
+        if (userId) {
+          const profileResponse = await fetch(`http://localhost:8000/api/profile/${userId}`);
+          if (profileResponse.ok) {
+            const profileData = await profileResponse.json();
+            setCompletedQuestions(profileData.completed_questions || []);
+            
+            // Update question statuses based on completion
+            const updatedQuestions = questionsData.map((q: any) => ({
+              ...q,
+              status: profileData.completed_questions?.includes(q.id) ? "completed" : q.status
+            }));
+            setQuestions(updatedQuestions);
+          } else {
+            setQuestions(questionsData);
+          }
+        } else {
+          setQuestions(questionsData);
+        }
       } catch (err) {
         console.error(err);
         toast({
@@ -31,7 +52,7 @@ const Questions = () => {
       }
     };
 
-    fetchQuestions();
+    fetchData();
   }, []);
 
   if (loading) {
@@ -69,6 +90,8 @@ const Questions = () => {
               className={`bg-card p-4 md:p-6 pixel-border transition-all ${
                 quest.status === "locked"
                   ? "opacity-50"
+                  : quest.status === "completed"
+                  ? "pixel-border-emerald"
                   : "hover:pixel-border-gold hover:glow-gold"
               }`}
             >
@@ -102,9 +125,13 @@ const Questions = () => {
                 {quest.status !== "locked" && (
                   <Button
                     onClick={() => navigate(`/questions/${quest.id}`)}
-                    className="bg-gold hover:bg-gold-glow text-background font-pixel text-xs glow-gold"
+                    className={`font-pixel text-xs ${
+                      quest.status === "completed"
+                        ? "bg-emerald hover:bg-emerald/80 text-background"
+                        : "bg-gold hover:bg-gold-glow text-background glow-gold"
+                    }`}
                   >
-                    Attempt
+                    {quest.status === "completed" ? "Review" : "Attempt"}
                   </Button>
                 )}
               </div>
