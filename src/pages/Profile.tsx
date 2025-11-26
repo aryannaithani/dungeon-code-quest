@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Zap, Award, Target } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Shield, Zap, Award, Target, LogOut } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 const Profile = () => {
@@ -40,6 +41,16 @@ const Profile = () => {
 
     fetchProfile();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("token");
+    toast({
+      title: "👋 Farewell Hero",
+      description: "You have successfully logged out.",
+    });
+    navigate("/login");
+  };
 
   if (loading) {
     return (
@@ -79,9 +90,19 @@ const Profile = () => {
   return (
     <div className="min-h-screen p-4 md:p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-8 text-center leading-relaxed">
-          Hero Profile
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-pixel text-gold leading-relaxed">
+            Hero Profile
+          </h1>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            className="bg-destructive/10 border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground font-pixel"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
+        </div>
 
         <Card className="bg-card p-6 md:p-8 pixel-border-gold glow-gold mb-8">
           <div className="text-center mb-6">
