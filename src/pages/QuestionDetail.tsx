@@ -230,20 +230,18 @@ const QuestionDetail = () => {
                   ))}
                 </div>
               )}
+
+              {/* Output Area */}
+              <div className="mt-4">
+                <h2 className="text-lg font-pixel text-gold mb-2">Output</h2>
+                <ScrollArea className="h-[200px] w-full pixel-border bg-dungeon-stone p-4">
+                  <pre className="text-sm font-mono text-foreground whitespace-pre-wrap">
+                    {output || "Run your code to see output here..."}
+                  </pre>
+                </ScrollArea>
+              </div>
             </div>
           </Card>
-
-          {/* Output Area */}
-          {output && (
-            <Card className="bg-card p-6 pixel-border">
-              <h2 className="text-lg font-pixel text-gold mb-4">Output</h2>
-              <ScrollArea className="h-[200px] w-full pixel-border bg-dungeon-stone p-4">
-                <pre className="text-sm font-mono text-foreground whitespace-pre-wrap">
-                  {output}
-                </pre>
-              </ScrollArea>
-            </Card>
-          )}
 
           {/* Code Editor Area */}
           <Card className="bg-card p-6 pixel-border">
