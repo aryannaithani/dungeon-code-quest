@@ -66,6 +66,7 @@ def save_users(users_list: list[dict]):
         "total_quests",
         "win_streak",
         "completed_questions",
+        "completed_levels",
     ]
 
     # Ensure directory exists
@@ -80,6 +81,8 @@ def save_users(users_list: list[dict]):
             # If completed_questions is a list, dump to JSON string
             if isinstance(row.get("completed_questions"), (list, dict)):
                 row["completed_questions"] = json.dumps(row["completed_questions"])
+            if isinstance(row.get("completed_levels"), (list, dict)):
+                row["completed_levels"] = json.dumps(row["completed_levels"])
             writer.writerow(row)
 
 def read_questions():
@@ -169,12 +172,17 @@ def read_users():
     with open(CSV_PATH, mode="r", newline="", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            # parse JSON field
+            # parse JSON fields
             if "completed_questions" in row:
                 try:
                     row["completed_questions"] = json.loads(row["completed_questions"])
                 except:
                     row["completed_questions"] = []
+            if "completed_levels" in row:
+                try:
+                    row["completed_levels"] = json.loads(row["completed_levels"])
+                except:
+                    row["completed_levels"] = []
             users.append(row)
     return users
 
@@ -396,6 +404,14 @@ async def get_profile(user_id: int):
         except:
             completed_questions = []
 
+    # Parse completed_levels if it's a string
+    completed_levels = user.get("completed_levels", [])
+    if isinstance(completed_levels, str):
+        try:
+            completed_levels = json.loads(completed_levels)
+        except:
+            completed_levels = []
+
     # Convert values from CSV (they're strings) to correct types
     return {
         "id": int(user["id"]),
@@ -409,7 +425,8 @@ async def get_profile(user_id: int):
         "total_quests": int(user["total_quests"]),
         "win_streak": int(user["win_streak"]),
         "created_at": user["created_at"],
-        "completed_questions": completed_questions
+        "completed_questions": completed_questions,
+        "completed_levels": completed_levels
     }
 
 @app.put("/api/profile/{user_id}", tags=["Profile"])
@@ -748,6 +765,132 @@ async def get_weekly_leaderboard(limit: int = 10):
 async def get_user_rank(user_id: int):
     """Get specific user's rank"""
     return {"rank": 7, "total_players": 1250, "percentile": 99.4}
+
+# ============== DUNGEONS & LEVELS ENDPOINTS ==============
+
+def read_dungeons():
+    path = "database/dungeons.json"
+    if not os.path.exists(path):
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def read_levels():
+    path = "database/levels.json"
+    if not os.path.exists(path):
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.get("/api/dungeons", tags=["Dungeons"])
+async def get_dungeons():
+    """Get all dungeons"""
+    return read_dungeons()
+
+@app.get("/api/dungeons/{dungeon_id}", tags=["Dungeons"])
+async def get_dungeon(dungeon_id: int):
+    """Get specific dungeon details"""
+    dungeons = read_dungeons()
+    for d in dungeons:
+        if d["id"] == dungeon_id:
+            return d
+    raise HTTPException(404, "Dungeon not found")
+
+@app.get("/api/dungeons/{dungeon_id}/levels", tags=["Dungeons"])
+async def get_dungeon_levels(dungeon_id: int):
+    """Get all levels for a dungeon"""
+    dungeons = read_dungeons()
+    dungeon = None
+    for d in dungeons:
+        if d["id"] == dungeon_id:
+            dungeon = d
+            break
+    
+    if not dungeon:
+        raise HTTPException(404, "Dungeon not found")
+    
+    levels = read_levels()
+    dungeon_levels = [l for l in levels if l["id"] in dungeon["levels"]]
+    
+    # Sort by level ID to maintain order
+    dungeon_levels.sort(key=lambda x: dungeon["levels"].index(x["id"]))
+    
+    return dungeon_levels
+
+@app.get("/api/levels/{level_id}", tags=["Levels"])
+async def get_level(level_id: int):
+    """Get specific level details"""
+    levels = read_levels()
+    for l in levels:
+        if l["id"] == level_id:
+            return l
+    raise HTTPException(404, "Level not found")
+
+class LevelSubmit(BaseModel):
+    user_id: int
+    answers: list[str]
+
+@app.post("/api/levels/{level_id}/submit", tags=["Levels"])
+async def submit_level(level_id: int, submission: LevelSubmit):
+    """Submit quiz answers for a level"""
+    levels = read_levels()
+    level = None
+    for l in levels:
+        if l["id"] == level_id:
+            level = l
+            break
+    
+    if not level:
+        raise HTTPException(404, "Level not found")
+    
+    # Check answers
+    questions = level["quiz"]["questions"]
+    correct = 0
+    for i, q in enumerate(questions):
+        if i < len(submission.answers) and submission.answers[i] == q["answer"]:
+            correct += 1
+    
+    passed = correct == len(questions)
+    xp_earned = 0
+    
+    if passed and submission.user_id > 0:
+        # Update user progress
+        users = read_users()
+        for user in users:
+            if int(user["id"]) == submission.user_id:
+                completed = user.get("completed_levels", [])
+                if isinstance(completed, str):
+                    try:
+                        completed = json.loads(completed)
+                    except:
+                        completed = []
+                
+                if level_id not in completed:
+                    completed.append(level_id)
+                    user["completed_levels"] = completed
+                    
+                    # Award XP
+                    user["xp"] = int(user.get("xp", 0)) + level["xp"]
+                    xp_earned = level["xp"]
+                    
+                    # Level up logic
+                    user["level"] = int(user.get("level", 1))
+                    user["xp_to_next"] = int(user.get("xp_to_next", 500))
+                    while int(user["xp"]) >= user["xp_to_next"]:
+                        user["level"] += 1
+                        user["xp_to_next"] = user["level"] * 500
+                
+                break
+        
+        save_users(users)
+    
+    return {
+        "success": passed,
+        "correct": correct,
+        "total": len(questions),
+        "xp_earned": xp_earned,
+        "message": "Level completed!" if passed else "Try again!"
+    }
 
 # ============== LEARN/ARENA ENDPOINTS ==============
 
