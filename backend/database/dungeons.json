@@ -7,7 +7,7 @@
     "unlocks_at_xp": 0,
     "required_dungeon": null,
     "icon": "sword",
-    "levels": [101, 102, 103, 104, 105, 106, 107, 108, 109, 110]
+    "levels": [101,102,103,104,105,106,107,108,109,110]
   },
   {
     "id": 2,
@@ -17,16 +17,86 @@
     "unlocks_at_xp": 0,
     "required_dungeon": 1,
     "icon": "git-branch",
-    "levels": [201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
+    "levels": [201,202,203,204,205,206,207,208,209,210]
   },
   {
     "id": 3,
     "title": "Functions Dungeon",
-    "description": "Unlock the power of reusable code. Learn to create and use functions effectively.",
+    "description": "Unlock the power of reusable code. Learn how functions work, parameters, returns, and scope.",
     "difficulty": "medium",
-    "unlocks_at_xp": 0,
+    "unlocks_at_xp": 200,
     "required_dungeon": 2,
     "icon": "box",
-    "levels": [301, 302, 303, 304, 305, 306, 307, 308, 309, 310]
+    "levels": [301,302,303,304,305,306,307,308,309,310]
+  },
+  {
+    "id": 4,
+    "title": "Data Structures Dungeon",
+    "description": "Explore essential structures like arrays, lists, dictionaries, and sets.",
+    "difficulty": "medium",
+    "unlocks_at_xp": 400,
+    "required_dungeon": 3,
+    "icon": "layers",
+    "levels": [401,402,403,404,405,406,407,408,409,410]
+  },
+  {
+    "id": 5,
+    "title": "OOP Dungeon",
+    "description": "Enter the realm of classes and objects. Learn about OOP principles and design.",
+    "difficulty": "medium",
+    "unlocks_at_xp": 700,
+    "required_dungeon": 4,
+    "icon": "contact",
+    "levels": [501,502,503,504,505,506,507,508,509,510]
+  },
+  {
+    "id": 6,
+    "title": "Recursion Dungeon",
+    "description": "Face infinite depths. Learn recursive thinking, base cases, and classic recursion problems.",
+    "difficulty": "hard",
+    "unlocks_at_xp": 1000,
+    "required_dungeon": 5,
+    "icon": "repeat",
+    "levels": [601,602,603,604,605,606,607,608,609,610]
+  },
+  {
+    "id": 7,
+    "title": "Algorithms Dungeon",
+    "description": "Dive into sorting, searching, greedy methods, and divide-and-conquer strategies.",
+    "difficulty": "hard",
+    "unlocks_at_xp": 1400,
+    "required_dungeon": 6,
+    "icon": "cpu",
+    "levels": [701,702,703,704,705,706,707,708,709,710]
+  },
+  {
+    "id": 8,
+    "title": "Advanced Data Structures Dungeon",
+    "description": "Master trees, graphs, heaps, and hashes to handle complex problems efficiently.",
+    "difficulty": "hard",
+    "unlocks_at_xp": 1800,
+    "required_dungeon": 7,
+    "icon": "network",
+    "levels": [801,802,803,804,805,806,807,808,809,810]
+  },
+  {
+    "id": 9,
+    "title": "Dynamic Programming Dungeon",
+    "description": "Learn memoization, tabulation, and break down impossible problems into smaller ones.",
+    "difficulty": "expert",
+    "unlocks_at_xp": 2300,
+    "required_dungeon": 8,
+    "icon": "blocks",
+    "levels": [901,902,903,904,905,906,907,908,909,910]
+  },
+  {
+    "id": 10,
+    "title": "Final Boss Dungeon",
+    "description": "Everything you have learned comes together. Solve multi-step, real-world challenge problems.",
+    "difficulty": "expert",
+    "unlocks_at_xp": 3000,
+    "required_dungeon": 9,
+    "icon": "skull",
+    "levels": [1001,1002,1003,1004,1005,1006,1007,1008,1009,1010]
   }
 ]

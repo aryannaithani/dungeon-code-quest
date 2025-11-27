@@ -3,24 +3,24 @@
     "id": 101,
     "dungeon_id": 1,
     "title": "Variables & Types",
-    "lesson": "Variables are containers for storing data. In Python, you don't need to declare the type - it's inferred automatically.\n\n**Example:**\n```python\nname = 'Hero'  # string\nage = 25       # integer\nhealth = 100.0 # float\nis_alive = True # boolean\n```\n\nVariables can be reassigned to different values and even different types.",
+    "lesson": "Variables store data. Python determines the type automatically based on the value assigned.\n\n**Examples:**\n```python\nname = 'Hero'      # string\nage = 19           # int\nspeed = 7.5        # float\nis_alive = True    # bool\n```\nVariables can be reassigned and can change type during runtime.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What type is the variable: x = 42",
+          "q": "What type is x if x = 42?",
           "options": ["String", "Integer", "Float", "Boolean"],
           "answer": "Integer"
         },
         {
           "q": "Which is a valid variable name?",
-          "options": ["2player", "player-name", "player_name", "player name"],
+          "options": ["3player", "player-score", "player_name", "player name"],
           "answer": "player_name"
         },
         {
-          "q": "What does x = 'Hello' create?",
-          "options": ["An integer", "A string", "A list", "A boolean"],
-          "answer": "A string"
+          "q": "Which type does x = 'Hello' create?",
+          "options": ["Integer", "String", "List", "Boolean"],
+          "answer": "String"
         }
       ]
     },
@@ -31,24 +31,24 @@
     "id": 102,
     "dungeon_id": 1,
     "title": "Numbers & Math",
-    "lesson": "Python supports various mathematical operations on numbers.\n\n**Basic Operations:**\n```python\na = 10 + 5   # Addition: 15\nb = 10 - 3   # Subtraction: 7\nc = 4 * 3    # Multiplication: 12\nd = 15 / 3   # Division: 5.0\ne = 17 % 5   # Modulo: 2\nf = 2 ** 3   # Power: 8\n```\n\nInteger division uses `//` to get whole numbers.",
+    "lesson": "Python supports integers, floats, and several arithmetic operations.\n\n**Examples:**\n```python\na = 10 + 5     # 15\nb = 10 - 3     # 7\nc = 4 * 3      # 12\nd = 15 / 3     # 5.0 (float division)\ne = 17 % 5     # 2 (modulo)\nf = 2 ** 3     # 8 (power)\ng = 10 // 3    # 3 (floor division)\n```\nMath is essential for logic-heavy programming.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is 17 % 5?",
-          "options": ["3", "2", "3.4", "5"],
+          "q": "What does 17 % 5 equal?",
+          "options": ["2", "3", "4", "1"],
           "answer": "2"
         },
         {
-          "q": "What operator is used for exponentiation?",
+          "q": "What operator gives exponentiation?",
           "options": ["^", "**", "pow", "exp"],
           "answer": "**"
         },
         {
-          "q": "What is 10 // 3?",
-          "options": ["3.33", "3", "4", "3.0"],
-          "answer": "3"
+          "q": "What is 9 // 2?",
+          "options": ["4", "4.5", "5", "Error"],
+          "answer": "4"
         }
       ]
     },
@@ -59,7 +59,7 @@
     "id": 103,
     "dungeon_id": 1,
     "title": "Strings Basics",
-    "lesson": "Strings are sequences of characters enclosed in quotes.\n\n**String Operations:**\n```python\nname = 'Hero'\ngreeting = \"Hello, \" + name  # Concatenation\nlength = len(name)           # Length: 4\nfirst_char = name[0]         # Indexing: 'H'\nupper = name.upper()         # 'HERO'\n```\n\nStrings are immutable - you can't change individual characters.",
+    "lesson": "Strings are sequences of characters enclosed in quotes. They're **immutable**, meaning you cannot change characters directly.\n\n**Examples:**\n```python\nname = 'Hero'\nlen(name)       # 4\nname[0]         # 'H'\nname.upper()    # 'HERO'\n'greetings ' + name  # concatenation\n```\nYou can slice strings, loop through them, and format them.",
     "quiz": {
       "type": "mcq",
       "questions": [
@@ -69,13 +69,13 @@
           "answer": "6"
         },
         {
-          "q": "What is 'Hello'[0]?",
-          "options": ["H", "e", "Hello", "1"],
+          "q": "What is 'Hi'[0]?",
+          "options": ["H", "i", "Hi", "Error"],
           "answer": "H"
         },
         {
-          "q": "How do you concatenate strings?",
-          "options": ["&", "+", ".", "concat()"],
+          "q": "How do you join two strings?",
+          "options": ["+", "&", "concat()", "."],
           "answer": "+"
         }
       ]
@@ -87,24 +87,24 @@
     "id": 104,
     "dungeon_id": 1,
     "title": "Lists Introduction",
-    "lesson": "Lists are ordered collections that can hold multiple items.\n\n**List Basics:**\n```python\nheroes = ['Knight', 'Mage', 'Archer']\nnumbers = [1, 2, 3, 4, 5]\nmixed = [1, 'two', 3.0, True]\n\n# Accessing elements\nfirst = heroes[0]    # 'Knight'\nlast = heroes[-1]    # 'Archer'\n```\n\nLists are mutable - you can modify them after creation.",
+    "lesson": "Lists are ordered, mutable collections. They can hold any types.\n\n**Examples:**\n```python\nheroes = ['Knight', 'Archer', 'Mage']\nnumbers = [1, 2, 3]\nmixed = [1, 'two', 3.5, True]\n\nheroes[0]   # 'Knight'\nheroes[-1]  # 'Mage'\n```\nLists are very flexible, making them essential for most programs.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What does list[-1] access?",
+          "q": "What does list[-1] return?",
           "options": ["First element", "Last element", "Nothing", "Error"],
           "answer": "Last element"
         },
         {
-          "q": "Can lists contain different types?",
-          "options": ["Yes", "No", "Only numbers", "Only strings"],
+          "q": "Can lists hold mixed types?",
+          "options": ["Yes", "No"],
           "answer": "Yes"
         },
         {
-          "q": "What is [1, 2, 3][1]?",
-          "options": ["1", "2", "3", "[1]"],
-          "answer": "2"
+          "q": "What is [10, 20, 30][1]?",
+          "options": ["10", "20", "30", "Error"],
+          "answer": "20"
         }
       ]
     },
@@ -115,23 +115,23 @@
     "id": 105,
     "dungeon_id": 1,
     "title": "List Operations",
-    "lesson": "Lists have many useful methods for manipulation.\n\n**Common Operations:**\n```python\nitems = [1, 2, 3]\nitems.append(4)      # [1, 2, 3, 4]\nitems.insert(0, 0)   # [0, 1, 2, 3, 4]\nitems.remove(2)      # [0, 1, 3, 4]\npopped = items.pop() # Returns 4\nlength = len(items)  # 3\n```",
+    "lesson": "Python lists have useful functions built into them.\n\n**Examples:**\n```python\nitems = [1, 2, 3]\nitems.append(4)     # [1, 2, 3, 4]\nitems.insert(0, 0)  # [0, 1, 2, 3, 4]\nitems.remove(2)     # [0, 1, 3, 4]\nitems.pop()         # returns last element\nlen(items)          # 4\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
           "q": "What does append() do?",
-          "options": ["Adds to beginning", "Adds to end", "Removes last", "Sorts list"],
-          "answer": "Adds to end"
+          "options": ["Adds at start", "Adds at end", "Deletes item", "Sorts list"],
+          "answer": "Adds at end"
         },
         {
           "q": "What does pop() return?",
-          "options": ["Nothing", "The removed element", "List length", "Error"],
-          "answer": "The removed element"
+          "options": ["Removed element", "List length", "Nothing", "Index"],
+          "answer": "Removed element"
         },
         {
-          "q": "How do you get list length?",
-          "options": ["list.length", "len(list)", "list.size()", "length(list)"],
+          "q": "How do you get length of a list?",
+          "options": ["list.length", "len(list)", "count(list)", "size(list)"],
           "answer": "len(list)"
         }
       ]
@@ -143,23 +143,23 @@
     "id": 106,
     "dungeon_id": 1,
     "title": "Dictionaries",
-    "lesson": "Dictionaries store key-value pairs for fast lookups.\n\n**Dictionary Basics:**\n```python\nhero = {\n    'name': 'Knight',\n    'health': 100,\n    'level': 5\n}\n\n# Access values\nname = hero['name']        # 'Knight'\nhealth = hero.get('health') # 100\n\n# Modify\nhero['level'] = 6\nhero['mana'] = 50  # Add new key\n```",
+    "lesson": "Dictionaries store key–value pairs.\n\n**Examples:**\n```python\nhero = {\n    'name': 'Knight',\n    'hp': 100,\n    'level': 5\n}\nhero['name']       # 'Knight'\nhero.get('hp')     # 100\nhero['level'] = 6  # modify\nhero['mana'] = 50  # add key\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "How do you access a dictionary value?",
+          "q": "How do you access a value in a dictionary?",
           "options": ["dict.key", "dict(key)", "dict[key]", "dict->key"],
           "answer": "dict[key]"
         },
         {
-          "q": "What does .get() return if key doesn't exist?",
-          "options": ["Error", "None", "0", "Empty string"],
+          "q": "What happens if you access a missing key using get()?",
+          "options": ["Error", "None", "0", "False"],
           "answer": "None"
         },
         {
-          "q": "Can dictionary keys be duplicated?",
-          "options": ["Yes", "No", "Only strings", "Only numbers"],
+          "q": "Can dictionary keys repeat?",
+          "options": ["Yes", "No"],
           "answer": "No"
         }
       ]
@@ -171,22 +171,22 @@
     "id": 107,
     "dungeon_id": 1,
     "title": "Boolean Logic",
-    "lesson": "Booleans represent True or False values.\n\n**Comparison Operators:**\n```python\n5 == 5   # True (equal)\n5 != 3   # True (not equal)\n5 > 3    # True (greater)\n5 <= 5   # True (less or equal)\n\n# Logical operators\nTrue and False  # False\nTrue or False   # True\nnot True        # False\n```",
+    "lesson": "Booleans represent truth values: `True` or `False`.\n\n**Examples:**\n```python\n3 < 5     # True\n5 == 5    # True\n5 != 3    # True\n\nTrue and False  # False\nTrue or False   # True\nnot True        # False\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is True and False?",
+          "q": "What does True and False evaluate to?",
           "options": ["True", "False", "None", "Error"],
           "answer": "False"
         },
         {
-          "q": "What is not False?",
-          "options": ["True", "False", "None", "Error"],
-          "answer": "True"
+          "q": "What is the result of not True?",
+          "options": ["True", "False"],
+          "answer": "False"
         },
         {
-          "q": "What operator checks equality?",
+          "q": "Which operator checks equality?",
           "options": ["=", "==", "===", "eq"],
           "answer": "=="
         }
@@ -199,24 +199,24 @@
     "id": 108,
     "dungeon_id": 1,
     "title": "Type Conversion",
-    "lesson": "Convert between different data types.\n\n**Conversion Functions:**\n```python\n# To integer\nint('42')      # 42\nint(3.7)       # 3\n\n# To string\nstr(42)        # '42'\nstr(True)      # 'True'\n\n# To float\nfloat('3.14')  # 3.14\nfloat(5)       # 5.0\n\n# To boolean\nbool(1)        # True\nbool(0)        # False\n```",
+    "lesson": "Convert between Python data types.\n\n**Examples:**\n```python\nint('42')      # 42\nstr(42)        # '42'\nbool(0)        # False\nfloat('3.14')  # 3.14\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is int(3.9)?",
-          "options": ["3", "4", "3.9", "Error"],
+          "q": "What does int(3.8) return?",
+          "options": ["3", "4", "3.8", "Error"],
           "answer": "3"
         },
         {
           "q": "What is bool(0)?",
-          "options": ["True", "False", "0", "Error"],
+          "options": ["True", "False"],
           "answer": "False"
         },
         {
-          "q": "What is str(123)?",
-          "options": ["123", "'123'", "Error", "None"],
-          "answer": "'123'"
+          "q": "What is str(100)?",
+          "options": ["100", "'100'", "Error", "None"],
+          "answer": "'100'"
         }
       ]
     },
@@ -227,24 +227,24 @@
     "id": 109,
     "dungeon_id": 1,
     "title": "Input & Output",
-    "lesson": "Interact with users through input and output.\n\n**Basic I/O:**\n```python\n# Output\nprint('Hello, Hero!')\nprint('Level:', 5)\nprint(f'HP: {100}')\n\n# Input\nname = input('Enter name: ')\nage = int(input('Enter age: '))\n```\n\nThe `input()` function always returns a string.",
+    "lesson": "Use `input()` to take user input and `print()` to display output.\n\n**Examples:**\n```python\nprint('Level:', 5)\nname = input('Enter name: ')\nage = int(input('Enter age: '))\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What type does input() return?",
-          "options": ["Integer", "String", "Any type", "None"],
-          "answer": "String"
+          "q": "What type does input() always return?",
+          "options": ["int", "str", "float", "bool"],
+          "answer": "str"
         },
         {
           "q": "What is an f-string?",
-          "options": ["Float string", "Formatted string", "Function string", "Final string"],
+          "options": ["Floating string", "Formatted string", "Function string", "Final string"],
           "answer": "Formatted string"
         },
         {
-          "q": "How to print multiple values?",
-          "options": ["print(a + b)", "print(a, b)", "Both work", "Neither"],
-          "answer": "Both work"
+          "q": "Which prints two values?",
+          "options": ["print(a + b)", "print(a, b)", "Both"],
+          "answer": "Both"
         }
       ]
     },
@@ -255,7 +255,7 @@
     "id": 110,
     "dungeon_id": 1,
     "title": "Basics Boss Challenge",
-    "lesson": "**Final Challenge!**\n\nYou've learned the fundamentals:\n- Variables and data types\n- Numbers and math operations\n- Strings and lists\n- Dictionaries\n- Boolean logic\n- Type conversion\n- Input/Output\n\nNow prove your mastery by answering these challenge questions!",
+    "lesson": "You've completed all basics lessons. Time for the final challenge!\nTest your knowledge of variables, math, strings, lists, dictionaries, and logic.\nGood luck, hero!",
     "quiz": {
       "type": "mcq",
       "questions": [
@@ -270,43 +270,45 @@
           "answer": "'ababab'"
         },
         {
-          "q": "What is len({'a': 1, 'b': 2})?",
+          "q": "What is len({'a':1,'b':2})?",
           "options": ["2", "4", "1", "Error"],
           "answer": "2"
         },
         {
-          "q": "What is [1, 2, 3] + [4, 5]?",
-          "options": ["[1, 2, 3, 4, 5]", "[5, 7, 3]", "Error", "15"],
-          "answer": "[1, 2, 3, 4, 5]"
+          "q": "What is [1,2] + [3,4]?",
+          "options": ["[1,2,3,4]", "[4,6]", "Error", "None"],
+          "answer": "[1,2,3,4]"
         }
       ]
     },
     "xp": 75,
     "difficulty": "medium",
     "is_boss": true
-  },
+  }
+]
+[
   {
     "id": 201,
     "dungeon_id": 2,
     "title": "If Statements",
-    "lesson": "Control program flow with conditions.\n\n**Basic If:**\n```python\nhealth = 50\n\nif health < 30:\n    print('Danger!')\nelif health < 70:\n    print('Caution')\nelse:\n    print('Healthy')\n```\n\nIndentation is crucial in Python - it defines code blocks.",
+    "lesson": "Conditional statements allow your program to take decisions.\n\n**Basic Syntax:**\n```python\nhealth = 70\n\nif health > 80:\n    print('Strong!')\nelif health > 50:\n    print('Stable')\nelse:\n    print('Weak')\n```\nIndentation is what defines code blocks in Python—not braces.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What keyword is used for 'else if'?",
+          "q": "Which keyword is used for else-if?",
           "options": ["else if", "elseif", "elif", "elsif"],
           "answer": "elif"
         },
         {
-          "q": "What defines a code block in Python?",
-          "options": ["Curly braces", "Indentation", "Parentheses", "Keywords"],
+          "q": "What defines a block in Python?",
+          "options": ["Braces {}", "Parentheses ()", "Indentation", "Semicolons"],
           "answer": "Indentation"
         },
         {
-          "q": "Is 'else' required after 'if'?",
-          "options": ["Yes", "No", "Sometimes", "Only with elif"],
-          "answer": "No"
+          "q": "Which is valid?",
+          "options": ["if (x > 5)", "if x > 5:", "if x > 5 then", "if: x > 5"],
+          "answer": "if x > 5:"
         }
       ]
     },
@@ -316,53 +318,53 @@
   {
     "id": 202,
     "dungeon_id": 2,
-    "title": "For Loops",
-    "lesson": "Iterate over sequences with for loops.\n\n**For Loop Basics:**\n```python\n# Loop through list\nfor item in [1, 2, 3]:\n    print(item)\n\n# Range loop\nfor i in range(5):  # 0, 1, 2, 3, 4\n    print(i)\n\n# With index\nfor i, val in enumerate(['a', 'b']):\n    print(i, val)\n```",
+    "title": "Comparison Operators",
+    "lesson": "Comparison operators evaluate relationships between values.\n\n**Examples:**\n```python\n5 == 5   # True\n5 != 3   # True\n7 > 2    # True\n7 <= 7   # True\n```\nComparison expressions return booleans.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What does range(3) produce?",
-          "options": ["[1, 2, 3]", "[0, 1, 2]", "[0, 1, 2, 3]", "[1, 2]"],
-          "answer": "[0, 1, 2]"
+          "q": "What is 5 != 5?",
+          "options": ["True", "False"],
+          "answer": "False"
         },
         {
-          "q": "What does enumerate() provide?",
-          "options": ["Index only", "Value only", "Index and value", "Length"],
-          "answer": "Index and value"
+          "q": "Which operator checks 'less than or equal to'?",
+          "options": ["<", "<=", ">=", "="],
+          "answer": "<="
         },
         {
-          "q": "What is range(1, 4)?",
-          "options": ["[1, 2, 3]", "[1, 2, 3, 4]", "[0, 1, 2, 3]", "[0, 1, 2]"],
-          "answer": "[1, 2, 3]"
+          "q": "What does 10 > 2 return?",
+          "options": ["True", "False"],
+          "answer": "True"
         }
       ]
     },
-    "xp": 40,
+    "xp": 35,
     "difficulty": "easy"
   },
   {
     "id": 203,
     "dungeon_id": 2,
-    "title": "While Loops",
-    "lesson": "Loop while a condition is true.\n\n**While Loop:**\n```python\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n# Infinite loop with break\nwhile True:\n    user_input = input('> ')\n    if user_input == 'quit':\n        break\n```\n\nBe careful to avoid infinite loops!",
+    "title": "Boolean Operators",
+    "lesson": "Combine multiple conditions using boolean operators.\n\n**Examples:**\n```python\nx = 10\nx > 5 and x < 20   # True\nx < 5 or x == 10   # True\nnot (x == 10)      # False\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "When does a while loop stop?",
-          "options": ["After 10 iterations", "When condition is False", "When using return", "Never"],
-          "answer": "When condition is False"
+          "q": "What is True and False?",
+          "options": ["True", "False"],
+          "answer": "False"
         },
         {
-          "q": "What does 'break' do?",
-          "options": ["Pauses loop", "Exits loop", "Restarts loop", "Crashes program"],
-          "answer": "Exits loop"
+          "q": "What is not True?",
+          "options": ["True", "False"],
+          "answer": "False"
         },
         {
-          "q": "What is 'while True'?",
-          "options": ["Syntax error", "Runs once", "Infinite loop", "Boolean check"],
-          "answer": "Infinite loop"
+          "q": "Which operator represents OR?",
+          "options": ["||", "or", "|", "OR"],
+          "answer": "or"
         }
       ]
     },
@@ -372,53 +374,109 @@
   {
     "id": 204,
     "dungeon_id": 2,
-    "title": "Break & Continue",
-    "lesson": "Control loop execution with break and continue.\n\n**Break & Continue:**\n```python\n# Break - exit loop entirely\nfor i in range(10):\n    if i == 5:\n        break\n    print(i)  # 0, 1, 2, 3, 4\n\n# Continue - skip current iteration\nfor i in range(5):\n    if i == 2:\n        continue\n    print(i)  # 0, 1, 3, 4\n```",
+    "title": "For Loops",
+    "lesson": "Use `for` loops to iterate over sequences.\n\n**Examples:**\n```python\nfor i in range(5):\n    print(i)   # 0 1 2 3 4\n\nfor char in 'Hero':\n    print(char)\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What does 'continue' do?",
-          "options": ["Exits loop", "Skips to next iteration", "Restarts loop", "Does nothing"],
-          "answer": "Skips to next iteration"
+          "q": "What does range(3) produce?",
+          "options": ["[1,2,3]", "[0,1,2]", "[0,1,2,3]", "Error"],
+          "answer": "[0,1,2]"
         },
         {
-          "q": "Can break be used in for loops?",
-          "options": ["Yes", "No", "Only in while", "Only with if"],
-          "answer": "Yes"
+          "q": "What does enumerate provide?",
+          "options": ["Value only", "Index only", "Index and value", "Length only"],
+          "answer": "Index and value"
         },
         {
-          "q": "What prints after break?",
-          "options": ["Next value", "Nothing in loop", "Error", "None"],
-          "answer": "Nothing in loop"
+          "q": "Which loop iterates characters of a string?",
+          "options": ["for i in range(string)", "for char in string", "while string", "loop string"],
+          "answer": "for char in string"
         }
       ]
     },
-    "xp": 35,
+    "xp": 40,
     "difficulty": "easy"
   },
   {
     "id": 205,
     "dungeon_id": 2,
-    "title": "Nested Loops",
-    "lesson": "Loops inside loops for complex iterations.\n\n**Nested Loops:**\n```python\n# 2D iteration\nfor i in range(3):\n    for j in range(3):\n        print(f'({i}, {j})')\n\n# Multiplication table\nfor x in range(1, 4):\n    for y in range(1, 4):\n        print(f'{x}x{y}={x*y}')\n```",
+    "title": "While Loops",
+    "lesson": "A `while` loop runs while its condition is true.\n\n**Examples:**\n```python\ncount = 0\nwhile count < 3:\n    print(count)\n    count += 1\n```\nBe careful—this can run forever if the condition never becomes false.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "How many times does inner loop run per outer iteration?",
-          "options": ["Once", "Depends on its range", "Same as outer", "Infinitely"],
-          "answer": "Depends on its range"
+          "q": "When does a while loop stop?",
+          "options": ["After 10 runs", "When condition becomes False", "Never", "When Python crashes"],
+          "answer": "When condition becomes False"
         },
         {
-          "q": "Total iterations for range(3) nested in range(2)?",
-          "options": ["5", "6", "9", "2"],
+          "q": "What does break do?",
+          "options": ["Pauses loop", "Restarts loop", "Exits loop", "Skips iteration"],
+          "answer": "Exits loop"
+        },
+        {
+          "q": "What is while True?",
+          "options": ["Syntax error", "Runs once", "Infinite loop", "Boolean check"],
+          "answer": "Infinite loop"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 206,
+    "dungeon_id": 2,
+    "title": "Break & Continue",
+    "lesson": "`break` stops a loop immediately.\n`continue` skips the current iteration.\n\n**Examples:**\n```python\nfor i in range(5):\n    if i == 3:\n        break\n\nfor i in range(5):\n    if i % 2 == 0:\n        continue\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does continue do?",
+          "options": ["Stops loop", "Skips iteration", "Restarts loop", "Ends program"],
+          "answer": "Skips iteration"
+        },
+        {
+          "q": "Which keyword stops a loop?",
+          "options": ["stop", "exit", "break", "halt"],
+          "answer": "break"
+        },
+        {
+          "q": "What happens after break?",
+          "options": ["Loop restarts", "Loop ends", "Next iteration begins", "Error"],
+          "answer": "Loop ends"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "easy"
+  },
+  {
+    "id": 207,
+    "dungeon_id": 2,
+    "title": "Nested Loops",
+    "lesson": "You can place a loop inside another loop.\n\n**Example:**\n```python\nfor i in range(3):\n    for j in range(2):\n        print(i, j)\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "How many total prints will this produce?\nfor i in range(2):\n    for j in range(3):\n        print(i, j)",
+          "options": ["2", "3", "5", "6"],
           "answer": "6"
         },
         {
-          "q": "Where does 'break' exit in nested loops?",
-          "options": ["All loops", "Innermost loop only", "Outermost loop", "Current function"],
-          "answer": "Innermost loop only"
+          "q": "Which loop runs first?",
+          "options": ["Outer loop", "Inner loop", "Both together", "None"],
+          "answer": "Outer loop"
+        },
+        {
+          "q": "What is nesting?",
+          "options": ["Loop inside a loop", "Loop after another", "One big loop", "Infinite loop"],
+          "answer": "Loop inside a loop"
         }
       ]
     },
@@ -426,27 +484,27 @@
     "difficulty": "medium"
   },
   {
-    "id": 206,
+    "id": 208,
     "dungeon_id": 2,
-    "title": "List Comprehensions",
-    "lesson": "Create lists in a single line.\n\n**List Comprehensions:**\n```python\n# Basic\nsquares = [x**2 for x in range(5)]\n# [0, 1, 4, 9, 16]\n\n# With condition\nevens = [x for x in range(10) if x % 2 == 0]\n# [0, 2, 4, 6, 8]\n\n# Transform\nupper = [s.upper() for s in ['a', 'b']]\n# ['A', 'B']\n```",
+    "title": "Loop Over Dictionary",
+    "lesson": "You can iterate over dictionary keys, values, or both.\n\n**Examples:**\n```python\nhero = {'hp': 100, 'mp': 50}\n\nfor key in hero:\n    print(key)\n\nfor val in hero.values():\n    print(val)\n\nfor k, v in hero.items():\n    print(k, v)\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is [x*2 for x in [1,2,3]]?",
-          "options": ["[1, 2, 3]", "[2, 4, 6]", "[1, 4, 9]", "Error"],
-          "answer": "[2, 4, 6]"
+          "q": "What does hero.values() return?",
+          "options": ["Keys", "Values", "Keys & values", "Nothing"],
+          "answer": "Values"
         },
         {
-          "q": "Where does the condition go?",
-          "options": ["Before 'for'", "After 'for x in list'", "At the start", "In parentheses"],
-          "answer": "After 'for x in list'"
+          "q": "How do you loop through key-value pairs?",
+          "options": ["for k, v in dict.items()", "for dict in items()", "loop dict()", "enumerate(dict)"],
+          "answer": "for k, v in dict.items()"
         },
         {
-          "q": "What is [x for x in range(3)]?",
-          "options": ["[1, 2, 3]", "[0, 1, 2]", "[0, 1, 2, 3]", "range(3)"],
-          "answer": "[0, 1, 2]"
+          "q": "Does the order matter in dictionaries?",
+          "options": ["Yes, always", "No, never", "Yes in modern Python", "Only if sorted"],
+          "answer": "Yes in modern Python"
         }
       ]
     },
@@ -454,83 +512,27 @@
     "difficulty": "medium"
   },
   {
-    "id": 207,
-    "dungeon_id": 2,
-    "title": "Ternary Expressions",
-    "lesson": "Conditional expressions in one line.\n\n**Ternary Operator:**\n```python\n# Syntax: value_if_true if condition else value_if_false\n\nage = 20\nstatus = 'adult' if age >= 18 else 'minor'\n\n# In assignments\nmax_val = a if a > b else b\n\n# Nested (use sparingly)\ngrade = 'A' if score >= 90 else 'B' if score >= 80 else 'C'\n```",
-    "quiz": {
-      "type": "mcq",
-      "questions": [
-        {
-          "q": "What is 'yes' if True else 'no'?",
-          "options": ["yes", "no", "True", "Error"],
-          "answer": "yes"
-        },
-        {
-          "q": "What is 5 if 3 > 5 else 10?",
-          "options": ["5", "10", "3", "Error"],
-          "answer": "10"
-        },
-        {
-          "q": "Can ternary be nested?",
-          "options": ["Yes", "No", "Only once", "Only in functions"],
-          "answer": "Yes"
-        }
-      ]
-    },
-    "xp": 40,
-    "difficulty": "medium"
-  },
-  {
-    "id": 208,
-    "dungeon_id": 2,
-    "title": "Match Statements",
-    "lesson": "Pattern matching (Python 3.10+).\n\n**Match Statement:**\n```python\ncommand = 'attack'\n\nmatch command:\n    case 'attack':\n        print('Fighting!')\n    case 'defend':\n        print('Blocking!')\n    case 'heal':\n        print('Healing!')\n    case _:\n        print('Unknown command')\n```\n\nThe `_` is a wildcard that matches anything.",
-    "quiz": {
-      "type": "mcq",
-      "questions": [
-        {
-          "q": "What does '_' match?",
-          "options": ["Nothing", "Underscore only", "Everything", "Errors"],
-          "answer": "Everything"
-        },
-        {
-          "q": "What Python version added match?",
-          "options": ["3.8", "3.9", "3.10", "3.11"],
-          "answer": "3.10"
-        },
-        {
-          "q": "Is match like switch in other languages?",
-          "options": ["Yes, similar", "No, completely different", "Only for strings", "Only for numbers"],
-          "answer": "Yes, similar"
-        }
-      ]
-    },
-    "xp": 40,
-    "difficulty": "medium"
-  },
-  {
     "id": 209,
     "dungeon_id": 2,
-    "title": "Exception Handling",
-    "lesson": "Handle errors gracefully.\n\n**Try/Except:**\n```python\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print('Cannot divide by zero!')\nexcept Exception as e:\n    print(f'Error: {e}')\nelse:\n    print('Success!')\nfinally:\n    print('Cleanup')\n```",
+    "title": "Conditional Expressions",
+    "lesson": "Python supports one-line if-else expressions.\n\n**Example:**\n```python\nstatus = 'Alive' if hp > 0 else 'Dead'\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "When does 'finally' run?",
-          "options": ["Only on success", "Only on error", "Always", "Never"],
-          "answer": "Always"
+          "q": "What is this called?\nx if cond else y",
+          "options": ["Inline if", "Lambda", "Short function", "Operator"],
+          "answer": "Inline if"
         },
         {
-          "q": "When does 'else' run in try/except?",
-          "options": ["On error", "When no error occurs", "Always", "Never"],
-          "answer": "When no error occurs"
+          "q": "What does x if True else y return?",
+          "options": ["x", "y", "None", "Error"],
+          "answer": "x"
         },
         {
-          "q": "What catches all exceptions?",
-          "options": ["except:", "except Error:", "except Exception:", "except All:"],
-          "answer": "except Exception:"
+          "q": "Which part is evaluated first?",
+          "options": ["x", "y", "cond", "None"],
+          "answer": "cond"
         }
       ]
     },
@@ -540,143 +542,178 @@
   {
     "id": 210,
     "dungeon_id": 2,
-    "title": "Control Flow Boss",
-    "lesson": "**Final Challenge!**\n\nYou've mastered control flow:\n- If/elif/else statements\n- For and while loops\n- Break and continue\n- Nested loops\n- List comprehensions\n- Ternary expressions\n- Match statements\n- Exception handling\n\nTime to prove your mastery!",
+    "title": "Control Flow Boss Fight",
+    "lesson": "You've mastered conditions, loops, boolean logic, break/continue, and dictionary iteration.\nAnswer these to prove your control over control flow.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is [i for i in range(5) if i % 2 == 0]?",
-          "options": ["[1, 3]", "[0, 2, 4]", "[2, 4]", "[0, 1, 2, 3, 4]"],
-          "answer": "[0, 2, 4]"
+          "q": "What does this print?\nfor i in range(2):\n  for j in range(2):\n    print(j)",
+          "options": ["0 1", "0 1 0 1", "1 0 1 0", "Error"],
+          "answer": "0 1 0 1"
         },
         {
-          "q": "How many times does 'for i in range(0)' iterate?",
-          "options": ["0", "1", "Infinite", "Error"],
-          "answer": "0"
+          "q": "What is the result of:\nnot (True and False)",
+          "options": ["True", "False"],
+          "answer": "True"
         },
         {
-          "q": "What handles cleanup after try/except?",
-          "options": ["else", "finally", "except", "cleanup"],
-          "answer": "finally"
+          "q": "Which stops ONLY the current iteration?",
+          "options": ["break", "exit", "stop", "continue"],
+          "answer": "continue"
         },
         {
-          "q": "What is 'big' if 100 > 50 else 'small'?",
-          "options": ["big", "small", "100", "True"],
-          "answer": "big"
+          "q": "What does range(1,4) return?",
+          "options": ["[1,2,3,4]", "[1,2,3]", "[0,1,2,3]", "Error"],
+          "answer": "[1,2,3]"
         }
       ]
     },
-    "xp": 80,
+    "xp": 90,
     "difficulty": "medium",
     "is_boss": true
-  },
+  }
+]
+[
   {
     "id": 301,
     "dungeon_id": 3,
-    "title": "Defining Functions",
-    "lesson": "Functions are reusable blocks of code.\n\n**Function Definition:**\n```python\ndef greet(name):\n    return f'Hello, {name}!'\n\n# Call the function\nmessage = greet('Hero')\nprint(message)  # Hello, Hero!\n\n# Function without return\ndef say_hi():\n    print('Hi!')\n```",
+    "title": "Introduction to Functions",
+    "lesson": "Functions let you group reusable pieces of code.\n\n**Basic Syntax:**\n```python\ndef greet():\n    print('Hello, Hero!')\n\ngreet()  # Calling the function\n```\nFunctions must be defined **before** they are called.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What keyword defines a function?",
+          "q": "Which keyword defines a function?",
           "options": ["func", "function", "def", "define"],
           "answer": "def"
         },
         {
-          "q": "What does a function without return give?",
-          "options": ["0", "None", "Error", "Empty string"],
-          "answer": "None"
+          "q": "What is calling a function?",
+          "options": ["Writing the function name", "Executing it with parentheses", "Defining it again", "Importing it"],
+          "answer": "Executing it with parentheses"
         },
         {
-          "q": "How do you call a function?",
-          "options": ["function_name", "function_name()", "call function_name", "run function_name"],
-          "answer": "function_name()"
+          "q": "Where must a function be defined?",
+          "options": ["Before calling it", "After calling it", "Anywhere", "Inside another function"],
+          "answer": "Before calling it"
         }
       ]
     },
-    "xp": 40,
-    "difficulty": "medium"
+    "xp": 35,
+    "difficulty": "easy"
   },
   {
     "id": 302,
     "dungeon_id": 3,
-    "title": "Parameters & Arguments",
-    "lesson": "Pass data into functions.\n\n**Parameters:**\n```python\n# Positional parameters\ndef add(a, b):\n    return a + b\n\n# Default parameters\ndef greet(name, greeting='Hello'):\n    return f'{greeting}, {name}!'\n\ngreet('Hero')           # Hello, Hero!\ngreet('Hero', 'Hi')     # Hi, Hero!\n```",
+    "title": "Function Parameters",
+    "lesson": "Functions can take inputs called parameters.\n\n**Example:**\n```python\ndef greet(name):\n    print('Hello,', name)\n\ngreet('Aryan')\n```\nThese allow your function to work with dynamic values.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is a parameter with a default value?",
-          "options": ["Required parameter", "Optional parameter", "Keyword parameter", "Position parameter"],
-          "answer": "Optional parameter"
+          "q": "What are function inputs called?",
+          "options": ["Variables", "Arguments", "Parameters", "Inputs"],
+          "answer": "Parameters"
         },
         {
-          "q": "Can defaults come before required params?",
-          "options": ["Yes", "No", "Sometimes", "In Python 3 only"],
-          "answer": "No"
+          "q": "What happens if you call greet(name) without providing an argument?",
+          "options": ["Nothing", "Error", "It prints empty", "It prints None"],
+          "answer": "Error"
         },
         {
-          "q": "What are values passed to functions called?",
-          "options": ["Parameters", "Arguments", "Variables", "Inputs"],
-          "answer": "Arguments"
+          "q": "Which is valid?",
+          "options": ["def f(x):", "def f x():", "function f(x):", "define f(x)"],
+          "answer": "def f(x):"
         }
       ]
     },
     "xp": 40,
-    "difficulty": "medium"
+    "difficulty": "easy"
   },
   {
     "id": 303,
     "dungeon_id": 3,
     "title": "Return Values",
-    "lesson": "Functions can return values.\n\n**Return Statement:**\n```python\ndef square(x):\n    return x ** 2\n\n# Multiple return values\ndef get_stats(numbers):\n    return min(numbers), max(numbers)\n\nlow, high = get_stats([1, 5, 3])\n# low = 1, high = 5\n\n# Early return\ndef divide(a, b):\n    if b == 0:\n        return None\n    return a / b\n```",
+    "lesson": "Functions can return data using `return`.\n\n**Example:**\n```python\ndef add(a, b):\n    return a + b\n\nresult = add(3, 4)  # 7\n```\n`return` ends the function immediately and sends back a value.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "Can a function return multiple values?",
-          "options": ["Yes", "No", "Only 2", "Only with tuple"],
-          "answer": "Yes"
+          "q": "What keyword sends a value back?",
+          "options": ["send", "return", "yield", "output"],
+          "answer": "return"
         },
         {
-          "q": "What happens after return executes?",
-          "options": ["Continues", "Function exits", "Error", "Returns None"],
-          "answer": "Function exits"
+          "q": "What does a function return without a return statement?",
+          "options": ["0", "''", "None", "Error"],
+          "answer": "None"
         },
         {
-          "q": "What type is returned for multiple values?",
-          "options": ["List", "Tuple", "Dict", "Set"],
-          "answer": "Tuple"
+          "q": "What does this return?\ndef f():\n    return 5\n",
+          "options": ["None", "5", "Error", "True"],
+          "answer": "5"
         }
       ]
     },
-    "xp": 40,
-    "difficulty": "medium"
+    "xp": 45,
+    "difficulty": "easy"
   },
   {
     "id": 304,
     "dungeon_id": 3,
-    "title": "Args and Kwargs",
-    "lesson": "Handle variable numbers of arguments.\n\n**Flexible Arguments:**\n```python\n# *args - variable positional arguments\ndef sum_all(*args):\n    return sum(args)\n\nsum_all(1, 2, 3)  # 6\n\n# **kwargs - variable keyword arguments\ndef print_info(**kwargs):\n    for key, value in kwargs.items():\n        print(f'{key}: {value}')\n\nprint_info(name='Hero', level=5)\n```",
+    "title": "Default Arguments",
+    "lesson": "You can give parameters default values.\n\n**Example:**\n```python\ndef greet(name='Hero'):\n    print('Hello,', name)\n\ngreet()        # Hello, Hero\ngreet('Aryan') # Hello, Aryan\n```\nDefault arguments make functions more flexible.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What type is *args inside the function?",
-          "options": ["List", "Tuple", "Dict", "Set"],
+          "q": "Which is valid?",
+          "options": [
+            "def f(x=5, y):",
+            "def f(x, y=5):",
+            "def f(x=, y):",
+            "def f(x y=5):"
+          ],
+          "answer": "def f(x, y=5):"
+        },
+        {
+          "q": "What does greet() use if no argument is passed?",
+          "options": ["Nothing", "Error", "Default value", "First parameter"],
+          "answer": "Default value"
+        },
+        {
+          "q": "Which value is used first?",
+          "options": ["Parameter value passed", "Default value", "None", "Random"],
+          "answer": "Parameter value passed"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "easy"
+  },
+  {
+    "id": 305,
+    "dungeon_id": 3,
+    "title": "Variable-Length Arguments (*args)",
+    "lesson": "`*args` lets you accept unlimited positional arguments.\n\n**Example:**\n```python\ndef total(*numbers):\n    return sum(numbers)\n\ntotal(1, 2, 3)  # 6\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does *args represent?",
+          "options": ["Optional keyword args", "Unlimited positional args", "Return list", "Function name"],
+          "answer": "Unlimited positional args"
+        },
+        {
+          "q": "What type is args inside the function?",
+          "options": ["List", "Tuple", "Dict", "String"],
           "answer": "Tuple"
         },
         {
-          "q": "What type is **kwargs inside the function?",
-          "options": ["List", "Tuple", "Dict", "Set"],
-          "answer": "Dict"
-        },
-        {
-          "q": "Order of parameters?",
-          "options": ["Any order", "regular, *args, **kwargs", "**kwargs, *args, regular", "*args first"],
-          "answer": "regular, *args, **kwargs"
+          "q": "Is this valid?\ndef f(*x, y):",
+          "options": ["Yes", "No"],
+          "answer": "Yes"
         }
       ]
     },
@@ -684,27 +721,1360 @@
     "difficulty": "medium"
   },
   {
-    "id": 305,
+    "id": 306,
     "dungeon_id": 3,
-    "title": "Lambda Functions",
-    "lesson": "Anonymous functions in one line.\n\n**Lambda Syntax:**\n```python\n# Regular function\ndef square(x):\n    return x ** 2\n\n# Lambda equivalent\nsquare = lambda x: x ** 2\n\n# Common uses\nnumbers = [3, 1, 4, 1, 5]\nsorted(numbers, key=lambda x: -x)\n# [5, 4, 3, 1, 1]\n\n# Multiple parameters\nadd = lambda a, b: a + b\n```",
+    "title": "Keyword Arguments (**kwargs)",
+    "lesson": "`**kwargs` lets you accept unlimited keyword arguments.\n\n**Example:**\n```python\ndef hero_stats(**stats):\n    for key, value in stats.items():\n        print(key, value)\n\nhero_stats(hp=100, level=5)\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "Can lambdas have multiple expressions?",
-          "options": ["Yes", "No", "With semicolons", "With newlines"],
+          "q": "What type is kwargs inside the function?",
+          "options": ["List", "Dict", "Tuple", "Set"],
+          "answer": "Dict"
+        },
+        {
+          "q": "Which is valid?",
+          "options": [
+            "def f(**args):",
+            "def f(**kwargs, x):",
+            "def f(*x, **y):",
+            "def f(**kwargs):"
+          ],
+          "answer": "def f(**kwargs):"
+        },
+        {
+          "q": "What does **kwargs capture?",
+          "options": ["Positional args", "Keyword args", "Defaults only", "Return types"],
+          "answer": "Keyword args"
+        }
+      ]
+    },
+    "xp": 55,
+    "difficulty": "medium"
+  },
+  {
+    "id": 307,
+    "dungeon_id": 3,
+    "title": "Scope & Lifetime",
+    "lesson": "Scope determines where a variable can be used.\n\n**Types:**\n- Local scope → inside function\n- Global scope → outside all functions\n\n**Example:**\n```python\nx = 10\n\ndef f():\n    x = 5\n    print(x)  # 5\n\nf()\nprint(x)  # 10\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Where is a local variable available?",
+          "options": ["Everywhere", "Only in its function", "Only in loops", "Only in main"],
+          "answer": "Only in its function"
+        },
+        {
+          "q": "What does global x do?",
+          "options": ["Deletes x", "Makes x global", "Creates new x", "Errors"],
+          "answer": "Makes x global"
+        },
+        {
+          "q": "What does f() print here?\nx = 10\ndef f():\n    x = 3\n    print(x)",
+          "options": ["3", "10", "None", "Error"],
+          "answer": "3"
+        }
+      ]
+    },
+    "xp": 55,
+    "difficulty": "medium"
+  },
+  {
+    "id": 308,
+    "dungeon_id": 3,
+    "title": "Lambda Expressions",
+    "lesson": "Lambdas are small anonymous functions.\n\n**Example:**\n```python\ndouble = lambda x: x * 2\nprint(double(4))  # 8\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What keyword creates a lambda?",
+          "options": ["lambda", "func", "def", "lm"],
+          "answer": "lambda"
+        },
+        {
+          "q": "Are lambdas multi-line?",
+          "options": ["Yes", "No"],
           "answer": "No"
         },
         {
-          "q": "What is lambda x: x + 1 called with 5?",
-          "options": ["5", "6", "x + 1", "Error"],
+          "q": "What does this return?\n(lambda x: x + 3)(2)",
+          "options": ["2", "3", "5", "Error"],
+          "answer": "5"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 309,
+    "dungeon_id": 3,
+    "title": "Recursion Basics",
+    "lesson": "Recursion is when a function calls itself.\n\n**Example:**\n```python\ndef fact(n):\n    if n == 0:\n        return 1\n    return n * fact(n-1)\n```\nAlways have a *base case* to avoid infinite recursion.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is essential in recursion?",
+          "options": ["Global variable", "Base case", "Print statements", "Return None"],
+          "answer": "Base case"
+        },
+        {
+          "q": "What does factorial(0) return?",
+          "options": ["0", "1", "Error", "None"],
+          "answer": "1"
+        },
+        {
+          "q": "What happens without a base case?",
+          "options": ["Runs once", "Returns None", "Infinite recursion", "Becomes lambda"],
+          "answer": "Infinite recursion"
+        }
+      ]
+    },
+    "xp": 65,
+    "difficulty": "hard"
+  },
+  {
+    "id": 310,
+    "dungeon_id": 3,
+    "title": "Functions Boss Battle",
+    "lesson": "You've mastered parameters, return values, args/kwargs, scopes, lambdas, and recursion.\nTime to prove it!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does this return?\ndef f(a, b=3):\n    return a + b\nf(2)",
+          "options": ["2", "3", "5", "Error"],
+          "answer": "5"
+        },
+        {
+          "q": "What is args in *args?",
+          "options": ["Tuple", "List", "Dict", "None"],
+          "answer": "Tuple"
+        },
+        {
+          "q": "What does this print?\nx = 5\ndef f():\n    print(x)\nf()",
+          "options": ["5", "Error", "None", "0"],
+          "answer": "5"
+        },
+        {
+          "q": "What does this output?\n(lambda x,y: x*y)(3,4)",
+          "options": ["3", "4", "7", "12"],
+          "answer": "12"
+        }
+      ]
+    },
+    "xp": 100,
+    "difficulty": "hard",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 401,
+    "dungeon_id": 4,
+    "title": "Arrays & Lists",
+    "lesson": "Arrays (or lists in Python) store ordered collections. They allow fast access by index and are useful for storing sequences of data.\n\n```python\nnumbers = [10, 20, 30]\nprint(numbers[0])  # 10\nnumbers.append(40)\nprint(len(numbers))  # 4\n```\nLists are dynamic in Python, meaning they grow and shrink as needed.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is the index of the first element in a Python list?",
+          "options": ["0", "1", "-1", "Depends"],
+          "answer": "0"
+        },
+        {
+          "q": "What does append() do?",
+          "options": ["Adds at start", "Adds at end", "Deletes last item", "Sorts the list"],
+          "answer": "Adds at end"
+        },
+        {
+          "q": "What is len([1,2,3])?",
+          "options": ["2", "3", "4", "Error"],
+          "answer": "3"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "easy"
+  },
+  {
+    "id": 402,
+    "dungeon_id": 4,
+    "title": "2D Arrays",
+    "lesson": "2D arrays store data in rows and columns. In Python, they are lists of lists.\n\n```python\nmatrix = [\n  [1, 2, 3],\n  [4, 5, 6]\n]\nprint(matrix[1][2])  # 6\n```\nThey are useful in grids, games, and dynamic programming.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "matrix[0][1] refers to?",
+          "options": ["Row 0, Col 1", "Row 1, Col 0", "Row 1, Col 1", "Invalid"],
+          "answer": "Row 0, Col 1"
+        },
+        {
+          "q": "2D lists in Python are:",
+          "options": ["Special data type", "Lists of lists", "Matrices", "Dictionaries"],
+          "answer": "Lists of lists"
+        },
+        {
+          "q": "What does len(matrix) return for a 2x3 matrix?",
+          "options": ["2", "3", "5", "6"],
+          "answer": "2"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "easy"
+  },
+  {
+    "id": 403,
+    "dungeon_id": 4,
+    "title": "Stacks",
+    "lesson": "Stacks follow *Last In, First Out (LIFO)*. Python uses lists for stacks.\n\n```python\nstack = []\nstack.append(10)  # push\nstack.append(20)\nstack.pop()        # 20\n```\nUsed in recursion, parsing, undo operations, etc.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Stacks follow which principle?",
+          "options": ["FIFO", "LIFO", "Random", "Sorted"],
+          "answer": "LIFO"
+        },
+        {
+          "q": "Which operation removes the last element?",
+          "options": ["append()", "insert()", "pop()", "remove()"],
+          "answer": "pop()"
+        },
+        {
+          "q": "Stacks are useful for:",
+          "options": ["Sorting", "Undo operations", "Searching", "Networking"],
+          "answer": "Undo operations"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 404,
+    "dungeon_id": 4,
+    "title": "Queues",
+    "lesson": "Queues follow *First In, First Out (FIFO)*.\n\n```python\nfrom collections import deque\n\nq = deque()\nq.append(10)  # enqueue\nq.append(20)\nq.popleft()   # dequeue: 10\n```\nGreat for task scheduling, BFS, and simulations.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Queues follow which principle?",
+          "options": ["LIFO", "FIFO", "Sorted", "Indexed"],
+          "answer": "FIFO"
+        },
+        {
+          "q": "Which is best for queues?",
+          "options": ["List", "Tuple", "Deque", "Set"],
+          "answer": "Deque"
+        },
+        {
+          "q": "What does popleft() do?",
+          "options": ["Removes last", "Removes first", "Sorts queue", "Deletes all"],
+          "answer": "Removes first"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 405,
+    "dungeon_id": 4,
+    "title": "Linked Lists",
+    "lesson": "Linked lists are made of nodes pointing to the next node.\n\n```python\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.next = None\n```\nThey allow fast insertions/deletions but slow indexing.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Accessing middle of a linked list takes:",
+          "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+          "answer": "O(n)"
+        },
+        {
+          "q": "Linked lists are best for:",
+          "options": ["Fast random access", "Fast insertions", "Sorting", "Hashing"],
+          "answer": "Fast insertions"
+        },
+        {
+          "q": "A node contains:",
+          "options": ["Value only", "Value + next pointer", "Index", "ID"],
+          "answer": "Value + next pointer"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 406,
+    "dungeon_id": 4,
+    "title": "HashMaps / Dictionaries",
+    "lesson": "Hash maps store key-value pairs for O(1) average lookup.\n\n```python\nheroes = { 'knight': 90, 'archer': 70 }\nheroes['mage'] = 100\n```\nUsed in caching, lookup tables, and frequency counting.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Dictionaries in Python are implemented as:",
+          "options": ["Lists", "Trees", "Hash tables", "Stacks"],
+          "answer": "Hash tables"
+        },
+        {
+          "q": "Accessing a key is:",
+          "options": ["O(1) average", "O(n)", "O(log n)", "O(n^2)"],
+          "answer": "O(1) average"
+        },
+        {
+          "q": "Keys in a dictionary must be:",
+          "options": ["Mutable", "Unique", "Integers", "Strings"],
+          "answer": "Unique"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 407,
+    "dungeon_id": 4,
+    "title": "Sets",
+    "lesson": "Sets store unique items and allow fast membership tests.\n\n```python\ns = {1, 2, 3}\ns.add(4)\ns.remove(2)\nprint(3 in s)  # True\n```\nGreat for eliminating duplicates and fast lookups.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Sets do not allow:",
+          "options": ["Duplicates", "Integers", "Strings", "Booleans"],
+          "answer": "Duplicates"
+        },
+        {
+          "q": "What is the time complexity of 'x in set'?",
+          "options": ["O(n)", "O(log n)", "O(1)", "O(n^2)"],
+          "answer": "O(1)"
+        },
+        {
+          "q": "Sets are:",
+          "options": ["Ordered", "Unordered", "Indexed", "Sorted"],
+          "answer": "Unordered"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "easy"
+  },
+  {
+    "id": 408,
+    "dungeon_id": 4,
+    "title": "Tuples",
+    "lesson": "Tuples are immutable lists.\n\n```python\npos = (10, 20)\nprint(pos[0])  # 10\n```\nUseful for fixed data, coordinates, and as dictionary keys.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Tuples are:",
+          "options": ["Mutable", "Immutable", "Dynamic", "Sorted"],
+          "answer": "Immutable"
+        },
+        {
+          "q": "Which is a tuple?",
+          "options": ["[1,2]", "(1,2)", "{1,2}", "<1,2>"],
+          "answer": "(1,2)"
+        },
+        {
+          "q": "Tuples can be used as:",
+          "options": ["Keys in dictionaries", "Loop counters", "Sets", "Stacks"],
+          "answer": "Keys in dictionaries"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "easy"
+  },
+  {
+    "id": 409,
+    "dungeon_id": 4,
+    "title": "Heaps",
+    "lesson": "Heaps allow fast retrieval of min/max elements.\n\n```python\nimport heapq\n\nnums = [5,3,8]\nheapq.heapify(nums)\nheapq.heappush(nums, 1)\nprint(heapq.heappop(nums))  # 1\n```\nUsed in priority queues, scheduling, Dijkstra's algorithm.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Python's heap is:",
+          "options": ["Max heap", "Min heap", "Binary search tree", "Queue"],
+          "answer": "Min heap"
+        },
+        {
+          "q": "What does heappop return?",
+          "options": ["Largest", "Smallest", "Middle element", "Random"],
+          "answer": "Smallest"
+        },
+        {
+          "q": "heapq is part of:",
+          "options": ["collections", "functools", "math", "heapq"],
+          "answer": "heapq"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "hard"
+  },
+  {
+    "id": 410,
+    "dungeon_id": 4,
+    "title": "Data Structures Boss Fight",
+    "lesson": "You've mastered arrays, linked lists, stacks, queues, sets, heaps, and more. This boss test will combine everything.\n\nBe prepared for mixed questions involving complexity, implementation, and choosing the right data structure.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Best data structure for BFS?",
+          "options": ["Stack", "Queue", "Set", "Heap"],
+          "answer": "Queue"
+        },
+        {
+          "q": "Best for removing duplicates?",
+          "options": ["List", "Stack", "Set", "Queue"],
+          "answer": "Set"
+        },
+        {
+          "q": "Fastest lookup?",
+          "options": ["List", "Dictionary", "Linked list", "Queue"],
+          "answer": "Dictionary"
+        },
+        {
+          "q": "Heaps are used in:",
+          "options": ["Dijkstra's algorithm", "DFS", "Sorting strings", "Balancing parentheses"],
+          "answer": "Dijkstra's algorithm"
+        }
+      ]
+    },
+    "xp": 120,
+    "difficulty": "hard",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 501,
+    "dungeon_id": 5,
+    "title": "Introduction to OOP",
+    "lesson": "Object-Oriented Programming (OOP) helps model real-world entities using classes and objects.\n\n**Core ideas:**\n- Everything is an object\n- Objects store data and behavior\n\n```python\nclass Hero:\n    pass\n\nplayer = Hero()  # object\n```\nOOP makes code cleaner, reusable, and easier to manage.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "A class is a:",
+          "options": ["Blueprint", "Variable", "Function", "Loop"],
+          "answer": "Blueprint"
+        },
+        {
+          "q": "An object is:",
+          "options": ["A class", "An instance of a class", "A method", "A string"],
+          "answer": "An instance of a class"
+        },
+        {
+          "q": "OOP stands for:",
+          "options": ["Object-Oriented Programming", "Optimal Operating Process", "Old Operational Protocol", "None"],
+          "answer": "Object-Oriented Programming"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 502,
+    "dungeon_id": 5,
+    "title": "Classes & Objects",
+    "lesson": "Classes define the structure and behavior of objects.\n\n```python\nclass Hero:\n    def __init__(self, name, hp):\n        self.name = name\n        self.hp = hp\n\nhero = Hero(\"Knight\", 100)\n```\n`__init__` initializes object attributes.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is __init__?",
+          "options": ["Destructor", "Constructor", "Method to print", "Operator"],
+          "answer": "Constructor"
+        },
+        {
+          "q": "self refers to:",
+          "options": ["The class", "The module", "The current object", "None"],
+          "answer": "The current object"
+        },
+        {
+          "q": "Which keyword creates a new object?",
+          "options": ["new", "this", "class", "None of these"],
+          "answer": "None of these"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "easy"
+  },
+  {
+    "id": 503,
+    "dungeon_id": 5,
+    "title": "Attributes & Methods",
+    "lesson": "Attributes store data, methods store behavior.\n\n```python\nclass Hero:\n    def attack(self):\n        print(\"Hero attacks!\")\n\nh = Hero()\nh.attack()\n```\nMethods always have `self` as first parameter.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Variables inside objects are called:",
+          "options": ["Methods", "Attributes", "Functions", "Keys"],
+          "answer": "Attributes"
+        },
+        {
+          "q": "Functions inside classes are called:",
+          "options": ["Attributes", "Methods", "Constructors", "Static"],
+          "answer": "Methods"
+        },
+        {
+          "q": "self must be included as:",
+          "options": ["Last parameter", "Middle", "Not required", "First parameter"],
+          "answer": "First parameter"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "easy"
+  },
+  {
+    "id": 504,
+    "dungeon_id": 5,
+    "title": "Encapsulation",
+    "lesson": "Encapsulation hides internal details.\n\nUse `_var` for protected and `__var` for private.\n\n```python\nclass Hero:\n    def __init__(self):\n        self.__hp = 100  # private\n\nh = Hero()\n# h.__hp  # Error\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Encapsulation is about:",
+          "options": ["Inheritance", "Hiding data", "Overloading", "Abstraction"],
+          "answer": "Hiding data"
+        },
+        {
+          "q": "Private variables start with:",
+          "options": ["_", "__", "$", "@"],
+          "answer": "__"
+        },
+        {
+          "q": "_variable usually means:",
+          "options": ["Public", "Protected", "Static", "Error"],
+          "answer": "Protected"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 505,
+    "dungeon_id": 5,
+    "title": "Inheritance",
+    "lesson": "Inheritance allows classes to extend other classes.\n\n```python\nclass Hero:\n    pass\n\nclass Knight(Hero):\n    pass\n```\nThe child inherits attributes and methods from the parent.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Inheritance helps in:",
+          "options": ["Code duplication", "Reusability", "Encryption", "Compiling"],
+          "answer": "Reusability"
+        },
+        {
+          "q": "Child class also called:",
+          "options": ["Subclass", "Superclass", "Meta class", "Constructor"],
+          "answer": "Subclass"
+        },
+        {
+          "q": "Which symbol represents inheritance in Python?",
+          "options": ["->", ":", "()", "{}"],
+          "answer": "()"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 506,
+    "dungeon_id": 5,
+    "title": "Method Overriding",
+    "lesson": "Child classes can override the parent class methods.\n\n```python\nclass Hero:\n    def attack(self):\n        print(\"Hero attacks\")\n\nclass Knight(Hero):\n    def attack(self):\n        print(\"Knight slashes!\")\n```\nThe child’s version takes priority.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Overriding means:",
+          "options": ["Using parent method", "Replacing parent method", "Removing method", "Copying method"],
+          "answer": "Replacing parent method"
+        },
+        {
+          "q": "Which method is used?",
+          "options": ["Whichever is newer", "Parent’s", "Child’s", "Both"],
+          "answer": "Child’s"
+        },
+        {
+          "q": "Overriding helps in:",
+          "options": ["Polymorphism", "Encapsulation", "Compilation", "Memory allocation"],
+          "answer": "Polymorphism"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 507,
+    "dungeon_id": 5,
+    "title": "Polymorphism",
+    "lesson": "Polymorphism allows multiple classes to respond differently to the same method.\n\n```python\nfor hero in [Knight(), Archer()]:\n    hero.attack()   # Different output\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Polymorphism means:",
+          "options": ["Many forms", "Many variables", "Many loops", "None"],
+          "answer": "Many forms"
+        },
+        {
+          "q": "Which supports polymorphism?",
+          "options": ["Overriding", "Encapsulation", "import", "return"],
+          "answer": "Overriding"
+        },
+        {
+          "q": "Which is an example?",
+          "options": ["Multiple constructors", "Same method, different behavior", "Multiple variables", "None"],
+          "answer": "Same method, different behavior"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 508,
+    "dungeon_id": 5,
+    "title": "Abstraction",
+    "lesson": "Abstraction hides complex implementation and shows only what's necessary.\n\n```python\nfrom abc import ABC, abstractmethod\n\nclass Hero(ABC):\n    @abstractmethod\n    def attack(self):\n        pass\n```\nUsed for defining interfaces and enforcing structure.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Abstraction focuses on:",
+          "options": ["Implementation", "Details", "Essentials", "Memory"],
+          "answer": "Essentials"
+        },
+        {
+          "q": "@abstractmethod enforces:",
+          "options": ["Overriding", "Inheritance", "Polymorphism", "Encapsulation"],
+          "answer": "Overriding"
+        },
+        {
+          "q": "Abstract classes cannot be:",
+          "options": ["Inherited", "Modified", "Instantiated", "Imported"],
+          "answer": "Instantiated"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "hard"
+  },
+  {
+    "id": 509,
+    "dungeon_id": 5,
+    "title": "Magic / Dunder Methods",
+    "lesson": "Dunder methods start and end with `__`.\n\n```python\nclass Hero:\n    def __str__(self):\n        return \"A brave hero\"\n```\nCommon ones: `__init__`, `__str__`, `__repr__`, `__len__`, `__eq__`.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Dunder stands for:",
+          "options": ["Double underscore", "Double function", "Dynamic underflow", "None"],
+          "answer": "Double underscore"
+        },
+        {
+          "q": "__str__ is used for:",
+          "options": ["String conversion", "Adding", "Printing errors", "Sorting"],
+          "answer": "String conversion"
+        },
+        {
+          "q": "Which is a dunder method?",
+          "options": ["__call__", "_hidden", "toString()", "print()"],
+          "answer": "__call__"
+        }
+      ]
+    },
+    "xp": 90,
+    "difficulty": "hard"
+  },
+  {
+    "id": 510,
+    "dungeon_id": 5,
+    "title": "OOP Boss Battle",
+    "lesson": "The ultimate OOP challenge: classes, inheritance, polymorphism, abstraction, and encapsulation all in one.\n\nPrepare for real-world style questions mixing multiple concepts.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Which OOP principle prevents direct access to internal variables?",
+          "options": ["Inheritance", "Polymorphism", "Encapsulation", "Abstraction"],
+          "answer": "Encapsulation"
+        },
+        {
+          "q": "Which lets multiple classes share the same interface?",
+          "options": ["Overloading", "Abstraction", "Polymorphism", "Instantiation"],
+          "answer": "Abstraction"
+        },
+        {
+          "q": "Overriding is related to:",
+          "options": ["Polymorphism", "Encapsulation", "Typing", "Importing"],
+          "answer": "Polymorphism"
+        },
+        {
+          "q": "A child class extending a parent class is:",
+          "options": ["Aggregation", "Association", "Inheritance", "Encapsulation"],
+          "answer": "Inheritance"
+        }
+      ]
+    },
+    "xp": 150,
+    "difficulty": "hard",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 601,
+    "dungeon_id": 6,
+    "title": "Introduction to Recursion",
+    "lesson": "Recursion is when a function calls itself to solve a problem.\n\nA recursive function must have:\n1. A base case (stops recursion)\n2. A recursive case (continues recursion)\n\n```python\ndef countdown(n):\n    if n == 0:\n        return \"Go!\"  # base case\n    return countdown(n-1)  # recursive case\n```\nRecursion breaks problems into smaller subproblems.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is recursion?",
+          "options": ["Looping", "A function calling itself", "Importing modules", "Class inheritance"],
+          "answer": "A function calling itself"
+        },
+        {
+          "q": "What must a recursive function always have?",
+          "options": ["A print statement", "A loop", "A base case", "A class"],
+          "answer": "A base case"
+        },
+        {
+          "q": "What happens without a base case?",
+          "options": ["Faster execution", "Infinite recursion", "Compilation error", "Nothing"],
+          "answer": "Infinite recursion"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 602,
+    "dungeon_id": 6,
+    "title": "Call Stack Basics",
+    "lesson": "Python keeps track of recursive calls using a call stack.\nEach function call is placed on top of the stack.\n\n```python\ndef say(n):\n    if n == 0:\n        return\n    say(n-1)\n    print(n)\n```\nThe call stack helps the program remember where it left off.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Where are recursive calls stored?",
+          "options": ["Heap", "Queue", "Call stack", "Buffer"],
+          "answer": "Call stack"
+        },
+        {
+          "q": "What happens when stack overflows?",
+          "options": ["Program speeds up", "Program crashes", "Nothing", "New stack is created"],
+          "answer": "Program crashes"
+        },
+        {
+          "q": "Stack frames are:",
+          "options": ["Variables", "Function call records", "Lists", "Loops"],
+          "answer": "Function call records"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "easy"
+  },
+  {
+    "id": 603,
+    "dungeon_id": 6,
+    "title": "Factorial Using Recursion",
+    "lesson": "Factorial is a classic recursion example.\n\n```python\ndef fact(n):\n    if n == 0:\n        return 1\n    return n * fact(n-1)\n```\nThis multiplies numbers until reaching the base case.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Base case for factorial is:",
+          "options": ["n == 1", "n == -1", "n == 0", "No base case"],
+          "answer": "n == 0"
+        },
+        {
+          "q": "fact(3) returns:",
+          "options": ["3", "6", "9", "1"],
           "answer": "6"
         },
         {
-          "q": "When are lambdas most useful?",
-          "options": ["Complex logic", "Short callbacks", "Classes", "Loops"],
-          "answer": "Short callbacks"
+          "q": "Which is correct?",
+          "options": ["fact(n) = n + fact(n-1)", "fact(n) = n * fact(n-1)", "fact(n) = n / fact(n-1)", "None"],
+          "answer": "fact(n) = n * fact(n-1)"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "easy"
+  },
+  {
+    "id": 604,
+    "dungeon_id": 6,
+    "title": "Fibonacci Recursion",
+    "lesson": "Fibonacci is another classic recursive pattern.\n\n```python\ndef fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)\n```\nThis is elegant but inefficient without memoization.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "fib(0) returns:",
+          "options": ["0", "1", "2", "Error"],
+          "answer": "0"
+        },
+        {
+          "q": "fib(1) returns:",
+          "options": ["0", "1", "2", "Error"],
+          "answer": "1"
+        },
+        {
+          "q": "Which is true about Fibonacci recursion?",
+          "options": ["Very fast", "Uses two recursive calls", "Has no base case", "Always returns 1"],
+          "answer": "Uses two recursive calls"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "medium"
+  },
+  {
+    "id": 605,
+    "dungeon_id": 6,
+    "title": "Recursion vs Iteration",
+    "lesson": "Recursion can sometimes be replaced by loops.\n\nExample: factorial using a loop\n\n```python\ndef fact_iter(n):\n    result = 1\n    for i in range(1, n+1):\n        result *= i\n    return result\n```\nRecursive code is simpler to write, but iterative is often faster.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Recursion vs iteration: which is usually more memory efficient?",
+          "options": ["Recursion", "Iteration", "Same", "Depends on OS"],
+          "answer": "Iteration"
+        },
+        {
+          "q": "What grows the call stack?",
+          "options": ["Loops", "Recursion", "Variables", "Imports"],
+          "answer": "Recursion"
+        },
+        {
+          "q": "Which is typically easier to understand?",
+          "options": ["Recursion", "Iteration", "Both", "Neither"],
+          "answer": "Recursion"
+        }
+      ]
+    },
+    "xp": 55,
+    "difficulty": "medium"
+  },
+  {
+    "id": 606,
+    "dungeon_id": 6,
+    "title": "Tree Recursion",
+    "lesson": "Some recursive functions branch multiple times.\n\nExample: exploring a binary tree:\n\n```python\ndef traverse(node):\n    if not node:\n        return\n    traverse(node.left)\n    traverse(node.right)\n```\nThis is called *tree recursion*.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Tree recursion has:",
+          "options": ["One recursive call", "Two or more recursive calls", "No recursion", "Infinite loops"],
+          "answer": "Two or more recursive calls"
+        },
+        {
+          "q": "Binary tree traversal is:",
+          "options": ["Linear recursion", "Tree recursion", "Looping", "DP"],
+          "answer": "Tree recursion"
+        },
+        {
+          "q": "What is required?",
+          "options": ["Multiple base cases", "Parent class", "Loops", "Imports"],
+          "answer": "Multiple base cases"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 607,
+    "dungeon_id": 6,
+    "title": "Backtracking Basics",
+    "lesson": "Backtracking builds a solution and undoes it if needed.\n\nExample: generate subsets\n\n```python\nresult = []\ndef backtrack(path, i):\n    if i == len(nums):\n        result.append(path)\n        return\n    backtrack(path + [nums[i]], i+1)\n    backtrack(path, i+1)\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Backtracking is used for:",
+          "options": ["Sorting", "Trying all possibilities", "Simple loops", "Math"],
+          "answer": "Trying all possibilities"
+        },
+        {
+          "q": "Which structure does backtracking explore?",
+          "options": ["Stack", "Queue", "Tree", "List"],
+          "answer": "Tree"
+        },
+        {
+          "q": "Backtracking involves:",
+          "options": ["Greedy choices", "Trying and undoing", "Sorting", "Loops only"],
+          "answer": "Trying and undoing"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "hard"
+  },
+  {
+    "id": 608,
+    "dungeon_id": 6,
+    "title": "Memoization",
+    "lesson": "Memoization speeds up recursion by storing results.\n\n```python\nmemo = {}\ndef fib(n):\n    if n in memo:\n        return memo[n]\n    if n <= 1:\n        return n\n    memo[n] = fib(n-1) + fib(n-2)\n    return memo[n]\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Memoization improves:",
+          "options": ["Time complexity", "Graphics", "Memory usage", "Loops"],
+          "answer": "Time complexity"
+        },
+        {
+          "q": "Memo stores:",
+          "options": ["Variables", "Previous results", "Trees", "Keys only"],
+          "answer": "Previous results"
+        },
+        {
+          "q": "Memoization is useful in:",
+          "options": ["Fibonacci", "Sorting", "Printing", "File reading"],
+          "answer": "Fibonacci"
+        }
+      ]
+    },
+    "xp": 90,
+    "difficulty": "hard"
+  },
+  {
+    "id": 609,
+    "dungeon_id": 6,
+    "title": "Tail Recursion",
+    "lesson": "Tail recursion happens when the recursive call is the last operation.\n\n```python\ndef tail_fact(n, acc=1):\n    if n == 0:\n        return acc\n    return tail_fact(n-1, n*acc)\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Tail recursion optimizes:",
+          "options": ["Memory usage", "Graphics", "Typing", "Errors"],
+          "answer": "Memory usage"
+        },
+        {
+          "q": "Python supports tail call optimization:",
+          "options": ["Yes", "No", "Sometimes", "Only in classes"],
+          "answer": "No"
+        },
+        {
+          "q": "Tail recursion must:",
+          "options": ["End with a return statement calling itself", "Have loops", "Use lists", "Use @tail decorator"],
+          "answer": "End with a return statement calling itself"
+        }
+      ]
+    },
+    "xp": 85,
+    "difficulty": "hard"
+  },
+  {
+    "id": 610,
+    "dungeon_id": 6,
+    "title": "Recursion Boss Battle",
+    "lesson": "This final challenge combines everything:\n- Recursive thinking\n- Call stack\n- Backtracking\n- Memoization\n- Tree recursion\n\nPrepare for multi-step logical reasoning problems!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Which is the most important principle in recursion?",
+          "options": ["Base case", "Loops", "Imports", "Sorting"],
+          "answer": "Base case"
+        },
+        {
+          "q": "Memoization fixes which problem?",
+          "options": ["Repeated recalculations", "Stack overflow", "Type errors", "Imports"],
+          "answer": "Repeated recalculations"
+        },
+        {
+          "q": "Backtracking explores:",
+          "options": ["One path only", "All possible paths", "Only sorted paths", "Only leaf nodes"],
+          "answer": "All possible paths"
+        },
+        {
+          "q": "Tree recursion means:",
+          "options": ["Many recursive calls per step", "Only one call", "No recursion", "Loops"],
+          "answer": "Many recursive calls per step"
+        }
+      ]
+    },
+    "xp": 150,
+    "difficulty": "hard",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 701,
+    "dungeon_id": 7,
+    "title": "Introduction to Algorithms",
+    "lesson": "An algorithm is a step-by-step procedure to solve a problem.\nAlgorithms must be:\n1. Correct – they produce the right output\n2. Efficient – they run fast and use minimal memory\n3. Deterministic – they behave predictably\n\nExample of an algorithm (finding the largest number):\n```python\ndef max_num(arr):\n    largest = arr[0]\n    for num in arr:\n        if num > largest:\n            largest = num\n    return largest\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "An algorithm is:",
+          "options": ["Random guess", "A step-by-step method", "A programming language", "A file"],
+          "answer": "A step-by-step method"
+        },
+        {
+          "q": "An algorithm must be:",
+          "options": ["Random", "Ambiguous", "Correct", "Slow"],
+          "answer": "Correct"
+        },
+        {
+          "q": "Which is NOT a feature of algorithms?",
+          "options": ["Efficiency", "Determinism", "Infinite steps", "Correctness"],
+          "answer": "Infinite steps"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 702,
+    "dungeon_id": 7,
+    "title": "Linear Search",
+    "lesson": "Linear search checks each element one by one.\n\n```python\ndef linear_search(arr, target):\n    for i in range(len(arr)):\n        if arr[i] == target:\n            return i\n    return -1\n```\nUsed when data is unsorted.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Linear search works best with:",
+          "options": ["Sorted lists", "Unsorted lists", "Graphs", "Trees"],
+          "answer": "Unsorted lists"
+        },
+        {
+          "q": "Worst-case time complexity of linear search:",
+          "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+          "answer": "O(n)"
+        },
+        {
+          "q": "Linear search compares:",
+          "options": ["Only half the list", "Every element", "Only middle element", "Only last element"],
+          "answer": "Every element"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "easy"
+  },
+  {
+    "id": 703,
+    "dungeon_id": 7,
+    "title": "Binary Search",
+    "lesson": "Binary search works on sorted lists.\nIt divides the search range in half repeatedly.\n\n```python\ndef binary_search(arr, target):\n    low, high = 0, len(arr)-1\n    while low <= high:\n        mid = (low + high)//2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            low = mid + 1\n        else:\n            high = mid - 1\n    return -1\n```\nTime complexity: O(log n).",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Binary search requires:",
+          "options": ["Sorted array", "Unsorted array", "Strings only", "Graphs"],
+          "answer": "Sorted array"
+        },
+        {
+          "q": "Binary search runs in:",
+          "options": ["O(n)", "O(1)", "O(log n)", "O(n^2)"],
+          "answer": "O(log n)"
+        },
+        {
+          "q": "Binary search uses:",
+          "options": ["Divide and Conquer", "Greedy", "Backtracking", "DP"],
+          "answer": "Divide and Conquer"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 704,
+    "dungeon_id": 7,
+    "title": "Bubble Sort",
+    "lesson": "Bubble sort is a simple comparison-based sorting algorithm.\nIt repeatedly swaps adjacent elements if they are out of order.\n\n```python\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        for j in range(n-i-1):\n            if arr[j] > arr[j+1]:\n                arr[j], arr[j+1] = arr[j+1], arr[j]\n    return arr\n```\nVery slow for large lists.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Bubble sort complexity:",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+          "answer": "O(n^2)"
+        },
+        {
+          "q": "Bubble sort works by:",
+          "options": ["Copying arrays", "Swapping adjacent elements", "Using stacks", "Binary search"],
+          "answer": "Swapping adjacent elements"
+        },
+        {
+          "q": "Bubble sort is:",
+          "options": ["Very fast", "Slow for big n", "Non-deterministic", "Divide and conquer"],
+          "answer": "Slow for big n"
+        }
+      ]
+    },
+    "xp": 55,
+    "difficulty": "medium"
+  },
+  {
+    "id": 705,
+    "dungeon_id": 7,
+    "title": "Insertion Sort",
+    "lesson": "Insertion sort builds a sorted list one element at a time.\n\n```python\ndef insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i-1\n        while j >= 0 and key < arr[j]:\n            arr[j+1] = arr[j]\n            j -= 1\n        arr[j+1] = key\n    return arr\n```\nGood for small or nearly-sorted lists.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Insertion sort complexity:",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(1)"],
+          "answer": "O(n^2)"
+        },
+        {
+          "q": "Insertion sort is efficient for:",
+          "options": ["Huge arrays", "Nearly sorted arrays", "Strings only", "Graphs"],
+          "answer": "Nearly sorted arrays"
+        },
+        {
+          "q": "Insertion sort builds:",
+          "options": ["A heap", "A sorted portion", "A tree", "A graph"],
+          "answer": "A sorted portion"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 706,
+    "dungeon_id": 7,
+    "title": "Merge Sort (Divide & Conquer)",
+    "lesson": "Merge sort splits the list into halves, sorts them, then merges.\n\n```python\ndef merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr)//2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    return merge(left, right)\n```\nEfficient for large datasets.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Merge sort technique:",
+          "options": ["Greedy", "Divide and Conquer", "Backtracking", "Linear scanning"],
+          "answer": "Divide and Conquer"
+        },
+        {
+          "q": "Time complexity:",
+          "options": ["O(n)", "O(n log n)", "O(log n)", "O(n^2)"],
+          "answer": "O(n log n)"
+        },
+        {
+          "q": "Merge sort requires:",
+          "options": ["Extra space", "No memory", "Sorting only small lists", "Stacks"],
+          "answer": "Extra space"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 707,
+    "dungeon_id": 7,
+    "title": "Quick Sort",
+    "lesson": "Quick sort picks a pivot and partitions the list around it.\n\n```python\ndef quick_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[0]\n    left = [x for x in arr[1:] if x < pivot]\n    right = [x for x in arr[1:] if x >= pivot]\n    return quick_sort(left) + [pivot] + quick_sort(right)\n```\nFast in practice but worst-case O(n^2).",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Quick sort average time:",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(1)"],
+          "answer": "O(n log n)"
+        },
+        {
+          "q": "Quick sort worst-case:",
+          "options": ["O(n)", "O(log n)", "O(n^2)", "O(n log n)"],
+          "answer": "O(n^2)"
+        },
+        {
+          "q": "Quick sort chooses a:",
+          "options": ["Pivot", "Root", "Edge", "Node"],
+          "answer": "Pivot"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "hard"
+  },
+  {
+    "id": 708,
+    "dungeon_id": 7,
+    "title": "Greedy Algorithms",
+    "lesson": "Greedy algorithms make the best local choice at each step.\n\nExamples:\n- Fractional knapsack\n- Activity selection\n- Minimum coins\n\n```python\ndef min_coins(coins, amount):\n    count = 0\n    for c in coins:\n        if amount == 0:\n            break\n        take = amount // c\n        count += take\n        amount -= take * c\n    return count\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Greedy algorithms make decisions based on:",
+          "options": ["Future steps", "Optimal substructure", "Local optimum", "Brute force"],
+          "answer": "Local optimum"
+        },
+        {
+          "q": "Greedy algorithms often fail when:",
+          "options": ["Order matters", "Choices affect future", "Data is sorted", "List is small"],
+          "answer": "Choices affect future"
+        },
+        {
+          "q": "Knapsack (fractional) uses:",
+          "options": ["DP", "Greedy", "Backtracking", "Sorting only"],
+          "answer": "Greedy"
+        }
+      ]
+    },
+    "xp": 85,
+    "difficulty": "hard"
+  },
+  {
+    "id": 709,
+    "dungeon_id": 7,
+    "title": "Divide & Conquer Mastery",
+    "lesson": "Divide and conquer splits problems, solves each part, then combines.\nExamples:\n- Merge sort\n- Quick sort\n- Binary search\n\nGeneral pattern:\n```\nDivide → Recurse → Combine\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Divide & Conquer divides problem into:",
+          "options": ["Unequal parts only", "Smaller subproblems", "Random chunks", "One big chunk"],
+          "answer": "Smaller subproblems"
+        },
+        {
+          "q": "Binary search is:",
+          "options": ["Greedy", "Linear", "Divide & Conquer", "Backtracking"],
+          "answer": "Divide & Conquer"
+        },
+        {
+          "q": "Merge sort combines:",
+          "options": ["Sorted halves", "Random items", "Only pivots", "Unsorted segments"],
+          "answer": "Sorted halves"
+        }
+      ]
+    },
+    "xp": 90,
+    "difficulty": "hard"
+  },
+  {
+    "id": 710,
+    "dungeon_id": 7,
+    "title": "Algorithms Boss Battle",
+    "lesson": "You've learned key algorithmic strategies:\n- Searching\n- Sorting\n- Greedy logic\n- Divide & Conquer thinking\n\nNow face puzzles that mix all these—choose the right technique for each problem!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Binary search requires:",
+          "options": ["Sorted array", "Greedy choice", "Loop only", "Brutal force"],
+          "answer": "Sorted array"
+        },
+        {
+          "q": "Quick sort worst case is caused by:",
+          "options": ["Bad pivot", "Sorted array", "Too few elements", "Memory issues"],
+          "answer": "Bad pivot"
+        },
+        {
+          "q": "Greedy algorithms fail when:",
+          "options": ["Substructure is not optimal", "Data is sorted", "Arrays are small", "Sorting is used"],
+          "answer": "Substructure is not optimal"
+        },
+        {
+          "q": "Merge sort complexity:",
+          "options": ["O(n)", "O(log n)", "O(n^2)", "O(n log n)"],
+          "answer": "O(n log n)"
+        }
+      ]
+    },
+    "xp": 150,
+    "difficulty": "heroic",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 801,
+    "dungeon_id": 8,
+    "title": "Introduction to Data Structures",
+    "lesson": "Data structures organize and store data efficiently.\nCommon advanced structures include:\n- Trees\n- Graphs\n- Heaps\n- Hash Tables\n\nEach solves different problems efficiently.\nExample: storing hierarchical data is better with a tree than a list.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Which is NOT a data structure?",
+          "options": ["Tree", "Heap", "Graph", "Python"],
+          "answer": "Python"
+        },
+        {
+          "q": "Heaps are generally used for:",
+          "options": ["Sorting", "Priority queues", "Hashing", "Searching strings"],
+          "answer": "Priority queues"
+        },
+        {
+          "q": "Graphs represent:",
+          "options": ["Hierarchies", "Relationships", "Numbers only", "Tree roots"],
+          "answer": "Relationships"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "medium"
+  },
+  {
+    "id": 802,
+    "dungeon_id": 8,
+    "title": "Trees Basics",
+    "lesson": "A tree is a hierarchical data structure with nodes and edges.\n- Root: top node\n- Children: connected nodes below\n- Leaf: node with no children\n\nExample:\n```python\nclass Node:\n    def __init__(self, val):\n        self.val = val\n        self.children = []\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "A tree with no children is called:",
+          "options": ["Root", "Leaf", "Branch", "Stem"],
+          "answer": "Leaf"
+        },
+        {
+          "q": "A tree is:",
+          "options": ["Cyclic", "Acyclic", "Both", "None"],
+          "answer": "Acyclic"
+        },
+        {
+          "q": "Topmost node is called:",
+          "options": ["Leaf", "Root", "Child", "Index"],
+          "answer": "Root"
         }
       ]
     },
@@ -712,149 +2082,759 @@
     "difficulty": "medium"
   },
   {
-    "id": 306,
-    "dungeon_id": 3,
-    "title": "Scope & Closures",
-    "lesson": "Understand variable scope.\n\n**Scope:**\n```python\nglobal_var = 'global'\n\ndef outer():\n    outer_var = 'outer'\n    \n    def inner():\n        inner_var = 'inner'\n        print(outer_var)  # Can access\n    \n    inner()\n\n# Closure\ndef make_counter():\n    count = 0\n    def counter():\n        nonlocal count\n        count += 1\n        return count\n    return counter\n```",
+    "id": 803,
+    "dungeon_id": 8,
+    "title": "Binary Search Trees",
+    "lesson": "BST Rule:\n- Left subtree < node\n- Right subtree > node\n\nBST enables fast search, insert, delete.\n\n```python\ndef search_bst(root, target):\n    if not root or root.val == target:\n        return root\n    if target < root.val:\n        return search_bst(root.left, target)\n    return search_bst(root.right, target)\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What keyword accesses outer scope variable?",
-          "options": ["global", "nonlocal", "outer", "scope"],
-          "answer": "nonlocal"
+          "q": "BST left child contains:",
+          "options": ["Greater values", "Smaller values", "Random values", "None"],
+          "answer": "Smaller values"
         },
         {
-          "q": "What is a closure?",
-          "options": ["Closed function", "Function with captured variables", "Class method", "Lambda"],
-          "answer": "Function with captured variables"
+          "q": "Searching in BST average time:",
+          "options": ["O(1)", "O(log n)", "O(n)", "O(n^2)"],
+          "answer": "O(log n)"
         },
         {
-          "q": "Can inner functions access outer variables?",
-          "options": ["Yes", "No", "Only with global", "Only constants"],
-          "answer": "Yes"
+          "q": "Worst-case BST acting like:",
+          "options": ["Balanced tree", "Linked list", "Graph", "Heap"],
+          "answer": "Linked list"
         }
       ]
     },
     "xp": 55,
-    "difficulty": "hard"
-  },
-  {
-    "id": 307,
-    "dungeon_id": 3,
-    "title": "Higher-Order Functions",
-    "lesson": "Functions that work with other functions.\n\n**Built-in HOFs:**\n```python\nnumbers = [1, 2, 3, 4, 5]\n\n# map - apply function to each\nsquares = list(map(lambda x: x**2, numbers))\n# [1, 4, 9, 16, 25]\n\n# filter - keep matching items\nevens = list(filter(lambda x: x%2==0, numbers))\n# [2, 4]\n\n# reduce - accumulate values\nfrom functools import reduce\ntotal = reduce(lambda a, b: a + b, numbers)\n# 15\n```",
-    "quiz": {
-      "type": "mcq",
-      "questions": [
-        {
-          "q": "What does map() return in Python 3?",
-          "options": ["List", "Map object", "Generator", "Tuple"],
-          "answer": "Map object"
-        },
-        {
-          "q": "What does filter() do?",
-          "options": ["Transforms items", "Removes items not matching", "Sorts items", "Groups items"],
-          "answer": "Removes items not matching"
-        },
-        {
-          "q": "Where is reduce() located?",
-          "options": ["Built-in", "functools", "itertools", "collections"],
-          "answer": "functools"
-        }
-      ]
-    },
-    "xp": 50,
     "difficulty": "medium"
   },
   {
-    "id": 308,
-    "dungeon_id": 3,
-    "title": "Decorators",
-    "lesson": "Modify function behavior.\n\n**Decorator Pattern:**\n```python\ndef timer(func):\n    def wrapper(*args, **kwargs):\n        import time\n        start = time.time()\n        result = func(*args, **kwargs)\n        print(f'Took {time.time()-start}s')\n        return result\n    return wrapper\n\n@timer\ndef slow_function():\n    import time\n    time.sleep(1)\n\nslow_function()  # Took 1.00s\n```",
+    "id": 804,
+    "dungeon_id": 8,
+    "title": "Heaps & Priority Queues",
+    "lesson": "Heap is a complete binary tree with heap property.\n- Max heap: parent >= children\n- Min heap: parent <= children\n\nPriority Queue uses heaps under the hood.\nPython example:\n```python\nimport heapq\nheap = []\nheapq.heappush(heap, 3)\nheapq.heappush(heap, 1)\nprint(heapq.heappop(heap))  # 1\n```",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What does @ syntax do?",
-          "options": ["Comments", "Applies decorator", "Type hint", "Import"],
-          "answer": "Applies decorator"
+          "q": "Heap must be:",
+          "options": ["Balanced", "Complete", "Skewed", "Random"],
+          "answer": "Complete"
         },
         {
-          "q": "What does a decorator return?",
-          "options": ["None", "Original function", "New function", "String"],
-          "answer": "New function"
+          "q": "Python's heapq is:",
+          "options": ["Max heap", "Min heap", "Balanced tree", "Trie"],
+          "answer": "Min heap"
         },
         {
-          "q": "Can decorators take arguments?",
-          "options": ["Yes", "No", "Only strings", "Only in classes"],
-          "answer": "Yes"
+          "q": "Priority queues use:",
+          "options": ["Graphs", "Heaps", "Stacks", "Queues only"],
+          "answer": "Heaps"
         }
       ]
     },
     "xp": 60,
-    "difficulty": "hard"
+    "difficulty": "medium"
   },
   {
-    "id": 309,
-    "dungeon_id": 3,
-    "title": "Recursion Intro",
-    "lesson": "Functions that call themselves.\n\n**Recursive Functions:**\n```python\n# Factorial\ndef factorial(n):\n    if n <= 1:  # Base case\n        return 1\n    return n * factorial(n - 1)\n\nfactorial(5)  # 120\n\n# Fibonacci\ndef fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)\n```\n\nAlways need a base case to stop recursion!",
+    "id": 805,
+    "dungeon_id": 8,
+    "title": "Hash Tables & Collision Handling",
+    "lesson": "Hash tables store key-value pairs for O(1) average-time lookups.\nCollisions handled by:\n- Chaining\n- Linear probing\n- Quadratic probing\n\nPython dict uses a sophisticated hash map.",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What stops infinite recursion?",
-          "options": ["Return statement", "Base case", "Break", "Exit"],
-          "answer": "Base case"
+          "q": "Hash table lookup average case:",
+          "options": ["O(1)", "O(n)", "O(log n)", "O(n log n)"],
+          "answer": "O(1)"
         },
         {
-          "q": "What is factorial(0)?",
-          "options": ["0", "1", "Error", "None"],
-          "answer": "1"
+          "q": "Collisions occur when:",
+          "options": ["Two keys hash to same index", "Memory full", "Key missing", "Incorrect type"],
+          "answer": "Two keys hash to same index"
         },
         {
-          "q": "What error occurs with too much recursion?",
-          "options": ["MemoryError", "RecursionError", "StackOverflow", "TypeError"],
-          "answer": "RecursionError"
+          "q": "Chaining uses:",
+          "options": ["Linked lists", "Heaps", "Stacks", "Graphs"],
+          "answer": "Linked lists"
         }
       ]
     },
-    "xp": 55,
-    "difficulty": "hard"
+    "xp": 65,
+    "difficulty": "medium"
   },
   {
-    "id": 310,
-    "dungeon_id": 3,
-    "title": "Functions Boss",
-    "lesson": "**Final Challenge!**\n\nYou've mastered functions:\n- Defining functions\n- Parameters and arguments\n- Return values\n- *args and **kwargs\n- Lambda functions\n- Scope and closures\n- Higher-order functions\n- Decorators\n- Recursion\n\nProve your mastery!",
+    "id": 806,
+    "dungeon_id": 8,
+    "title": "Graphs Basics",
+    "lesson": "Graphs represent networks.\nTypes:\n- Directed / Undirected\n- Weighted / Unweighted\n\nRepresentations:\n- Adjacency list\n- Adjacency matrix",
     "quiz": {
       "type": "mcq",
       "questions": [
         {
-          "q": "What is (lambda x: x*2)(5)?",
-          "options": ["10", "5", "x*2", "Error"],
-          "answer": "10"
+          "q": "Edges with directions form:",
+          "options": ["Undirected graph", "Directed graph", "Tree", "Heap"],
+          "answer": "Directed graph"
         },
         {
-          "q": "What does @decorator above a function do?",
-          "options": ["Comments it", "Wraps it", "Deletes it", "Copies it"],
-          "answer": "Wraps it"
+          "q": "Adjacency list is good for:",
+          "options": ["Sparse graphs", "Dense graphs", "Trees only", "None"],
+          "answer": "Sparse graphs"
         },
         {
-          "q": "What is list(map(str, [1,2,3]))?",
-          "options": ["[1, 2, 3]", "['1', '2', '3']", "['123']", "Error"],
-          "answer": "['1', '2', '3']"
+          "q": "A graph with no cycles is a:",
+          "options": ["Tree", "Heap", "Hash table", "Trie"],
+          "answer": "Tree"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 807,
+    "dungeon_id": 8,
+    "title": "Depth-First Search (DFS)",
+    "lesson": "DFS explores as far as possible before backtracking.\n\nRecursive DFS:\n```python\ndef dfs(graph, node, visited=set()):\n    if node not in visited:\n        visited.add(node)\n        for nei in graph[node]:\n            dfs(graph, nei, visited)\n    return visited\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "DFS uses:",
+          "options": ["Queue", "Stack", "Heap", "Hash table"],
+          "answer": "Stack"
         },
         {
-          "q": "What does **kwargs receive?",
-          "options": ["Positional args", "Keyword args as dict", "All args", "Nothing"],
-          "answer": "Keyword args as dict"
+          "q": "DFS is good for:",
+          "options": ["Shortest path", "Cycle detection", "Sorting arrays", "Hashing"],
+          "answer": "Cycle detection"
+        },
+        {
+          "q": "DFS goes:",
+          "options": ["Level by level", "Deep first", "Randomly", "Only right side"],
+          "answer": "Deep first"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "hard"
+  },
+  {
+    "id": 808,
+    "dungeon_id": 8,
+    "title": "Breadth-First Search (BFS)",
+    "lesson": "BFS explores in layers using a queue.\n\n```python\nfrom collections import deque\n\ndef bfs(graph, start):\n    q = deque([start])\n    visited = {start}\n    while q:\n        node = q.popleft()\n        for nei in graph[node]:\n            if nei not in visited:\n                visited.add(nei)\n                q.append(nei)\n    return visited\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "BFS uses:",
+          "options": ["Stack", "Queue", "Heap", "Tree"],
+          "answer": "Queue"
+        },
+        {
+          "q": "BFS is perfect for:",
+          "options": ["Shortest path (unweighted)", "Cycle detection only", "Sorting", "Hashing"],
+          "answer": "Shortest path (unweighted)"
+        },
+        {
+          "q": "BFS explores:",
+          "options": ["Deep first", "Level by level", "Backwards", "Only root"],
+          "answer": "Level by level"
+        }
+      ]
+    },
+    "xp": 85,
+    "difficulty": "hard"
+  },
+  {
+    "id": 809,
+    "dungeon_id": 8,
+    "title": "Advanced Trees & Heaps",
+    "lesson": "Advanced structures:\n- AVL Trees (self-balancing BST)\n- Red-Black Trees (balanced search trees)\n- Binary Heap\n- Fibonacci Heap\n\nUsed in: priority queues, indexing, file systems, compilers.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "AVL trees maintain:",
+          "options": ["Color balance", "Height balance", "Random order", "Heap property"],
+          "answer": "Height balance"
+        },
+        {
+          "q": "Red-Black Trees ensure:",
+          "options": ["Perfect balance", "Approximate balance", "Heap order", "Graph traversal"],
+          "answer": "Approximate balance"
+        },
+        {
+          "q": "Which is a self-balancing BST?",
+          "options": ["Heap", "Graph", "AVL Tree", "Trie"],
+          "answer": "AVL Tree"
+        }
+      ]
+    },
+    "xp": 95,
+    "difficulty": "hard"
+  },
+  {
+    "id": 810,
+    "dungeon_id": 8,
+    "title": "Advanced DS Boss Battle",
+    "lesson": "You now know:\n- Trees\n- BST\n- Heaps\n- Hash Tables\n- Graphs\n- DFS/BFS\n\nFace a final challenge combining multiple structures. These questions test whether you think like a real engineer.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "BFS finds shortest path in:",
+          "options": ["Weighted graph", "Unweighted graph", "DP problems", "Hash maps"],
+          "answer": "Unweighted graph"
+        },
+        {
+          "q": "Which structure guarantees O(log n) operations?",
+          "options": ["List", "Hash table", "AVL Tree", "Array"],
+          "answer": "AVL Tree"
+        },
+        {
+          "q": "Which uses hashing?",
+          "options": ["dict", "list", "heapq", "deque"],
+          "answer": "dict"
+        },
+        {
+          "q": "DFS is best for:",
+          "options": ["Finding minimum", "Cycle detection", "Sorting", "Hashing"],
+          "answer": "Cycle detection"
+        }
+      ]
+    },
+    "xp": 150,
+    "difficulty": "heroic",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 901,
+    "dungeon_id": 9,
+    "title": "What Is Dynamic Programming?",
+    "lesson": "Dynamic Programming (DP) is a technique for solving problems by breaking them into smaller overlapping subproblems and storing solutions.\n\nDP applies when:\n- Problems have optimal substructure\n- Subproblems repeat (overlap)\n\nTwo main approaches:\n1. Top-down (memoization)\n2. Bottom-up (tabulation)",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "DP is useful when subproblems are:",
+          "options": ["Independent", "Overlapping", "Random", "Unrelated"],
+          "answer": "Overlapping"
+        },
+        {
+          "q": "Storing subproblem results is called:",
+          "options": ["Caching", "Tracking", "Iteration", "Referencing"],
+          "answer": "Caching"
+        },
+        {
+          "q": "DP is NOT useful for:",
+          "options": ["Fibonacci", "Knapsack", "Sorting", "LCS"],
+          "answer": "Sorting"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 902,
+    "dungeon_id": 9,
+    "title": "Memoization",
+    "lesson": "Top-down DP using recursion and a dictionary to store results.\n\nExample: fast Fibonacci\n```python\nmemo = {}\ndef fib(n):\n    if n <= 1:\n        return n\n    if n in memo:\n        return memo[n]\n    memo[n] = fib(n-1) + fib(n-2)\n    return memo[n]\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Memoization stores results in:",
+          "options": ["List", "Dictionary", "Tuple", "Set"],
+          "answer": "Dictionary"
+        },
+        {
+          "q": "Memoization uses:",
+          "options": ["Iteration", "Recursion", "Heaps", "Binary search"],
+          "answer": "Recursion"
+        },
+        {
+          "q": "Memoization avoids:",
+          "options": ["Recursion", "Infinite loops", "Repeated computation", "Lists"],
+          "answer": "Repeated computation"
+        }
+      ]
+    },
+    "xp": 65,
+    "difficulty": "medium"
+  },
+  {
+    "id": 903,
+    "dungeon_id": 9,
+    "title": "Tabulation",
+    "lesson": "Bottom-up DP builds the solution iteratively.\n\nExample:\n```python\ndef fib(n):\n    dp = [0, 1]\n    for i in range(2, n+1):\n        dp.append(dp[i-1] + dp[i-2])\n    return dp[n]\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Tabulation builds results:",
+          "options": ["Recursively", "Iteratively", "Randomly", "With graphs"],
+          "answer": "Iteratively"
+        },
+        {
+          "q": "Tabulation stores data in:",
+          "options": ["Set", "Queue", "Array/Table", "Heap"],
+          "answer": "Array/Table"
+        },
+        {
+          "q": "Tabulation solves subproblems:",
+          "options": ["As needed", "From smallest upward", "Only when memoized", "Not at all"],
+          "answer": "From smallest upward"
+        }
+      ]
+    },
+    "xp": 65,
+    "difficulty": "medium"
+  },
+  {
+    "id": 904,
+    "dungeon_id": 9,
+    "title": "Fibonacci Variants",
+    "lesson": "Fibonacci is the classic DP example.\n\nDP makes it O(n) instead of O(2^n).\n\nImproved space version:\n```python\ndef fib(n):\n    a, b = 0, 1\n    for _ in range(n):\n        a, b = b, a+b\n    return a\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Naive Fibonacci complexity:",
+          "options": ["O(n)", "O(log n)", "O(n^2)", "O(2^n)"],
+          "answer": "O(2^n)"
+        },
+        {
+          "q": "Optimal Fibonacci uses:",
+          "options": ["DP", "Sorting", "Graphs", "Heaps"],
+          "answer": "DP"
+        },
+        {
+          "q": "Space-optimized version uses:",
+          "options": ["List", "Two variables", "Sets", "Trees"],
+          "answer": "Two variables"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 905,
+    "dungeon_id": 9,
+    "title": "0/1 Knapsack",
+    "lesson": "Classic DP optimization problem.\nYou choose items with value & weight to maximize value under weight capacity.\n\n```python\ndef knapsack(w, v, cap):\n    n = len(w)\n    dp = [[0]*(cap+1) for _ in range(n+1)]\n    for i in range(1, n+1):\n        for c in range(cap+1):\n            if w[i-1] <= c:\n                dp[i][c] = max(dp[i-1][c], v[i-1] + dp[i-1][c-w[i-1]])\n            else:\n                dp[i][c] = dp[i-1][c]\n    return dp[n][cap]\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Knapsack is a:",
+          "options": ["Greedy problem", "DP problem", "Sorting problem", "Graph problem"],
+          "answer": "DP problem"
+        },
+        {
+          "q": "Knapsack considers:",
+          "options": ["Full fractions", "Whole items", "Half items", "No items"],
+          "answer": "Whole items"
+        },
+        {
+          "q": "Knapsack DP uses:",
+          "options": ["2D table", "Heap", "Graph", "Tree"],
+          "answer": "2D table"
+        }
+      ]
+    },
+    "xp": 90,
+    "difficulty": "hard"
+  },
+  {
+    "id": 906,
+    "dungeon_id": 9,
+    "title": "Longest Common Subsequence (LCS)",
+    "lesson": "LCS finds the longest sequence present in both strings.\n\n```python\ndef lcs(a, b):\n    dp = [[0]*(len(b)+1) for _ in range(len(a)+1)]\n    for i in range(1, len(a)+1):\n        for j in range(1, len(b)+1):\n            if a[i-1] == b[j-1]:\n                dp[i][j] = dp[i-1][j-1] + 1\n            else:\n                dp[i][j] = max(dp[i-1][j], dp[i][j-1])\n    return dp[-1][-1]\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "LCS compares:",
+          "options": ["Numbers", "Characters", "Sets", "Heaps"],
+          "answer": "Characters"
+        },
+        {
+          "q": "LCS complexity:",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(1)"],
+          "answer": "O(n^2)"
+        },
+        {
+          "q": "LCS uses:",
+          "options": ["2D DP table", "1D DP table", "Graph", "Hashing"],
+          "answer": "2D DP table"
+        }
+      ]
+    },
+    "xp": 90,
+    "difficulty": "hard"
+  },
+  {
+    "id": 907,
+    "dungeon_id": 9,
+    "title": "Longest Increasing Subsequence (LIS)",
+    "lesson": "LIS finds a subsequence where elements strictly increase.\nDP version:\n```python\ndef lis(arr):\n    dp = [1]*len(arr)\n    for i in range(len(arr)):\n        for j in range(i):\n            if arr[j] < arr[i]:\n                dp[i] = max(dp[i], dp[j]+1)\n    return max(dp)\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "LIS checks:",
+          "options": ["Equality", "Increasing order", "Decreasing order", "Hashing"],
+          "answer": "Increasing order"
+        },
+        {
+          "q": "Basic LIS DP complexity:",
+          "options": ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"],
+          "answer": "O(n^2)"
+        },
+        {
+          "q": "LIS stores lengths in:",
+          "options": ["List", "Matrix", "Set", "Tree"],
+          "answer": "List"
+        }
+      ]
+    },
+    "xp": 95,
+    "difficulty": "hard"
+  },
+  {
+    "id": 908,
+    "dungeon_id": 9,
+    "title": "Coin Change",
+    "lesson": "Find minimum coins to make a value.\n\n```python\ndef coin_change(coins, amount):\n    dp = [float('inf')] * (amount+1)\n    dp[0] = 0\n    for c in coins:\n        for a in range(c, amount+1):\n            dp[a] = min(dp[a], dp[a-c] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Coin change uses:",
+          "options": ["1D DP", "2D DP", "Graphs", "Stacks"],
+          "answer": "1D DP"
+        },
+        {
+          "q": "dp[0] is:",
+          "options": ["0", "1", "inf", "undefined"],
+          "answer": "0"
+        },
+        {
+          "q": "If no solution exists:",
+          "options": ["Return 0", "Return -1", "Return None", "Crash"],
+          "answer": "Return -1"
+        }
+      ]
+    },
+    "xp": 95,
+    "difficulty": "hard"
+  },
+  {
+    "id": 909,
+    "dungeon_id": 9,
+    "title": "Matrix DP Problems",
+    "lesson": "Matrix DP used in grid traversal, path problems, etc.\nExample: Min path sum\n\n```python\ndef min_path(grid):\n    m, n = len(grid), len(grid[0])\n    for i in range(1, m): grid[i][0] += grid[i-1][0]\n    for j in range(1, n): grid[0][j] += grid[0][j-1]\n    for i in range(1, m):\n        for j in range(1, n):\n            grid[i][j] += min(grid[i-1][j], grid[i][j-1])\n    return grid[-1][-1]\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Matrix DP often works on:",
+          "options": ["Trees", "Grids", "Heaps", "Stacks"],
+          "answer": "Grids"
+        },
+        {
+          "q": "Min path sum moves:",
+          "options": ["Any direction", "Up & Down", "Right & Down", "Left only"],
+          "answer": "Right & Down"
+        },
+        {
+          "q": "Matrix DP uses:",
+          "options": ["2D DP", "1D DP", "Graph BFS", "Hash sets"],
+          "answer": "2D DP"
         }
       ]
     },
     "xp": 100,
-    "difficulty": "hard",
+    "difficulty": "hard"
+  },
+  {
+    "id": 910,
+    "dungeon_id": 9,
+    "title": "DP Boss Battle",
+    "lesson": "You've mastered:\n- Memoization\n- Tabulation\n- Fibonacci\n- Knapsack\n- LCS\n- LIS\n- Grid DP\n- Coin change\n\nThis final boss tests your ability to recognize DP patterns and choose correct state definitions.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "DP requires:",
+          "options": ["Greedy structure", "Overlapping subproblems", "Sorting", "Graph cycles"],
+          "answer": "Overlapping subproblems"
+        },
+        {
+          "q": "Knapsack uses:",
+          "options": ["Greedy", "DP Table", "Hashing", "Sorting only"],
+          "answer": "DP Table"
+        },
+        {
+          "q": "Coin change is solved with:",
+          "options": ["1D DP", "2D DP", "Trees", "Heaps"],
+          "answer": "1D DP"
+        },
+        {
+          "q": "LCS uses:",
+          "options": ["Matrix DP", "Graph traversal", "Greedy", "Binary search"],
+          "answer": "Matrix DP"
+        }
+      ]
+    },
+    "xp": 150,
+    "difficulty": "heroic",
+    "is_boss": true
+  }
+]
+[
+  {
+    "id": 1001,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Strings + Loops",
+    "lesson": "Your first final-boss challenge combines string manipulation with loop logic. You must understand how iteration and indexing work together.\n\nExample task: Count vowels, reverse selective characters, or shift letters.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Which loop is best for iterating through a string?",
+          "options": ["for char in string", "while True", "for i in range(1000)", "No loop needed"],
+          "answer": "for char in string"
+        },
+        {
+          "q": "Strings are:",
+          "options": ["Mutable", "Immutable", "Sometimes mutable", "Stored as lists"],
+          "answer": "Immutable"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "medium"
+  },
+  {
+    "id": 1002,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Lists + Recursion",
+    "lesson": "This challenge merges recursion with list traversal. Problems may include recursively summing lists, flattening nested lists, or recursive search.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Recursion requires:",
+          "options": ["A loop", "A base case", "A class", "No termination"],
+          "answer": "A base case"
+        },
+        {
+          "q": "Flattening nested lists is easiest with:",
+          "options": ["Iteration only", "Recursion", "Hash maps", "Sorting"],
+          "answer": "Recursion"
+        }
+      ]
+    },
+    "xp": 70,
+    "difficulty": "medium"
+  },
+  {
+    "id": 1003,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Dictionaries + Search",
+    "lesson": "This level mixes key-value lookups with search algorithms. You might simulate frequency maps, perform dictionary-based searching, or build adjacency lists.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Dictionary lookup complexity on average:",
+          "options": ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+          "answer": "O(1)"
+        },
+        {
+          "q": "Which search benefits from pre-computed maps?",
+          "options": ["Binary search", "Hash-based lookup", "BFS", "DFS"],
+          "answer": "Hash-based lookup"
+        }
+      ]
+    },
+    "xp": 75,
+    "difficulty": "medium"
+  },
+  {
+    "id": 1004,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Sorting + Conditionals",
+    "lesson": "Here you apply conditional logic inside or after sorting. Common tasks include customized sorting, filtering, or classification after ordering elements.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Sorting a list of tuples by second element requires:",
+          "options": ["A loop", "A key function", "A dictionary", "Recursion"],
+          "answer": "A key function"
+        },
+        {
+          "q": "Conditional statements help with:",
+          "options": ["Comparisons inside sorting", "Creating loops", "Reducing complexity", "Converting data types"],
+          "answer": "Comparisons inside sorting"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "medium"
+  },
+  {
+    "id": 1005,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Functions + Recursion",
+    "lesson": "You must use reusable functions and recursive calls properly. This includes divide-and-conquer patterns and helper function structures.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "A recursive function must:",
+          "options": ["Be a class method", "Call itself", "Use a global variable", "Return a list"],
+          "answer": "Call itself"
+        },
+        {
+          "q": "Helper functions are useful because:",
+          "options": ["They reduce indentation", "They simplify recursive logic", "They sort lists", "They replace loops"],
+          "answer": "They simplify recursive logic"
+        }
+      ]
+    },
+    "xp": 85,
+    "difficulty": "hard"
+  },
+  {
+    "id": 1006,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Trees + DFS Recursion",
+    "lesson": "This level integrates tree data structures with recursive DFS traversal. You may count nodes, compute heights, or evaluate expressions.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "DFS for trees is typically implemented using:",
+          "options": ["Iteration only", "Recursion", "Sorting", "Binary search"],
+          "answer": "Recursion"
+        },
+        {
+          "q": "Height of a tree is defined as:",
+          "options": ["Total nodes", "Longest path from root to leaf", "Sum of depths", "Children per node"],
+          "answer": "Longest path from root to leaf"
+        }
+      ]
+    },
+    "xp": 90,
+    "difficulty": "hard"
+  },
+  {
+    "id": 1007,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Graphs + BFS + Hashing",
+    "lesson": "A combined challenge using BFS traversal, adjacency lists, and hash-maps for visited or frequency tracking.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "BFS uses which data structure?",
+          "options": ["Stack", "Queue", "Heap", "Tree"],
+          "answer": "Queue"
+        },
+        {
+          "q": "Visited nodes in BFS are tracked using:",
+          "options": ["List", "Set or dictionary", "Tuple", "Graph"],
+          "answer": "Set or dictionary"
+        }
+      ]
+    },
+    "xp": 100,
+    "difficulty": "hard"
+  },
+  {
+    "id": 1008,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Searching + DP",
+    "lesson": "This level merges search patterns with dynamic programming—examples include memoized DFS, pathfinding, and optimized recursion.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Memoized DFS prevents:",
+          "options": ["Recursion", "Repeated states", "Sorting", "Greedy choices"],
+          "answer": "Repeated states"
+        },
+        {
+          "q": "DP + search is most common in:",
+          "options": ["Graph shortest paths", "Sorting", "String concatenation", "Binary search trees"],
+          "answer": "Graph shortest paths"
+        }
+      ]
+    },
+    "xp": 120,
+    "difficulty": "heroic"
+  },
+  {
+    "id": 1009,
+    "dungeon_id": 10,
+    "title": "Hybrid Challenge: Multi-Step Algorithm Design",
+    "lesson": "This level tests your ability to combine sorting, searching, hashing, recursion, and loops into a multi-phase algorithm.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Complex problems often require:",
+          "options": ["A single technique", "Multiple techniques combined", "No data structures", "Random guessing"],
+          "answer": "Multiple techniques combined"
+        },
+        {
+          "q": "A multi-phase algorithm typically includes:",
+          "options": ["Only sorting", "Preprocessing + logic + postprocessing", "Just recursion", "Only DP"],
+          "answer": "Preprocessing + logic + postprocessing"
+        }
+      ]
+    },
+    "xp": 140,
+    "difficulty": "heroic"
+  },
+  {
+    "id": 1010,
+    "dungeon_id": 10,
+    "title": "💀 Final Mega Boss: The Ultimate Algorithm",
+    "lesson": "This is the final test combining concepts from ALL previous dungeons:\n- Variables & types\n- Conditionals\n- Loops\n- Functions\n- Data structures\n- Recursion\n- Sorting & searching\n- Trees & graphs\n- Dynamic programming\n\nThis is designed like a mini-LeetCode Hard boss that requires layered reasoning, optimization, and multiple techniques in one solution.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "A complete solution to a mega-problem usually requires:",
+          "options": ["One simple loop", "Combining multiple algorithmic techniques", "No data structures", "Ignoring edge cases"],
+          "answer": "Combining multiple algorithmic techniques"
+        },
+        {
+          "q": "Which technique is most versatile?",
+          "options": ["Sorting", "DP", "Graphs", "It depends on the problem"],
+          "answer": "It depends on the problem"
+        },
+        {
+          "q": "Good algorithm design starts with:",
+          "options": ["Coding immediately", "Understanding constraints and patterns", "Copying solutions", "Guessing the output"],
+          "answer": "Understanding constraints and patterns"
+        }
+      ]
+    },
+    "xp": 200,
+    "difficulty": "legendary",
     "is_boss": true
   }
 ]
