@@ -257,6 +257,10 @@ class QuestionSubmit(BaseModel):
     code: str
     language: str
 
+class TestSubmit(BaseModel):
+    code: str
+    language: str
+
 class SubmissionResult(BaseModel):
     success: bool
     passed: int
@@ -609,6 +613,91 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
         "message": "All test cases passed!" if success else "Some test cases failed."
     }
 
+@app.post("/api/questions/{question_id}/test")
+async def test_solution(question_id: int, submission: TestSubmit):
+    """Run the user's code against testcases without awarding XP."""
+
+    questions = read_questions()
+
+    # Find question
+    question = None
+    for q in questions:
+        if q["id"] == question_id:
+            question = q
+            break
+
+    if not question:
+        raise HTTPException(404, "Question not found")
+
+    tests = question.get("tests", [])
+    function_name = question.get("function_name")
+
+    if not function_name:
+        raise HTTPException(500, "Question missing function_name")
+
+    # Restricted environment
+    restricted_globals = {
+        "__builtins__": {
+            "range": range,
+            "len": len,
+            "print": print,
+            "abs": abs,
+            "min": min,
+            "max": max
+        }
+    }
+    restricted_locals = {}
+
+    # Try compiling/running user code
+    try:
+        exec(submission.code, restricted_globals, restricted_locals)
+    except Exception as e:
+        raise HTTPException(400, f"Code error: {str(e)}")
+
+    if function_name not in restricted_locals:
+        raise HTTPException(400, f"Function '{function_name}' not found in submitted code.")
+
+    user_function = restricted_locals[function_name]
+
+    # Run tests
+    results = []
+    all_passed = True
+
+    for test in tests:
+        test_input = test["input"]
+        expected = test["output"]
+
+        try:
+            if isinstance(test_input, list):
+                output = user_function(*test_input)
+            else:
+                output = user_function(test_input)
+        except Exception as e:
+            results.append({
+                "input": test_input,
+                "expected": expected,
+                "output": str(e),
+                "passed": False
+            })
+            all_passed = False
+            continue
+
+        passed = output == expected
+        if not passed:
+            all_passed = False
+
+        results.append({
+            "input": test_input,
+            "expected": expected,
+            "output": output,
+            "passed": passed
+        })
+
+    return {
+        "success": True,
+        "all_passed": all_passed,
+        "results": results
+    }
 
 @app.get("/api/questions/{question_id}/submissions", tags=["Questions"])
 async def get_submissions(question_id: int):
