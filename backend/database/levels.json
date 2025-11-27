@@ -1,0 +1,860 @@
+[
+  {
+    "id": 101,
+    "dungeon_id": 1,
+    "title": "Variables & Types",
+    "lesson": "Variables are containers for storing data. In Python, you don't need to declare the type - it's inferred automatically.\n\n**Example:**\n```python\nname = 'Hero'  # string\nage = 25       # integer\nhealth = 100.0 # float\nis_alive = True # boolean\n```\n\nVariables can be reassigned to different values and even different types.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What type is the variable: x = 42",
+          "options": ["String", "Integer", "Float", "Boolean"],
+          "answer": "Integer"
+        },
+        {
+          "q": "Which is a valid variable name?",
+          "options": ["2player", "player-name", "player_name", "player name"],
+          "answer": "player_name"
+        },
+        {
+          "q": "What does x = 'Hello' create?",
+          "options": ["An integer", "A string", "A list", "A boolean"],
+          "answer": "A string"
+        }
+      ]
+    },
+    "xp": 30,
+    "difficulty": "easy"
+  },
+  {
+    "id": 102,
+    "dungeon_id": 1,
+    "title": "Numbers & Math",
+    "lesson": "Python supports various mathematical operations on numbers.\n\n**Basic Operations:**\n```python\na = 10 + 5   # Addition: 15\nb = 10 - 3   # Subtraction: 7\nc = 4 * 3    # Multiplication: 12\nd = 15 / 3   # Division: 5.0\ne = 17 % 5   # Modulo: 2\nf = 2 ** 3   # Power: 8\n```\n\nInteger division uses `//` to get whole numbers.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is 17 % 5?",
+          "options": ["3", "2", "3.4", "5"],
+          "answer": "2"
+        },
+        {
+          "q": "What operator is used for exponentiation?",
+          "options": ["^", "**", "pow", "exp"],
+          "answer": "**"
+        },
+        {
+          "q": "What is 10 // 3?",
+          "options": ["3.33", "3", "4", "3.0"],
+          "answer": "3"
+        }
+      ]
+    },
+    "xp": 30,
+    "difficulty": "easy"
+  },
+  {
+    "id": 103,
+    "dungeon_id": 1,
+    "title": "Strings Basics",
+    "lesson": "Strings are sequences of characters enclosed in quotes.\n\n**String Operations:**\n```python\nname = 'Hero'\ngreeting = \"Hello, \" + name  # Concatenation\nlength = len(name)           # Length: 4\nfirst_char = name[0]         # Indexing: 'H'\nupper = name.upper()         # 'HERO'\n```\n\nStrings are immutable - you can't change individual characters.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does len('Python') return?",
+          "options": ["5", "6", "7", "Error"],
+          "answer": "6"
+        },
+        {
+          "q": "What is 'Hello'[0]?",
+          "options": ["H", "e", "Hello", "1"],
+          "answer": "H"
+        },
+        {
+          "q": "How do you concatenate strings?",
+          "options": ["&", "+", ".", "concat()"],
+          "answer": "+"
+        }
+      ]
+    },
+    "xp": 30,
+    "difficulty": "easy"
+  },
+  {
+    "id": 104,
+    "dungeon_id": 1,
+    "title": "Lists Introduction",
+    "lesson": "Lists are ordered collections that can hold multiple items.\n\n**List Basics:**\n```python\nheroes = ['Knight', 'Mage', 'Archer']\nnumbers = [1, 2, 3, 4, 5]\nmixed = [1, 'two', 3.0, True]\n\n# Accessing elements\nfirst = heroes[0]    # 'Knight'\nlast = heroes[-1]    # 'Archer'\n```\n\nLists are mutable - you can modify them after creation.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does list[-1] access?",
+          "options": ["First element", "Last element", "Nothing", "Error"],
+          "answer": "Last element"
+        },
+        {
+          "q": "Can lists contain different types?",
+          "options": ["Yes", "No", "Only numbers", "Only strings"],
+          "answer": "Yes"
+        },
+        {
+          "q": "What is [1, 2, 3][1]?",
+          "options": ["1", "2", "3", "[1]"],
+          "answer": "2"
+        }
+      ]
+    },
+    "xp": 35,
+    "difficulty": "easy"
+  },
+  {
+    "id": 105,
+    "dungeon_id": 1,
+    "title": "List Operations",
+    "lesson": "Lists have many useful methods for manipulation.\n\n**Common Operations:**\n```python\nitems = [1, 2, 3]\nitems.append(4)      # [1, 2, 3, 4]\nitems.insert(0, 0)   # [0, 1, 2, 3, 4]\nitems.remove(2)      # [0, 1, 3, 4]\npopped = items.pop() # Returns 4\nlength = len(items)  # 3\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does append() do?",
+          "options": ["Adds to beginning", "Adds to end", "Removes last", "Sorts list"],
+          "answer": "Adds to end"
+        },
+        {
+          "q": "What does pop() return?",
+          "options": ["Nothing", "The removed element", "List length", "Error"],
+          "answer": "The removed element"
+        },
+        {
+          "q": "How do you get list length?",
+          "options": ["list.length", "len(list)", "list.size()", "length(list)"],
+          "answer": "len(list)"
+        }
+      ]
+    },
+    "xp": 35,
+    "difficulty": "easy"
+  },
+  {
+    "id": 106,
+    "dungeon_id": 1,
+    "title": "Dictionaries",
+    "lesson": "Dictionaries store key-value pairs for fast lookups.\n\n**Dictionary Basics:**\n```python\nhero = {\n    'name': 'Knight',\n    'health': 100,\n    'level': 5\n}\n\n# Access values\nname = hero['name']        # 'Knight'\nhealth = hero.get('health') # 100\n\n# Modify\nhero['level'] = 6\nhero['mana'] = 50  # Add new key\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "How do you access a dictionary value?",
+          "options": ["dict.key", "dict(key)", "dict[key]", "dict->key"],
+          "answer": "dict[key]"
+        },
+        {
+          "q": "What does .get() return if key doesn't exist?",
+          "options": ["Error", "None", "0", "Empty string"],
+          "answer": "None"
+        },
+        {
+          "q": "Can dictionary keys be duplicated?",
+          "options": ["Yes", "No", "Only strings", "Only numbers"],
+          "answer": "No"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 107,
+    "dungeon_id": 1,
+    "title": "Boolean Logic",
+    "lesson": "Booleans represent True or False values.\n\n**Comparison Operators:**\n```python\n5 == 5   # True (equal)\n5 != 3   # True (not equal)\n5 > 3    # True (greater)\n5 <= 5   # True (less or equal)\n\n# Logical operators\nTrue and False  # False\nTrue or False   # True\nnot True        # False\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is True and False?",
+          "options": ["True", "False", "None", "Error"],
+          "answer": "False"
+        },
+        {
+          "q": "What is not False?",
+          "options": ["True", "False", "None", "Error"],
+          "answer": "True"
+        },
+        {
+          "q": "What operator checks equality?",
+          "options": ["=", "==", "===", "eq"],
+          "answer": "=="
+        }
+      ]
+    },
+    "xp": 35,
+    "difficulty": "easy"
+  },
+  {
+    "id": 108,
+    "dungeon_id": 1,
+    "title": "Type Conversion",
+    "lesson": "Convert between different data types.\n\n**Conversion Functions:**\n```python\n# To integer\nint('42')      # 42\nint(3.7)       # 3\n\n# To string\nstr(42)        # '42'\nstr(True)      # 'True'\n\n# To float\nfloat('3.14')  # 3.14\nfloat(5)       # 5.0\n\n# To boolean\nbool(1)        # True\nbool(0)        # False\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is int(3.9)?",
+          "options": ["3", "4", "3.9", "Error"],
+          "answer": "3"
+        },
+        {
+          "q": "What is bool(0)?",
+          "options": ["True", "False", "0", "Error"],
+          "answer": "False"
+        },
+        {
+          "q": "What is str(123)?",
+          "options": ["123", "'123'", "Error", "None"],
+          "answer": "'123'"
+        }
+      ]
+    },
+    "xp": 35,
+    "difficulty": "easy"
+  },
+  {
+    "id": 109,
+    "dungeon_id": 1,
+    "title": "Input & Output",
+    "lesson": "Interact with users through input and output.\n\n**Basic I/O:**\n```python\n# Output\nprint('Hello, Hero!')\nprint('Level:', 5)\nprint(f'HP: {100}')\n\n# Input\nname = input('Enter name: ')\nage = int(input('Enter age: '))\n```\n\nThe `input()` function always returns a string.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What type does input() return?",
+          "options": ["Integer", "String", "Any type", "None"],
+          "answer": "String"
+        },
+        {
+          "q": "What is an f-string?",
+          "options": ["Float string", "Formatted string", "Function string", "Final string"],
+          "answer": "Formatted string"
+        },
+        {
+          "q": "How to print multiple values?",
+          "options": ["print(a + b)", "print(a, b)", "Both work", "Neither"],
+          "answer": "Both work"
+        }
+      ]
+    },
+    "xp": 30,
+    "difficulty": "easy"
+  },
+  {
+    "id": 110,
+    "dungeon_id": 1,
+    "title": "Basics Boss Challenge",
+    "lesson": "**Final Challenge!**\n\nYou've learned the fundamentals:\n- Variables and data types\n- Numbers and math operations\n- Strings and lists\n- Dictionaries\n- Boolean logic\n- Type conversion\n- Input/Output\n\nNow prove your mastery by answering these challenge questions!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is type([1, 2, 3])?",
+          "options": ["array", "list", "tuple", "set"],
+          "answer": "list"
+        },
+        {
+          "q": "What is 'ab' * 3?",
+          "options": ["'ab3'", "'ababab'", "Error", "'ab ab ab'"],
+          "answer": "'ababab'"
+        },
+        {
+          "q": "What is len({'a': 1, 'b': 2})?",
+          "options": ["2", "4", "1", "Error"],
+          "answer": "2"
+        },
+        {
+          "q": "What is [1, 2, 3] + [4, 5]?",
+          "options": ["[1, 2, 3, 4, 5]", "[5, 7, 3]", "Error", "15"],
+          "answer": "[1, 2, 3, 4, 5]"
+        }
+      ]
+    },
+    "xp": 75,
+    "difficulty": "medium",
+    "is_boss": true
+  },
+  {
+    "id": 201,
+    "dungeon_id": 2,
+    "title": "If Statements",
+    "lesson": "Control program flow with conditions.\n\n**Basic If:**\n```python\nhealth = 50\n\nif health < 30:\n    print('Danger!')\nelif health < 70:\n    print('Caution')\nelse:\n    print('Healthy')\n```\n\nIndentation is crucial in Python - it defines code blocks.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What keyword is used for 'else if'?",
+          "options": ["else if", "elseif", "elif", "elsif"],
+          "answer": "elif"
+        },
+        {
+          "q": "What defines a code block in Python?",
+          "options": ["Curly braces", "Indentation", "Parentheses", "Keywords"],
+          "answer": "Indentation"
+        },
+        {
+          "q": "Is 'else' required after 'if'?",
+          "options": ["Yes", "No", "Sometimes", "Only with elif"],
+          "answer": "No"
+        }
+      ]
+    },
+    "xp": 35,
+    "difficulty": "easy"
+  },
+  {
+    "id": 202,
+    "dungeon_id": 2,
+    "title": "For Loops",
+    "lesson": "Iterate over sequences with for loops.\n\n**For Loop Basics:**\n```python\n# Loop through list\nfor item in [1, 2, 3]:\n    print(item)\n\n# Range loop\nfor i in range(5):  # 0, 1, 2, 3, 4\n    print(i)\n\n# With index\nfor i, val in enumerate(['a', 'b']):\n    print(i, val)\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does range(3) produce?",
+          "options": ["[1, 2, 3]", "[0, 1, 2]", "[0, 1, 2, 3]", "[1, 2]"],
+          "answer": "[0, 1, 2]"
+        },
+        {
+          "q": "What does enumerate() provide?",
+          "options": ["Index only", "Value only", "Index and value", "Length"],
+          "answer": "Index and value"
+        },
+        {
+          "q": "What is range(1, 4)?",
+          "options": ["[1, 2, 3]", "[1, 2, 3, 4]", "[0, 1, 2, 3]", "[0, 1, 2]"],
+          "answer": "[1, 2, 3]"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 203,
+    "dungeon_id": 2,
+    "title": "While Loops",
+    "lesson": "Loop while a condition is true.\n\n**While Loop:**\n```python\ncount = 0\nwhile count < 5:\n    print(count)\n    count += 1\n\n# Infinite loop with break\nwhile True:\n    user_input = input('> ')\n    if user_input == 'quit':\n        break\n```\n\nBe careful to avoid infinite loops!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "When does a while loop stop?",
+          "options": ["After 10 iterations", "When condition is False", "When using return", "Never"],
+          "answer": "When condition is False"
+        },
+        {
+          "q": "What does 'break' do?",
+          "options": ["Pauses loop", "Exits loop", "Restarts loop", "Crashes program"],
+          "answer": "Exits loop"
+        },
+        {
+          "q": "What is 'while True'?",
+          "options": ["Syntax error", "Runs once", "Infinite loop", "Boolean check"],
+          "answer": "Infinite loop"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "easy"
+  },
+  {
+    "id": 204,
+    "dungeon_id": 2,
+    "title": "Break & Continue",
+    "lesson": "Control loop execution with break and continue.\n\n**Break & Continue:**\n```python\n# Break - exit loop entirely\nfor i in range(10):\n    if i == 5:\n        break\n    print(i)  # 0, 1, 2, 3, 4\n\n# Continue - skip current iteration\nfor i in range(5):\n    if i == 2:\n        continue\n    print(i)  # 0, 1, 3, 4\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does 'continue' do?",
+          "options": ["Exits loop", "Skips to next iteration", "Restarts loop", "Does nothing"],
+          "answer": "Skips to next iteration"
+        },
+        {
+          "q": "Can break be used in for loops?",
+          "options": ["Yes", "No", "Only in while", "Only with if"],
+          "answer": "Yes"
+        },
+        {
+          "q": "What prints after break?",
+          "options": ["Next value", "Nothing in loop", "Error", "None"],
+          "answer": "Nothing in loop"
+        }
+      ]
+    },
+    "xp": 35,
+    "difficulty": "easy"
+  },
+  {
+    "id": 205,
+    "dungeon_id": 2,
+    "title": "Nested Loops",
+    "lesson": "Loops inside loops for complex iterations.\n\n**Nested Loops:**\n```python\n# 2D iteration\nfor i in range(3):\n    for j in range(3):\n        print(f'({i}, {j})')\n\n# Multiplication table\nfor x in range(1, 4):\n    for y in range(1, 4):\n        print(f'{x}x{y}={x*y}')\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "How many times does inner loop run per outer iteration?",
+          "options": ["Once", "Depends on its range", "Same as outer", "Infinitely"],
+          "answer": "Depends on its range"
+        },
+        {
+          "q": "Total iterations for range(3) nested in range(2)?",
+          "options": ["5", "6", "9", "2"],
+          "answer": "6"
+        },
+        {
+          "q": "Where does 'break' exit in nested loops?",
+          "options": ["All loops", "Innermost loop only", "Outermost loop", "Current function"],
+          "answer": "Innermost loop only"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "medium"
+  },
+  {
+    "id": 206,
+    "dungeon_id": 2,
+    "title": "List Comprehensions",
+    "lesson": "Create lists in a single line.\n\n**List Comprehensions:**\n```python\n# Basic\nsquares = [x**2 for x in range(5)]\n# [0, 1, 4, 9, 16]\n\n# With condition\nevens = [x for x in range(10) if x % 2 == 0]\n# [0, 2, 4, 6, 8]\n\n# Transform\nupper = [s.upper() for s in ['a', 'b']]\n# ['A', 'B']\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is [x*2 for x in [1,2,3]]?",
+          "options": ["[1, 2, 3]", "[2, 4, 6]", "[1, 4, 9]", "Error"],
+          "answer": "[2, 4, 6]"
+        },
+        {
+          "q": "Where does the condition go?",
+          "options": ["Before 'for'", "After 'for x in list'", "At the start", "In parentheses"],
+          "answer": "After 'for x in list'"
+        },
+        {
+          "q": "What is [x for x in range(3)]?",
+          "options": ["[1, 2, 3]", "[0, 1, 2]", "[0, 1, 2, 3]", "range(3)"],
+          "answer": "[0, 1, 2]"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "medium"
+  },
+  {
+    "id": 207,
+    "dungeon_id": 2,
+    "title": "Ternary Expressions",
+    "lesson": "Conditional expressions in one line.\n\n**Ternary Operator:**\n```python\n# Syntax: value_if_true if condition else value_if_false\n\nage = 20\nstatus = 'adult' if age >= 18 else 'minor'\n\n# In assignments\nmax_val = a if a > b else b\n\n# Nested (use sparingly)\ngrade = 'A' if score >= 90 else 'B' if score >= 80 else 'C'\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is 'yes' if True else 'no'?",
+          "options": ["yes", "no", "True", "Error"],
+          "answer": "yes"
+        },
+        {
+          "q": "What is 5 if 3 > 5 else 10?",
+          "options": ["5", "10", "3", "Error"],
+          "answer": "10"
+        },
+        {
+          "q": "Can ternary be nested?",
+          "options": ["Yes", "No", "Only once", "Only in functions"],
+          "answer": "Yes"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "medium"
+  },
+  {
+    "id": 208,
+    "dungeon_id": 2,
+    "title": "Match Statements",
+    "lesson": "Pattern matching (Python 3.10+).\n\n**Match Statement:**\n```python\ncommand = 'attack'\n\nmatch command:\n    case 'attack':\n        print('Fighting!')\n    case 'defend':\n        print('Blocking!')\n    case 'heal':\n        print('Healing!')\n    case _:\n        print('Unknown command')\n```\n\nThe `_` is a wildcard that matches anything.",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does '_' match?",
+          "options": ["Nothing", "Underscore only", "Everything", "Errors"],
+          "answer": "Everything"
+        },
+        {
+          "q": "What Python version added match?",
+          "options": ["3.8", "3.9", "3.10", "3.11"],
+          "answer": "3.10"
+        },
+        {
+          "q": "Is match like switch in other languages?",
+          "options": ["Yes, similar", "No, completely different", "Only for strings", "Only for numbers"],
+          "answer": "Yes, similar"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "medium"
+  },
+  {
+    "id": 209,
+    "dungeon_id": 2,
+    "title": "Exception Handling",
+    "lesson": "Handle errors gracefully.\n\n**Try/Except:**\n```python\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print('Cannot divide by zero!')\nexcept Exception as e:\n    print(f'Error: {e}')\nelse:\n    print('Success!')\nfinally:\n    print('Cleanup')\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "When does 'finally' run?",
+          "options": ["Only on success", "Only on error", "Always", "Never"],
+          "answer": "Always"
+        },
+        {
+          "q": "When does 'else' run in try/except?",
+          "options": ["On error", "When no error occurs", "Always", "Never"],
+          "answer": "When no error occurs"
+        },
+        {
+          "q": "What catches all exceptions?",
+          "options": ["except:", "except Error:", "except Exception:", "except All:"],
+          "answer": "except Exception:"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "medium"
+  },
+  {
+    "id": 210,
+    "dungeon_id": 2,
+    "title": "Control Flow Boss",
+    "lesson": "**Final Challenge!**\n\nYou've mastered control flow:\n- If/elif/else statements\n- For and while loops\n- Break and continue\n- Nested loops\n- List comprehensions\n- Ternary expressions\n- Match statements\n- Exception handling\n\nTime to prove your mastery!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is [i for i in range(5) if i % 2 == 0]?",
+          "options": ["[1, 3]", "[0, 2, 4]", "[2, 4]", "[0, 1, 2, 3, 4]"],
+          "answer": "[0, 2, 4]"
+        },
+        {
+          "q": "How many times does 'for i in range(0)' iterate?",
+          "options": ["0", "1", "Infinite", "Error"],
+          "answer": "0"
+        },
+        {
+          "q": "What handles cleanup after try/except?",
+          "options": ["else", "finally", "except", "cleanup"],
+          "answer": "finally"
+        },
+        {
+          "q": "What is 'big' if 100 > 50 else 'small'?",
+          "options": ["big", "small", "100", "True"],
+          "answer": "big"
+        }
+      ]
+    },
+    "xp": 80,
+    "difficulty": "medium",
+    "is_boss": true
+  },
+  {
+    "id": 301,
+    "dungeon_id": 3,
+    "title": "Defining Functions",
+    "lesson": "Functions are reusable blocks of code.\n\n**Function Definition:**\n```python\ndef greet(name):\n    return f'Hello, {name}!'\n\n# Call the function\nmessage = greet('Hero')\nprint(message)  # Hello, Hero!\n\n# Function without return\ndef say_hi():\n    print('Hi!')\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What keyword defines a function?",
+          "options": ["func", "function", "def", "define"],
+          "answer": "def"
+        },
+        {
+          "q": "What does a function without return give?",
+          "options": ["0", "None", "Error", "Empty string"],
+          "answer": "None"
+        },
+        {
+          "q": "How do you call a function?",
+          "options": ["function_name", "function_name()", "call function_name", "run function_name"],
+          "answer": "function_name()"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "medium"
+  },
+  {
+    "id": 302,
+    "dungeon_id": 3,
+    "title": "Parameters & Arguments",
+    "lesson": "Pass data into functions.\n\n**Parameters:**\n```python\n# Positional parameters\ndef add(a, b):\n    return a + b\n\n# Default parameters\ndef greet(name, greeting='Hello'):\n    return f'{greeting}, {name}!'\n\ngreet('Hero')           # Hello, Hero!\ngreet('Hero', 'Hi')     # Hi, Hero!\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is a parameter with a default value?",
+          "options": ["Required parameter", "Optional parameter", "Keyword parameter", "Position parameter"],
+          "answer": "Optional parameter"
+        },
+        {
+          "q": "Can defaults come before required params?",
+          "options": ["Yes", "No", "Sometimes", "In Python 3 only"],
+          "answer": "No"
+        },
+        {
+          "q": "What are values passed to functions called?",
+          "options": ["Parameters", "Arguments", "Variables", "Inputs"],
+          "answer": "Arguments"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "medium"
+  },
+  {
+    "id": 303,
+    "dungeon_id": 3,
+    "title": "Return Values",
+    "lesson": "Functions can return values.\n\n**Return Statement:**\n```python\ndef square(x):\n    return x ** 2\n\n# Multiple return values\ndef get_stats(numbers):\n    return min(numbers), max(numbers)\n\nlow, high = get_stats([1, 5, 3])\n# low = 1, high = 5\n\n# Early return\ndef divide(a, b):\n    if b == 0:\n        return None\n    return a / b\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Can a function return multiple values?",
+          "options": ["Yes", "No", "Only 2", "Only with tuple"],
+          "answer": "Yes"
+        },
+        {
+          "q": "What happens after return executes?",
+          "options": ["Continues", "Function exits", "Error", "Returns None"],
+          "answer": "Function exits"
+        },
+        {
+          "q": "What type is returned for multiple values?",
+          "options": ["List", "Tuple", "Dict", "Set"],
+          "answer": "Tuple"
+        }
+      ]
+    },
+    "xp": 40,
+    "difficulty": "medium"
+  },
+  {
+    "id": 304,
+    "dungeon_id": 3,
+    "title": "Args and Kwargs",
+    "lesson": "Handle variable numbers of arguments.\n\n**Flexible Arguments:**\n```python\n# *args - variable positional arguments\ndef sum_all(*args):\n    return sum(args)\n\nsum_all(1, 2, 3)  # 6\n\n# **kwargs - variable keyword arguments\ndef print_info(**kwargs):\n    for key, value in kwargs.items():\n        print(f'{key}: {value}')\n\nprint_info(name='Hero', level=5)\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What type is *args inside the function?",
+          "options": ["List", "Tuple", "Dict", "Set"],
+          "answer": "Tuple"
+        },
+        {
+          "q": "What type is **kwargs inside the function?",
+          "options": ["List", "Tuple", "Dict", "Set"],
+          "answer": "Dict"
+        },
+        {
+          "q": "Order of parameters?",
+          "options": ["Any order", "regular, *args, **kwargs", "**kwargs, *args, regular", "*args first"],
+          "answer": "regular, *args, **kwargs"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "medium"
+  },
+  {
+    "id": 305,
+    "dungeon_id": 3,
+    "title": "Lambda Functions",
+    "lesson": "Anonymous functions in one line.\n\n**Lambda Syntax:**\n```python\n# Regular function\ndef square(x):\n    return x ** 2\n\n# Lambda equivalent\nsquare = lambda x: x ** 2\n\n# Common uses\nnumbers = [3, 1, 4, 1, 5]\nsorted(numbers, key=lambda x: -x)\n# [5, 4, 3, 1, 1]\n\n# Multiple parameters\nadd = lambda a, b: a + b\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "Can lambdas have multiple expressions?",
+          "options": ["Yes", "No", "With semicolons", "With newlines"],
+          "answer": "No"
+        },
+        {
+          "q": "What is lambda x: x + 1 called with 5?",
+          "options": ["5", "6", "x + 1", "Error"],
+          "answer": "6"
+        },
+        {
+          "q": "When are lambdas most useful?",
+          "options": ["Complex logic", "Short callbacks", "Classes", "Loops"],
+          "answer": "Short callbacks"
+        }
+      ]
+    },
+    "xp": 45,
+    "difficulty": "medium"
+  },
+  {
+    "id": 306,
+    "dungeon_id": 3,
+    "title": "Scope & Closures",
+    "lesson": "Understand variable scope.\n\n**Scope:**\n```python\nglobal_var = 'global'\n\ndef outer():\n    outer_var = 'outer'\n    \n    def inner():\n        inner_var = 'inner'\n        print(outer_var)  # Can access\n    \n    inner()\n\n# Closure\ndef make_counter():\n    count = 0\n    def counter():\n        nonlocal count\n        count += 1\n        return count\n    return counter\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What keyword accesses outer scope variable?",
+          "options": ["global", "nonlocal", "outer", "scope"],
+          "answer": "nonlocal"
+        },
+        {
+          "q": "What is a closure?",
+          "options": ["Closed function", "Function with captured variables", "Class method", "Lambda"],
+          "answer": "Function with captured variables"
+        },
+        {
+          "q": "Can inner functions access outer variables?",
+          "options": ["Yes", "No", "Only with global", "Only constants"],
+          "answer": "Yes"
+        }
+      ]
+    },
+    "xp": 55,
+    "difficulty": "hard"
+  },
+  {
+    "id": 307,
+    "dungeon_id": 3,
+    "title": "Higher-Order Functions",
+    "lesson": "Functions that work with other functions.\n\n**Built-in HOFs:**\n```python\nnumbers = [1, 2, 3, 4, 5]\n\n# map - apply function to each\nsquares = list(map(lambda x: x**2, numbers))\n# [1, 4, 9, 16, 25]\n\n# filter - keep matching items\nevens = list(filter(lambda x: x%2==0, numbers))\n# [2, 4]\n\n# reduce - accumulate values\nfrom functools import reduce\ntotal = reduce(lambda a, b: a + b, numbers)\n# 15\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does map() return in Python 3?",
+          "options": ["List", "Map object", "Generator", "Tuple"],
+          "answer": "Map object"
+        },
+        {
+          "q": "What does filter() do?",
+          "options": ["Transforms items", "Removes items not matching", "Sorts items", "Groups items"],
+          "answer": "Removes items not matching"
+        },
+        {
+          "q": "Where is reduce() located?",
+          "options": ["Built-in", "functools", "itertools", "collections"],
+          "answer": "functools"
+        }
+      ]
+    },
+    "xp": 50,
+    "difficulty": "medium"
+  },
+  {
+    "id": 308,
+    "dungeon_id": 3,
+    "title": "Decorators",
+    "lesson": "Modify function behavior.\n\n**Decorator Pattern:**\n```python\ndef timer(func):\n    def wrapper(*args, **kwargs):\n        import time\n        start = time.time()\n        result = func(*args, **kwargs)\n        print(f'Took {time.time()-start}s')\n        return result\n    return wrapper\n\n@timer\ndef slow_function():\n    import time\n    time.sleep(1)\n\nslow_function()  # Took 1.00s\n```",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What does @ syntax do?",
+          "options": ["Comments", "Applies decorator", "Type hint", "Import"],
+          "answer": "Applies decorator"
+        },
+        {
+          "q": "What does a decorator return?",
+          "options": ["None", "Original function", "New function", "String"],
+          "answer": "New function"
+        },
+        {
+          "q": "Can decorators take arguments?",
+          "options": ["Yes", "No", "Only strings", "Only in classes"],
+          "answer": "Yes"
+        }
+      ]
+    },
+    "xp": 60,
+    "difficulty": "hard"
+  },
+  {
+    "id": 309,
+    "dungeon_id": 3,
+    "title": "Recursion Intro",
+    "lesson": "Functions that call themselves.\n\n**Recursive Functions:**\n```python\n# Factorial\ndef factorial(n):\n    if n <= 1:  # Base case\n        return 1\n    return n * factorial(n - 1)\n\nfactorial(5)  # 120\n\n# Fibonacci\ndef fib(n):\n    if n <= 1:\n        return n\n    return fib(n-1) + fib(n-2)\n```\n\nAlways need a base case to stop recursion!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What stops infinite recursion?",
+          "options": ["Return statement", "Base case", "Break", "Exit"],
+          "answer": "Base case"
+        },
+        {
+          "q": "What is factorial(0)?",
+          "options": ["0", "1", "Error", "None"],
+          "answer": "1"
+        },
+        {
+          "q": "What error occurs with too much recursion?",
+          "options": ["MemoryError", "RecursionError", "StackOverflow", "TypeError"],
+          "answer": "RecursionError"
+        }
+      ]
+    },
+    "xp": 55,
+    "difficulty": "hard"
+  },
+  {
+    "id": 310,
+    "dungeon_id": 3,
+    "title": "Functions Boss",
+    "lesson": "**Final Challenge!**\n\nYou've mastered functions:\n- Defining functions\n- Parameters and arguments\n- Return values\n- *args and **kwargs\n- Lambda functions\n- Scope and closures\n- Higher-order functions\n- Decorators\n- Recursion\n\nProve your mastery!",
+    "quiz": {
+      "type": "mcq",
+      "questions": [
+        {
+          "q": "What is (lambda x: x*2)(5)?",
+          "options": ["10", "5", "x*2", "Error"],
+          "answer": "10"
+        },
+        {
+          "q": "What does @decorator above a function do?",
+          "options": ["Comments it", "Wraps it", "Deletes it", "Copies it"],
+          "answer": "Wraps it"
+        },
+        {
+          "q": "What is list(map(str, [1,2,3]))?",
+          "options": ["[1, 2, 3]", "['1', '2', '3']", "['123']", "Error"],
+          "answer": "['1', '2', '3']"
+        },
+        {
+          "q": "What does **kwargs receive?",
+          "options": ["Positional args", "Keyword args as dict", "All args", "Nothing"],
+          "answer": "Keyword args as dict"
+        }
+      ]
+    },
+    "xp": 100,
+    "difficulty": "hard",
+    "is_boss": true
+  }
+]
