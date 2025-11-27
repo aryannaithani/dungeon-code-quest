@@ -233,59 +233,57 @@ const QuestionDetail = () => {
             </div>
           </Card>
 
-          {/* Code Editor Area */}
-          <div className="space-y-4">
+          {/* Output Area */}
+          {output && (
             <Card className="bg-card p-6 pixel-border">
-              <h2 className="text-lg font-pixel text-gold mb-4">Your Solution</h2>
-
-              <Editor
-                height="400px"
-                defaultLanguage="python"
-                theme="vs-dark"
-                value={code}
-                onChange={(value) => setCode(value || "")}
-                options={{
-                  fontSize: 14,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                  wordWrap: "on",
-                  automaticLayout: true,
-                }}
-              />
-
-              <div className="flex gap-4 mt-4">
-                <Button
-                  onClick={submitSolution}
-                  disabled={isRunning}
-                  className="bg-gold hover:bg-gold-glow text-background font-pixel glow-gold"
-                >
-                  Submit
-                </Button>
-
-                <Button
-                  onClick={testCode}
-                  disabled={isRunning}
-                  variant="outline"
-                  className="border-gold text-gold hover:bg-gold hover:text-background font-pixel"
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  {isRunning ? "Running..." : "Test"}
-                </Button>
-              </div>
+              <h2 className="text-lg font-pixel text-gold mb-4">Output</h2>
+              <ScrollArea className="h-[200px] w-full pixel-border bg-dungeon-stone p-4">
+                <pre className="text-sm font-mono text-foreground whitespace-pre-wrap">
+                  {output}
+                </pre>
+              </ScrollArea>
             </Card>
+          )}
 
-            {/* Output Area */}
-            {output && (
-              <Card className="bg-card p-6 pixel-border">
-                <h2 className="text-lg font-pixel text-gold mb-4">Output</h2>
-                <ScrollArea className="h-[200px] w-full pixel-border bg-dungeon-stone p-4">
-                  <pre className="text-sm font-mono text-foreground whitespace-pre-wrap">
-                    {output}
-                  </pre>
-                </ScrollArea>
-              </Card>
-            )}
-          </div>
+          {/* Code Editor Area */}
+          <Card className="bg-card p-6 pixel-border">
+            <h2 className="text-lg font-pixel text-gold mb-4">Your Solution</h2>
+
+            <Editor
+              height="400px"
+              defaultLanguage="python"
+              theme="vs-dark"
+              value={code}
+              onChange={(value) => setCode(value || "")}
+              options={{
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: "on",
+                automaticLayout: true,
+              }}
+            />
+
+            <div className="flex gap-4 mt-4">
+              <Button
+                onClick={submitSolution}
+                disabled={isRunning}
+                className="bg-gold hover:bg-gold-glow text-background font-pixel glow-gold"
+              >
+                Submit
+              </Button>
+
+              <Button
+                onClick={testCode}
+                disabled={isRunning}
+                variant="outline"
+                className="border-gold text-gold hover:bg-gold hover:text-background font-pixel"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                {isRunning ? "Running..." : "Test"}
+              </Button>
+            </div>
+          </Card>
         </div>
       </div>
     </div>
