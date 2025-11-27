@@ -48,6 +48,7 @@ const Profile = () => {
     toast({
       title: "👋 Farewell Hero",
       description: "You have successfully logged out.",
+      className: "bg-emerald/10 border-emerald text-foreground",
     });
     navigate("/");
   };
