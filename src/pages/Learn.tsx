@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Lock, CheckCircle2, Sword, GitBranch, Box, Sparkles, Layers, Contact, Repeat, Cpu, Network, Blocks, Skull } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface Dungeon {
   id: number;
@@ -29,17 +29,20 @@ const difficultyColors: Record<string, string> = {
 };
 
 const iconMap: Record<string, React.ReactNode> = {
-  sword: <Sword className="w-6 h-6 md:w-8 md:h-8" />,
-  "git-branch": <GitBranch className="w-6 h-6 md:w-8 md:h-8" />,
-  box: <Box className="w-6 h-6 md:w-8 md:h-8" />,
-  layers: <Layers className="w-6 h-6 md:w-8 md:h-8" />,
-  contact: <Contact className="w-6 h-6 md:w-8 md:h-8" />,
-  repeat: <Repeat className="w-6 h-6 md:w-8 md:h-8" />,
-  cpu: <Cpu className="w-6 h-6 md:w-8 md:h-8" />,
-  network: <Network className="w-6 h-6 md:w-8 md:h-8" />,
-  blocks: <Blocks className="w-6 h-6 md:w-8 md:h-8" />,
-  skull: <Skull className="w-6 h-6 md:w-8 md:h-8" />,
+  sword: <Sword className="w-5 h-5 md:w-6 md:h-6" />,
+  "git-branch": <GitBranch className="w-5 h-5 md:w-6 md:h-6" />,
+  box: <Box className="w-5 h-5 md:w-6 md:h-6" />,
+  layers: <Layers className="w-5 h-5 md:w-6 md:h-6" />,
+  contact: <Contact className="w-5 h-5 md:w-6 md:h-6" />,
+  repeat: <Repeat className="w-5 h-5 md:w-6 md:h-6" />,
+  cpu: <Cpu className="w-5 h-5 md:w-6 md:h-6" />,
+  network: <Network className="w-5 h-5 md:w-6 md:h-6" />,
+  blocks: <Blocks className="w-5 h-5 md:w-6 md:h-6" />,
+  skull: <Skull className="w-5 h-5 md:w-6 md:h-6" />,
 };
+
+// X positions for winding path (percentage from left)
+const pathPositions = [15, 50, 85, 60, 25, 70, 40, 80, 30, 55];
 
 const Learn = () => {
   const navigate = useNavigate();
@@ -50,6 +53,7 @@ const Learn = () => {
     xp: 0,
   });
   const [loading, setLoading] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,13 +127,12 @@ const Learn = () => {
     }
   };
 
-  // Get position offset for winding path effect
-  const getPositionStyle = (index: number) => {
-    const positions = [
-      "ml-0", "ml-[15%]", "ml-[30%]", "ml-[20%]", "ml-[5%]",
-      "ml-[25%]", "ml-[40%]", "ml-[30%]", "ml-[15%]", "ml-[25%]"
-    ];
-    return positions[index % positions.length];
+  // Generate curved SVG path between two points
+  const generateCurvedPath = (x1: number, y1: number, x2: number, y2: number) => {
+    const midY = (y1 + y2) / 2;
+    const controlOffset = Math.abs(x2 - x1) * 0.5;
+    
+    return `M ${x1} ${y1} C ${x1} ${midY - controlOffset}, ${x2} ${midY + controlOffset}, ${x2} ${y2}`;
   };
 
   if (loading) {
@@ -143,10 +146,13 @@ const Learn = () => {
     );
   }
 
+  const nodeSpacing = 140;
+  const svgHeight = dungeons.length * nodeSpacing + 100;
+
   return (
     <div className="min-h-screen p-4 md:p-8 overflow-x-hidden">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-4 leading-relaxed">
             Dungeon Arena
           </h1>
@@ -156,163 +162,217 @@ const Learn = () => {
         </div>
 
         {/* Dungeon Path Map */}
-        <div className="relative pb-8">
-          {/* Central vertical line */}
-          <div className="absolute left-8 md:left-12 top-0 bottom-0 w-0.5 bg-gradient-to-b from-gold/50 via-gold/30 to-muted z-0" />
-          
-          {/* Dungeon Nodes */}
-          <div className="relative z-10 space-y-6">
-            {dungeons.map((dungeon, index) => {
-              const status = getDungeonStatus(dungeon);
-              const progress = getDungeonProgress(dungeon);
-              const isLocked = status === "locked";
-              const isCompleted = status === "completed";
-              const isUnlocked = status === "unlocked";
+        <div ref={containerRef} className="relative" style={{ minHeight: svgHeight }}>
+          {/* SVG Curved Paths */}
+          <svg 
+            className="absolute inset-0 w-full pointer-events-none"
+            style={{ height: svgHeight }}
+            viewBox={`0 0 100 ${svgHeight}`}
+            preserveAspectRatio="none"
+          >
+            <defs>
+              <linearGradient id="pathGradientLocked" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="hsl(var(--muted-foreground))" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="hsl(var(--muted-foreground))" stopOpacity="0.1" />
+              </linearGradient>
+              <linearGradient id="pathGradientActive" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="hsl(var(--gold))" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(var(--gold))" stopOpacity="0.3" />
+              </linearGradient>
+              <linearGradient id="pathGradientCompleted" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="hsl(var(--emerald))" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="hsl(var(--emerald))" stopOpacity="0.3" />
+              </linearGradient>
+              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            
+            {/* Draw paths between dungeons */}
+            {dungeons.slice(0, -1).map((dungeon, index) => {
               const nextDungeon = dungeons[index + 1];
-              const isNextUnlocked = nextDungeon && getDungeonStatus(nextDungeon) !== "locked";
-
+              const currentStatus = getDungeonStatus(dungeon);
+              const nextStatus = getDungeonStatus(nextDungeon);
+              
+              const x1 = pathPositions[index % pathPositions.length];
+              const y1 = index * nodeSpacing + 70;
+              const x2 = pathPositions[(index + 1) % pathPositions.length];
+              const y2 = (index + 1) * nodeSpacing + 70;
+              
+              const isCompleted = currentStatus === "completed";
+              const isActive = nextStatus !== "locked";
+              
+              const gradientId = isCompleted ? "pathGradientCompleted" : isActive ? "pathGradientActive" : "pathGradientLocked";
+              
               return (
-                <div key={dungeon.id} className="relative flex items-start gap-4 md:gap-6">
-                  {/* Node Circle with connecting line */}
-                  <div className="relative flex flex-col items-center">
-                    {/* Dungeon Node */}
-                    <div
-                      onClick={() => handleDungeonClick(dungeon)}
-                      className={`
-                        relative w-16 h-16 md:w-24 md:h-24 rounded-2xl flex items-center justify-center
-                        transition-all duration-300 border-3 z-10
-                        ${isLocked 
-                          ? "bg-muted/50 border-muted-foreground/30 cursor-not-allowed" 
-                          : "cursor-pointer"
-                        }
-                        ${isCompleted 
-                          ? "bg-emerald/20 border-emerald shadow-[0_0_30px_rgba(16,185,129,0.4)]" 
-                          : ""
-                        }
-                        ${isUnlocked 
-                          ? "bg-gold/20 border-gold shadow-[0_0_30px_rgba(245,158,11,0.4)]" 
-                          : ""
-                        }
-                      `}
-                      style={{
-                        animation: isUnlocked ? "pulse 2s ease-in-out infinite" : undefined
-                      }}
-                    >
-                      {/* Dungeon Number */}
-                      <div 
-                        className={`
-                          absolute -top-2 -right-2 w-6 h-6 md:w-7 md:h-7 rounded-full flex items-center justify-center
-                          text-[10px] md:text-xs font-pixel border-2
-                          ${isLocked 
-                            ? "bg-muted border-muted-foreground/30 text-muted-foreground" 
-                            : isCompleted 
-                              ? "bg-emerald border-emerald text-white" 
-                              : "bg-gold border-gold text-primary-foreground"
-                          }
-                        `}
-                      >
-                        {dungeon.id}
-                      </div>
+                <g key={`path-${index}`}>
+                  {/* Background glow for active paths */}
+                  {isActive && (
+                    <path
+                      d={generateCurvedPath(x1, y1, x2, y2)}
+                      fill="none"
+                      stroke={isCompleted ? "hsl(var(--emerald))" : "hsl(var(--gold))"}
+                      strokeWidth="4"
+                      strokeOpacity="0.2"
+                      filter="url(#glow)"
+                    />
+                  )}
+                  {/* Main path */}
+                  <path
+                    d={generateCurvedPath(x1, y1, x2, y2)}
+                    fill="none"
+                    stroke={`url(#${gradientId})`}
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeDasharray={isActive ? "none" : "4 4"}
+                  />
+                </g>
+              );
+            })}
+          </svg>
 
-                      {/* Icon */}
-                      <div className={`
-                        ${isLocked ? "text-muted-foreground" : ""}
-                        ${isCompleted ? "text-emerald" : ""}
-                        ${isUnlocked ? "text-gold" : ""}
-                      `}>
-                        {isLocked ? (
-                          <Lock className="w-6 h-6 md:w-8 md:h-8" />
-                        ) : isCompleted ? (
-                          <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8" />
-                        ) : (
-                          iconMap[dungeon.icon] || <Sword className="w-6 h-6 md:w-8 md:h-8" />
-                        )}
-                      </div>
-                    </div>
+          {/* Dungeon Nodes */}
+          {dungeons.map((dungeon, index) => {
+            const status = getDungeonStatus(dungeon);
+            const progress = getDungeonProgress(dungeon);
+            const isLocked = status === "locked";
+            const isCompleted = status === "completed";
+            const isUnlocked = status === "unlocked";
 
-                    {/* Connecting line to next */}
-                    {index < dungeons.length - 1 && (
-                      <div 
-                        className={`
-                          w-0.5 h-6 mt-2
-                          ${isNextUnlocked ? "bg-emerald/60" : "bg-muted-foreground/20"}
-                        `}
-                      />
-                    )}
-                  </div>
+            const xPos = pathPositions[index % pathPositions.length];
+            const yPos = index * nodeSpacing;
 
-                  {/* Dungeon Info Card */}
-                  <div
-                    onClick={() => handleDungeonClick(dungeon)}
+            return (
+              <div
+                key={dungeon.id}
+                className="absolute transition-all duration-300"
+                style={{
+                  left: `${xPos}%`,
+                  top: yPos,
+                  transform: "translateX(-50%)",
+                }}
+              >
+                {/* Node */}
+                <div
+                  onClick={() => handleDungeonClick(dungeon)}
+                  className={`
+                    relative w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center
+                    transition-all duration-300 border-2 group
+                    ${isLocked 
+                      ? "bg-muted/50 border-muted-foreground/30 cursor-not-allowed" 
+                      : "cursor-pointer hover:scale-110"
+                    }
+                    ${isCompleted 
+                      ? "bg-emerald/20 border-emerald shadow-[0_0_25px_rgba(16,185,129,0.5)]" 
+                      : ""
+                    }
+                    ${isUnlocked 
+                      ? "bg-gold/20 border-gold shadow-[0_0_25px_rgba(245,158,11,0.5)]" 
+                      : ""
+                    }
+                  `}
+                  style={{
+                    animation: isUnlocked ? "pulse 2s ease-in-out infinite" : undefined
+                  }}
+                >
+                  {/* Dungeon Number */}
+                  <div 
                     className={`
-                      flex-1 p-4 md:p-5 rounded-xl transition-all duration-300 border
+                      absolute -top-2 -right-2 w-5 h-5 md:w-6 md:h-6 rounded-full flex items-center justify-center
+                      text-[9px] md:text-[10px] font-pixel border-2
                       ${isLocked 
-                        ? "opacity-60 cursor-not-allowed bg-muted/20 border-muted-foreground/20" 
-                        : "cursor-pointer hover:scale-[1.01]"
-                      }
-                      ${isCompleted 
-                        ? "bg-emerald/5 border-emerald/30 hover:border-emerald/50" 
-                        : ""
-                      }
-                      ${isUnlocked 
-                        ? "bg-gold/5 border-gold/30 hover:border-gold/50" 
-                        : ""
+                        ? "bg-muted border-muted-foreground/30 text-muted-foreground" 
+                        : isCompleted 
+                          ? "bg-emerald border-emerald text-white" 
+                          : "bg-gold border-gold text-primary-foreground"
                       }
                     `}
                   >
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      <h3 className={`
-                        text-sm md:text-base font-pixel leading-relaxed
-                        ${isLocked ? "text-muted-foreground" : ""}
-                        ${isCompleted ? "text-emerald" : ""}
-                        ${isUnlocked ? "text-gold" : ""}
-                      `}>
-                        {dungeon.title}
-                      </h3>
-                      <Badge 
-                        variant="outline" 
-                        className={`text-[10px] ${difficultyColors[dungeon.difficulty]}`}
-                      >
-                        {dungeon.difficulty.toUpperCase()}
-                      </Badge>
-                    </div>
-                    
-                    <p className="text-[10px] md:text-xs text-muted-foreground mb-3 line-clamp-2">
-                      {dungeon.description}
-                    </p>
+                    {dungeon.id}
+                  </div>
 
-                    {/* Progress Section */}
-                    <div className="flex items-center gap-3">
-                      <Progress 
-                        value={progress} 
-                        className={`h-2 flex-1 ${isCompleted ? "[&>div]:bg-emerald" : "[&>div]:bg-gold"}`}
-                      />
-                      <span className={`
-                        text-xs font-pixel min-w-[3rem] text-right
-                        ${isCompleted ? "text-emerald" : isUnlocked ? "text-gold" : "text-muted-foreground"}
-                      `}>
-                        {progress}%
-                      </span>
-                    </div>
-
-                    {/* Level count */}
-                    <p className="text-[10px] text-muted-foreground mt-2">
-                      {dungeon.levels.filter(l => userProgress.completed_levels.includes(l)).length} / {dungeon.levels.length} levels
-                    </p>
+                  {/* Icon */}
+                  <div className={`
+                    ${isLocked ? "text-muted-foreground" : ""}
+                    ${isCompleted ? "text-emerald" : ""}
+                    ${isUnlocked ? "text-gold" : ""}
+                  `}>
+                    {isLocked ? (
+                      <Lock className="w-5 h-5 md:w-6 md:h-6" />
+                    ) : isCompleted ? (
+                      <CheckCircle2 className="w-5 h-5 md:w-6 md:h-6" />
+                    ) : (
+                      iconMap[dungeon.icon] || <Sword className="w-5 h-5 md:w-6 md:h-6" />
+                    )}
                   </div>
                 </div>
-              );
-            })}
-          </div>
+
+                {/* Info Card (appears on hover or always visible on mobile) */}
+                <div
+                  className={`
+                    absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 md:w-56 p-3 rounded-lg
+                    transition-all duration-300 border z-20
+                    opacity-100 md:opacity-0 md:group-hover:opacity-100 md:pointer-events-none md:group-hover:pointer-events-auto
+                    ${isLocked 
+                      ? "bg-card/95 border-muted-foreground/20" 
+                      : isCompleted 
+                        ? "bg-card/95 border-emerald/30" 
+                        : "bg-card/95 border-gold/30"
+                    }
+                  `}
+                >
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <h3 className={`
+                      text-xs md:text-sm font-pixel leading-relaxed
+                      ${isLocked ? "text-muted-foreground" : ""}
+                      ${isCompleted ? "text-emerald" : ""}
+                      ${isUnlocked ? "text-gold" : ""}
+                    `}>
+                      {dungeon.title}
+                    </h3>
+                    <Badge 
+                      variant="outline" 
+                      className={`text-[8px] ${difficultyColors[dungeon.difficulty]}`}
+                    >
+                      {dungeon.difficulty.toUpperCase()}
+                    </Badge>
+                  </div>
+                  
+                  <p className="text-[9px] md:text-[10px] text-muted-foreground mb-2 line-clamp-2">
+                    {dungeon.description}
+                  </p>
+
+                  {/* Progress */}
+                  <div className="flex items-center gap-2">
+                    <Progress 
+                      value={progress} 
+                      className={`h-1.5 flex-1 ${isCompleted ? "[&>div]:bg-emerald" : "[&>div]:bg-gold"}`}
+                    />
+                    <span className="text-[9px] font-pixel text-muted-foreground">
+                      {progress}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
 
           {/* End marker */}
-          <div className="flex items-center gap-4 md:gap-6 mt-6">
-            <div className="w-16 md:w-24 flex justify-center">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center">
-                <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-primary-foreground" />
-              </div>
+          <div 
+            className="absolute"
+            style={{
+              left: `${pathPositions[dungeons.length % pathPositions.length]}%`,
+              top: dungeons.length * nodeSpacing,
+              transform: "translateX(-50%)",
+            }}
+          >
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-gold-glow flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.4)]">
+              <Sparkles className="w-5 h-5 text-primary-foreground" />
             </div>
-            <p className="text-xs font-pixel text-muted-foreground">Master all dungeons to achieve greatness!</p>
           </div>
         </div>
       </div>
