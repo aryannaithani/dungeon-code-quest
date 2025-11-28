@@ -284,9 +284,7 @@
     "xp": 75,
     "difficulty": "medium",
     "is_boss": true
-  }
-]
-[
+  },
   {
     "id": 201,
     "dungeon_id": 2,
@@ -573,8 +571,7 @@
     "difficulty": "medium",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 301,
     "dungeon_id": 3,
@@ -871,8 +868,7 @@
     "difficulty": "hard",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 401,
     "dungeon_id": 4,
@@ -1159,8 +1155,7 @@
     "difficulty": "hard",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 501,
     "dungeon_id": 5,
@@ -1447,8 +1442,7 @@
     "difficulty": "hard",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 601,
     "dungeon_id": 6,
@@ -1735,8 +1729,7 @@
     "difficulty": "hard",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 701,
     "dungeon_id": 7,
@@ -2023,8 +2016,7 @@
     "difficulty": "heroic",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 801,
     "dungeon_id": 8,
@@ -2311,8 +2303,7 @@
     "difficulty": "heroic",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 901,
     "dungeon_id": 9,
@@ -2599,8 +2590,7 @@
     "difficulty": "heroic",
     "is_boss": true
   }
-]
-[
+,
   {
     "id": 1001,
     "dungeon_id": 10,
