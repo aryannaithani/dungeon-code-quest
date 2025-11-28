@@ -471,57 +471,53 @@ async def get_user_achievements(user_id: int):
 # ============== QUESTIONS/QUESTS ENDPOINTS ==============
 
 @app.get("/api/questions", tags=["Questions"])
-async def get_questions(
-    difficulty: Optional[str] = None, 
-    category: Optional[str] = None, 
-    status: Optional[str] = None,
-    user_id: Optional[int] = None
-):
+async def get_questions(user_id: int):
     questions = read_questions()
-    
-    # Get user's completed dungeons if user_id provided
-    completed_dungeons = []
-    completed_questions = []
-    if user_id:
-        users = read_users()
-        for user in users:
-            if int(user["id"]) == user_id:
-                completed_levels = user.get("completed_levels", [])
-                if isinstance(completed_levels, str):
-                    try:
-                        completed_levels = json.loads(completed_levels)
-                    except:
-                        completed_levels = []
-                completed_dungeons = get_completed_dungeons(completed_levels)
-                
-                completed_questions = user.get("completed_questions", [])
-                if isinstance(completed_questions, str):
-                    try:
-                        completed_questions = json.loads(completed_questions)
-                    except:
-                        completed_questions = []
-                break
-    
-    # Update question status based on dungeon completion
+    user = find_user_by_id(user_id)
+
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    # Convert completed_questions to list
+    completed_qs = user.get("completed_questions", [])
+    if isinstance(completed_qs, str):
+        try:
+            completed_qs = json.loads(completed_qs)
+        except:
+            completed_qs = []
+
+    # Load dungeons to check unlock logic
+    with open("database/dungeons.json", "r") as f:
+        dungeons = json.load(f)
+
+    # Determine completion of each dungeon
+    completed_levels = user.get("completed_levels", [])
+    unlocked_dungeons = [1]  # basics always unlocked
+
+    for d in dungeons:
+        req = d.get("required_dungeon")
+        if req:
+            req_dungeon = next((x for x in dungeons if x["id"] == req), None)
+            if req_dungeon:
+                all_done = all(level in completed_levels for level in req_dungeon["levels"])
+                if all_done:
+                    unlocked_dungeons.append(d["id"])
+
+    # Tag questions with status
+    final_questions = []
     for q in questions:
-        if q["id"] in completed_questions:
-            q["status"] = "completed"
-        elif q.get("required_dungeon") and q["required_dungeon"] in completed_dungeons:
-            q["status"] = "available"
-        elif q.get("required_dungeon"):
+        dungeon_id = q.get("required_dungeon")
+
+        if dungeon_id not in unlocked_dungeons:
             q["status"] = "locked"
-        # If no required_dungeon, keep original status
+        elif q["id"] in completed_qs:
+            q["status"] = "completed"
+        else:
+            q["status"] = "available"
 
-    if difficulty:
-        questions = [q for q in questions if q["difficulty"].lower() == difficulty.lower()]
+        final_questions.append(q)
 
-    if category:
-        questions = [q for q in questions if q["category"].lower() == category.lower()]
-
-    if status:
-        questions = [q for q in questions if q["status"].lower() == status.lower()]
-
-    return questions
+    return final_questions
 
 
 @app.get("/api/questions/{question_id}", tags=["Questions"])

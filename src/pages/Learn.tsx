@@ -42,7 +42,7 @@ const iconMap: Record<string, React.ReactNode> = {
 };
 
 // X positions for winding path (percentage from left)
-const pathPositions = [15, 50, 85, 60, 25, 70, 40, 80, 30, 55];
+const pathPositions = [10, 50, 90, 60, 15, 50, 85, 50, 5, 50];
 
 const Learn = () => {
   const navigate = useNavigate();
@@ -315,8 +315,8 @@ const Learn = () => {
                 <div
                   className={`
                     absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 md:w-56 p-3 rounded-lg
-                    transition-all duration-300 border z-20
-                    opacity-100 md:opacity-0 md:group-hover:opacity-100 md:pointer-events-none md:group-hover:pointer-events-auto
+                    transition-all duration-300 border z-20 overflow-visible
+                    opacity-100 md:opacity-80 md:hover:opacity-100 pointer-events-auto transition-opacity
                     ${isLocked 
                       ? "bg-card/95 border-muted-foreground/20" 
                       : isCompleted 
@@ -342,9 +342,16 @@ const Learn = () => {
                     </Badge>
                   </div>
                   
-                  <p className="text-[9px] md:text-[10px] text-muted-foreground mb-2 line-clamp-2">
-                    {dungeon.description}
-                  </p>
+                  <p
+  className="
+    text-[9px] md:text-[10px] text-muted-foreground mb-2
+    overflow-hidden transition-all duration-300 ease-in-out
+    max-h-[2.8rem] md:max-h-[2.8rem] 
+    md:group-hover:max-h-[200px]
+  "
+>
+  {dungeon.description}
+</p>
 
                   {/* Progress */}
                   <div className="flex items-center gap-2">
