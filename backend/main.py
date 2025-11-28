@@ -99,6 +99,10 @@ def read_questions():
             # Convert numeric fields
             row["id"] = int(row["id"])
             row["xp"] = int(row["xp"])
+            
+            # Parse required_dungeon
+            required_dungeon = row.get("required_dungeon", "")
+            row["required_dungeon"] = int(required_dungeon) if required_dungeon else None
 
             # Parse examples
             examples_raw = row.get("examples", "")
@@ -107,23 +111,20 @@ def read_questions():
             except:
                 row["examples"] = []
 
-            # Parse tests (THIS FIXES YOUR PROBLEM)
+            # Parse tests
             tests_raw = row.get("tests", "")
 
-            # Step 1: try decoding once
             try:
                 decoded = json.loads(tests_raw)
             except:
                 decoded = tests_raw
 
-            # Step 2: if still string, decode again
             if isinstance(decoded, str):
                 try:
                     decoded = json.loads(decoded)
                 except:
                     decoded = []
 
-            # Final sanity check
             if isinstance(decoded, list):
                 row["tests"] = decoded
             else:
@@ -135,6 +136,17 @@ def read_questions():
             questions.append(row)
 
     return questions
+
+def get_completed_dungeons(completed_levels: list) -> list:
+    """Get list of dungeon IDs where all levels are completed"""
+    dungeons = read_dungeons()
+    completed_dungeons = []
+    
+    for dungeon in dungeons:
+        if all(level_id in completed_levels for level_id in dungeon["levels"]):
+            completed_dungeons.append(dungeon["id"])
+    
+    return completed_dungeons
 
 def get_leaderboard_users(limit=100):
     users = read_users()
@@ -459,8 +471,46 @@ async def get_user_achievements(user_id: int):
 # ============== QUESTIONS/QUESTS ENDPOINTS ==============
 
 @app.get("/api/questions", tags=["Questions"])
-async def get_questions(difficulty: Optional[str] = None, category: Optional[str] = None, status: Optional[str] = None):
+async def get_questions(
+    difficulty: Optional[str] = None, 
+    category: Optional[str] = None, 
+    status: Optional[str] = None,
+    user_id: Optional[int] = None
+):
     questions = read_questions()
+    
+    # Get user's completed dungeons if user_id provided
+    completed_dungeons = []
+    completed_questions = []
+    if user_id:
+        users = read_users()
+        for user in users:
+            if int(user["id"]) == user_id:
+                completed_levels = user.get("completed_levels", [])
+                if isinstance(completed_levels, str):
+                    try:
+                        completed_levels = json.loads(completed_levels)
+                    except:
+                        completed_levels = []
+                completed_dungeons = get_completed_dungeons(completed_levels)
+                
+                completed_questions = user.get("completed_questions", [])
+                if isinstance(completed_questions, str):
+                    try:
+                        completed_questions = json.loads(completed_questions)
+                    except:
+                        completed_questions = []
+                break
+    
+    # Update question status based on dungeon completion
+    for q in questions:
+        if q["id"] in completed_questions:
+            q["status"] = "completed"
+        elif q.get("required_dungeon") and q["required_dungeon"] in completed_dungeons:
+            q["status"] = "available"
+        elif q.get("required_dungeon"):
+            q["status"] = "locked"
+        # If no required_dungeon, keep original status
 
     if difficulty:
         questions = [q for q in questions if q["difficulty"].lower() == difficulty.lower()]
