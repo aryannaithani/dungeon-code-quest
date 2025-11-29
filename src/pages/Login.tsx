@@ -3,60 +3,75 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sword } from "lucide-react";
+import { Sword, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { api, setAuth } from "@/lib/api";
+import { loginSchema } from "@/lib/validation";
 
 const Login = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = () => {
+    const result = loginSchema.safeParse({ username, password });
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) return;
+    
+    setIsLoading(true);
   
     try {
-      const response = await fetch("http://localhost:8000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
+      const data = await api.login({ username: username.trim(), password });
+      setAuth(data.user_id, data.token);
+      
+      toast({
+        title: "Welcome Back, Hero!",
+        description: "You have successfully entered the dungeon.",
+        className: "bg-emerald/10 border-emerald text-foreground",
       });
-  
-      if (!response.ok) {
-        throw new Error("Invalid login");
-      }
-  
-      const data = await response.json();
-  
-      // Save token + user ID for future authenticated routes
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user_id", data.user_id.toString());
-  
+      
       navigate("/profile");
     } catch (error) {
-      console.error(error);
       toast({
-        title: "⚔️ Quest Failed",
-        description: "Login failed. Check your username or password.",
+        title: "Quest Failed",
+        description: "Invalid username or password. Try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md animate-fade-in">
         <div className="bg-card p-8 pixel-border-gold glow-gold">
           <div className="flex justify-center mb-6">
-            <Sword className="w-16 h-16 text-gold" />
+            <div className="relative">
+              <Sword className="w-16 h-16 text-gold" />
+              <div className="absolute inset-0 w-16 h-16 bg-gold/20 rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+            </div>
           </div>
           
-          <h1 className="text-2xl md:text-3xl font-pixel text-gold text-center mb-8 leading-relaxed">
+          <h1 className="text-2xl md:text-3xl font-pixel text-gold text-center mb-8 leading-relaxed text-glow">
             Welcome Back Hero
           </h1>
 
@@ -70,9 +85,16 @@ const Login = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="bg-input border-border text-foreground font-pixel text-sm pixel-border"
+                className={`bg-input border-border text-foreground font-pixel text-sm pixel-border focus:pixel-border-gold transition-all ${
+                  errors.username ? 'border-destructive' : ''
+                }`}
                 placeholder="hero_name"
+                disabled={isLoading}
+                autoComplete="username"
               />
+              {errors.username && (
+                <p className="text-destructive text-xs mt-1 font-pixel">{errors.username}</p>
+              )}
             </div>
 
             <div>
@@ -84,23 +106,39 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-input border-border text-foreground font-pixel text-sm pixel-border"
+                className={`bg-input border-border text-foreground font-pixel text-sm pixel-border focus:pixel-border-gold transition-all ${
+                  errors.password ? 'border-destructive' : ''
+                }`}
                 placeholder="********"
+                disabled={isLoading}
+                autoComplete="current-password"
               />
+              {errors.password && (
+                <p className="text-destructive text-xs mt-1 font-pixel">{errors.password}</p>
+              )}
             </div>
 
             <Button
               type="submit"
-              className="w-full bg-gold hover:bg-gold-glow text-background font-pixel py-6 glow-gold hover:scale-105 transition-all"
+              disabled={isLoading}
+              className="w-full bg-gold hover:bg-gold-glow text-background font-pixel py-6 glow-gold hover:scale-105 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Enter Dungeon
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Entering...
+                </>
+              ) : (
+                'Enter Dungeon'
+              )}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <button
               onClick={() => navigate("/signup")}
-              className="text-emerald hover:text-emerald-glow text-xs font-pixel transition-colors"
+              disabled={isLoading}
+              className="text-emerald hover:text-emerald-glow text-xs font-pixel transition-colors hover:underline"
             >
               Create New Hero
             </button>

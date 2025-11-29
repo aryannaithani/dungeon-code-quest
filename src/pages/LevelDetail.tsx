@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,30 +12,13 @@ import {
   CheckCircle2, 
   XCircle, 
   Trophy,
-  Sparkles,
-  Crown
+  Crown,
+  Loader2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-interface QuizQuestion {
-  q: string;
-  options: string[];
-  answer: string;
-}
-
-interface Level {
-  id: number;
-  dungeon_id: number;
-  title: string;
-  lesson: string;
-  quiz: {
-    type: string;
-    questions: QuizQuestion[];
-  };
-  xp: number;
-  difficulty: string;
-  is_boss?: boolean;
-}
+import { api, getUserId, type LevelDetail as LevelDetailType } from "@/lib/api";
+import { LoadingSpinner } from "@/components/LoadingSkeleton";
+import { parseLesson } from "@/lib/sanitize";
 
 const difficultyColors: Record<string, string> = {
   easy: "bg-emerald/20 text-emerald border-emerald",
@@ -44,11 +27,11 @@ const difficultyColors: Record<string, string> = {
 };
 
 const LevelDetail = () => {
-  const { levelId } = useParams();
+  const { levelId } = useParams<{ levelId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  const [level, setLevel] = useState<Level | null>(null);
+  const [level, setLevel] = useState<LevelDetailType | null>(null);
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState<"lesson" | "quiz" | "results">("lesson");
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -58,19 +41,30 @@ const LevelDetail = () => {
 
   useEffect(() => {
     const fetchLevel = async () => {
+      if (!levelId) return;
+      
       try {
-        const res = await fetch(`http://localhost:8000/api/levels/${levelId}`);
-        const data = await res.json();
+        const data = await api.getLevel(levelId);
         setLevel(data);
       } catch (error) {
-        console.error("Failed to fetch level:", error);
+        toast({
+          title: "Failed to Load",
+          description: "Could not load level data. Please try again.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
     };
 
     fetchLevel();
-  }, [levelId]);
+  }, [levelId, toast]);
+
+  // Safely parse lesson content
+  const parsedLesson = useMemo(() => {
+    if (!level?.lesson) return "";
+    return parseLesson(level.lesson);
+  }, [level?.lesson]);
 
   const handleStartQuiz = () => {
     setPhase("quiz");
@@ -95,12 +89,12 @@ const LevelDetail = () => {
   };
 
   const handleSubmitQuiz = async () => {
-    if (!level) return;
+    if (!level || !levelId) return;
     
     setSubmitting(true);
     
     try {
-      const userId = localStorage.getItem("user_id");
+      const userId = getUserId();
       
       // Calculate results locally
       let correct = 0;
@@ -114,16 +108,10 @@ const LevelDetail = () => {
       const passed = correct === total;
       
       // Submit to backend
-      const res = await fetch(`http://localhost:8000/api/levels/${levelId}/submit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: userId ? parseInt(userId) : 0,
-          answers: Object.values(answers),
-        }),
+      await api.submitLevel(levelId, {
+        user_id: userId ? parseInt(userId) : 0,
+        answers: Object.values(answers),
       });
-      
-      const data = await res.json();
       
       setResults({ correct, total });
       setPhase("results");
@@ -142,10 +130,9 @@ const LevelDetail = () => {
         });
       }
     } catch (error) {
-      console.error("Failed to submit:", error);
       toast({
         title: "Error",
-        description: "Failed to submit quiz",
+        description: "Failed to submit quiz. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -161,26 +148,27 @@ const LevelDetail = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Sparkles className="w-12 h-12 text-gold mx-auto animate-pulse" />
-          <p className="text-sm font-pixel text-gold mt-4">Loading Level...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading Level..." />;
   }
 
   if (!level) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-sm font-pixel text-destructive">Level not found</p>
+        <div className="text-center">
+          <p className="text-sm font-pixel text-destructive mb-4">Level not found</p>
+          <Button
+            onClick={() => navigate("/learn")}
+            className="bg-gold text-background font-pixel"
+          >
+            Return to Arena
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8 animate-fade-in">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -195,7 +183,7 @@ const LevelDetail = () => {
           
           <div className="flex items-center gap-4 flex-wrap">
             {level.is_boss && <Crown className="w-6 h-6 text-gold" />}
-            <h1 className="text-xl md:text-2xl font-pixel text-gold leading-relaxed">
+            <h1 className="text-xl md:text-2xl font-pixel text-gold leading-relaxed text-glow">
               {level.title}
             </h1>
             <Badge variant="outline" className={difficultyColors[level.difficulty]}>
@@ -210,9 +198,9 @@ const LevelDetail = () => {
 
         {/* Phase Progress */}
         <div className="flex items-center gap-2 mb-6">
-          <div className={`flex-1 h-2 rounded ${phase === "lesson" ? "bg-gold" : "bg-emerald"}`} />
-          <div className={`flex-1 h-2 rounded ${phase === "quiz" ? "bg-gold" : phase === "results" ? "bg-emerald" : "bg-muted"}`} />
-          <div className={`flex-1 h-2 rounded ${phase === "results" ? "bg-emerald" : "bg-muted"}`} />
+          <div className={`flex-1 h-2 rounded transition-colors ${phase === "lesson" ? "bg-gold" : "bg-emerald"}`} />
+          <div className={`flex-1 h-2 rounded transition-colors ${phase === "quiz" ? "bg-gold" : phase === "results" ? "bg-emerald" : "bg-muted"}`} />
+          <div className={`flex-1 h-2 rounded transition-colors ${phase === "results" ? "bg-emerald" : "bg-muted"}`} />
         </div>
 
         {/* Lesson Phase */}
@@ -222,14 +210,8 @@ const LevelDetail = () => {
             
             <div className="prose prose-invert max-w-none mb-8">
               <div 
-                className="text-sm text-foreground leading-relaxed whitespace-pre-wrap"
-                dangerouslySetInnerHTML={{ 
-                  __html: level.lesson
-                    .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-dungeon-stone p-4 rounded text-xs overflow-x-auto pixel-border"><code>$2</code></pre>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-gold">$1</strong>')
-                    .replace(/`([^`]+)`/g, '<code class="bg-dungeon-stone px-1 rounded text-emerald text-xs">$1</code>')
-                    .replace(/\n/g, '<br/>')
-                }}
+                className="text-sm text-foreground leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: parsedLesson }}
               />
             </div>
             
@@ -316,7 +298,14 @@ const LevelDetail = () => {
                   disabled={Object.keys(answers).length < level.quiz.questions.length || submitting}
                   className="flex-1 bg-emerald text-primary-foreground hover:bg-emerald-glow"
                 >
-                  {submitting ? "Submitting..." : "Submit"}
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Submit"
+                  )}
                 </Button>
               )}
             </div>
@@ -331,7 +320,7 @@ const LevelDetail = () => {
                 <div className="w-20 h-20 rounded-full bg-emerald/20 flex items-center justify-center mx-auto mb-6">
                   <Trophy className="w-10 h-10 text-emerald" />
                 </div>
-                <h2 className="text-2xl font-pixel text-emerald mb-4">Victory!</h2>
+                <h2 className="text-2xl font-pixel text-emerald mb-4 text-glow">Victory!</h2>
                 <p className="text-sm text-foreground mb-2">
                   You answered all questions correctly!
                 </p>
@@ -383,7 +372,7 @@ const LevelDetail = () => {
                           ) : (
                             <XCircle className="w-4 h-4 text-destructive mt-1 shrink-0" />
                           )}
-                          <div>
+                          <div className="min-w-0">
                             <p className="text-xs text-foreground mb-2">{q.q}</p>
                             <p className="text-xs text-muted-foreground">
                               Your answer: <span className={isCorrect ? "text-emerald" : "text-destructive"}>{answers[index]}</span>

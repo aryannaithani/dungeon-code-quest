@@ -1,42 +1,56 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Play } from "lucide-react";
+import { ArrowLeft, Play, Send, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import Editor from "@monaco-editor/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { api, getUserId, type QuestionDetail as QuestionDetailType } from "@/lib/api";
+import { LoadingSpinner } from "@/components/LoadingSkeleton";
+import { codeSchema } from "@/lib/validation";
+
+const DEFAULT_CODE = `def solve(*args):
+    # Write your code here
+    pass
+`;
+
+const getDifficultyColor = (difficulty: string) => {
+  switch (difficulty) {
+    case "Easy":
+      return "bg-emerald text-background";
+    case "Medium":
+      return "bg-gold text-background";
+    case "Hard":
+      return "bg-destructive text-foreground";
+    default:
+      return "bg-muted text-foreground";
+  }
+};
 
 const QuestionDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [question, setQuestion] = useState<any>(null);
+  const [question, setQuestion] = useState<QuestionDetailType | null>(null);
   const [loading, setLoading] = useState(true);
-  const [code, setCode] = useState(
-    `def solve(*args):
-        # Write your code here
-        pass
-    `
-  );
+  const [code, setCode] = useState(DEFAULT_CODE);
   const [output, setOutput] = useState<string>("");
   const [isRunning, setIsRunning] = useState(false);
-    
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchQuestion = async () => {
+      if (!id) return;
+      
       try {
-        const response = await fetch(`http://localhost:8000/api/questions/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch question");
-
-        const data = await response.json();
+        const data = await api.getQuestion(id);
         setQuestion(data);
       } catch (err) {
-        console.error(err);
         toast({
-          title: "📜 Quest Loading Failed",
-          description: "Failed to load question.",
+          title: "Quest Loading Failed",
+          description: "Failed to load question. Please try again.",
           variant: "destructive",
         });
       } finally {
@@ -47,83 +61,67 @@ const QuestionDetail = () => {
     fetchQuestion();
   }, [id]);
 
+  const validateCode = useCallback(() => {
+    const result = codeSchema.safeParse({ code, language: 'python' });
+    if (!result.success) {
+      toast({
+        title: "Invalid Code",
+        description: result.error.errors[0]?.message || "Please check your code.",
+        variant: "destructive",
+      });
+      return false;
+    }
+    return true;
+  }, [code]);
+
   const submitSolution = async () => {
+    if (!id || !validateCode()) return;
+    
+    setIsSubmitting(true);
+    
     try {
-      const response = await fetch(`http://localhost:8000/api/questions/${id}/submit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: localStorage.getItem("user_id"),
-          code,
-          language: "python",
-        }),
+      const data = await api.submitQuestion(id, {
+        user_id: getUserId(),
+        code,
+        language: "python",
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast({
-          title: "⚔️ Submission Failed",
-          description: data.detail || "Submission failed.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Display output if available
       if (data.output) {
         setOutput(data.output);
       }
 
       toast({
-        title: "✨ Quest Complete!",
+        title: "Quest Complete!",
         description: data.message,
         className: "bg-emerald/10 border-emerald text-foreground",
       });
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
       toast({
-        title: "⚔️ Submission Error",
-        description: "Submission failed.",
+        title: "Submission Failed",
+        description: err?.data?.detail || "Submission failed. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const testCode = async () => {
+    if (!id || !validateCode()) return;
+    
     setIsRunning(true);
     setOutput("Running tests...");
     
     try {
-      const response = await fetch(`http://localhost:8000/api/questions/${id}/test`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-          language: "python",
-        }),
+      const data = await api.testQuestion(id, {
+        code,
+        language: "python",
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setOutput(`❌ Test Failed\n\n${data.detail || "Test execution failed."}`);
-        toast({
-          title: "⚠️ Test Failed",
-          description: "Your code has errors. Check the output below.",
-          variant: "destructive",
-        });
-        return;
-      }
 
       // Format test results
       let resultText = "";
       if (data.results) {
-        resultText = data.results.map((result: any, idx: number) => 
+        resultText = data.results.map((result, idx) => 
           `Test Case ${idx + 1}: ${result.passed ? "✅ PASSED" : "❌ FAILED"}\n` +
           `Input: ${JSON.stringify(result.input)}\n` +
           `Expected: ${JSON.stringify(result.expected)}\n` +
@@ -137,16 +135,15 @@ const QuestionDetail = () => {
       
       const allPassed = data.all_passed !== false;
       toast({
-        title: allPassed ? "✅ All Tests Passed!" : "⚠️ Some Tests Failed",
+        title: allPassed ? "All Tests Passed!" : "Some Tests Failed",
         description: allPassed ? "Great work! Ready to submit?" : "Check the output for details.",
         className: allPassed ? "bg-emerald/10 border-emerald text-foreground" : undefined,
         variant: allPassed ? undefined : "destructive",
       });
-    } catch (err) {
-      console.error(err);
-      setOutput("❌ Error running tests. Please try again.");
+    } catch (err: any) {
+      setOutput(`❌ Error: ${err?.data?.detail || "Test execution failed. Please try again."}`);
       toast({
-        title: "⚔️ Test Error",
+        title: "Test Error",
         description: "Failed to run tests.",
         variant: "destructive",
       });
@@ -156,36 +153,27 @@ const QuestionDetail = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gold font-pixel text-2xl">
-        Loading quest...
-      </div>
-    );
+    return <LoadingSpinner message="Loading Quest..." />;
   }
 
   if (!question) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500 font-pixel text-2xl">
-        Quest not found.
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-sm font-pixel text-destructive mb-4">Quest not found</p>
+          <Button
+            onClick={() => navigate("/questions")}
+            className="bg-gold text-background font-pixel"
+          >
+            Return to Quests
+          </Button>
+        </div>
       </div>
     );
   }
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy":
-        return "bg-emerald text-background";
-      case "Medium":
-        return "bg-gold text-background";
-      case "Hard":
-        return "bg-destructive text-foreground";
-      default:
-        return "bg-muted text-foreground";
-    }
-  };
-
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8 animate-fade-in">
       <div className="max-w-6xl mx-auto">
         <Button
           variant="outline"
@@ -199,8 +187,8 @@ const QuestionDetail = () => {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Question Details */}
           <Card className="bg-card p-6 pixel-border h-fit">
-            <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-2xl font-pixel text-gold">{question.title}</h1>
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <h1 className="text-xl md:text-2xl font-pixel text-gold text-glow">{question.title}</h1>
               <Badge className={`${getDifficultyColor(question.difficulty)} font-pixel text-xs`}>
                 {question.difficulty}
               </Badge>
@@ -218,13 +206,13 @@ const QuestionDetail = () => {
               {question.examples?.length > 0 && (
                 <div>
                   <h2 className="text-lg font-pixel text-gold mb-2">Examples</h2>
-                  {question.examples.map((example: any, idx: number) => (
+                  {question.examples.map((example, idx) => (
                     <div key={idx} className="bg-muted p-3 rounded mb-2 font-mono text-xs">
                       <div>
-                        <strong>Input:</strong> {JSON.stringify(example.input)}
+                        <strong className="text-emerald">Input:</strong> {JSON.stringify(example.input)}
                       </div>
                       <div>
-                        <strong>Output:</strong> {JSON.stringify(example.output)}
+                        <strong className="text-emerald">Output:</strong> {JSON.stringify(example.output)}
                       </div>
                     </div>
                   ))}
@@ -247,38 +235,60 @@ const QuestionDetail = () => {
           <Card className="bg-card p-6 pixel-border">
             <h2 className="text-lg font-pixel text-gold mb-4">Your Solution</h2>
 
-            <Editor
-              height="400px"
-              defaultLanguage="python"
-              theme="vs-dark"
-              value={code}
-              onChange={(value) => setCode(value || "")}
-              options={{
-                fontSize: 14,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                automaticLayout: true,
-              }}
-            />
+            <div className="pixel-border overflow-hidden">
+              <Editor
+                height="400px"
+                defaultLanguage="python"
+                theme="vs-dark"
+                value={code}
+                onChange={(value) => setCode(value || "")}
+                options={{
+                  fontSize: 14,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  wordWrap: "on",
+                  automaticLayout: true,
+                  padding: { top: 16, bottom: 16 },
+                }}
+              />
+            </div>
 
             <div className="flex gap-4 mt-4">
               <Button
                 onClick={submitSolution}
-                disabled={isRunning}
-                className="bg-gold hover:bg-gold-glow text-background font-pixel glow-gold"
+                disabled={isRunning || isSubmitting}
+                className="bg-gold hover:bg-gold-glow text-background font-pixel glow-gold flex-1 sm:flex-none"
               >
-                Submit
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    Submit
+                  </>
+                )}
               </Button>
 
               <Button
                 onClick={testCode}
-                disabled={isRunning}
+                disabled={isRunning || isSubmitting}
                 variant="outline"
-                className="border-gold text-gold hover:bg-gold hover:text-background font-pixel"
+                className="border-gold text-gold hover:bg-gold hover:text-background font-pixel flex-1 sm:flex-none"
               >
-                <Play className="w-4 h-4 mr-2" />
-                {isRunning ? "Running..." : "Test"}
+                {isRunning ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Running...
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4 mr-2" />
+                    Test
+                  </>
+                )}
               </Button>
             </div>
           </Card>
