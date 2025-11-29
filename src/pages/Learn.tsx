@@ -3,17 +3,9 @@ import { Progress } from "@/components/ui/progress";
 import { Lock, CheckCircle2, Sword, GitBranch, Box, Sparkles, Layers, Contact, Repeat, Cpu, Network, Blocks, Skull } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-
-interface Dungeon {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: string;
-  unlocks_at_xp: number;
-  required_dungeon: number | null;
-  icon: string;
-  levels: number[];
-}
+import { api, getUserId, type Dungeon } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
+import { LoadingSpinner } from "@/components/LoadingSkeleton";
 
 interface UserProgress {
   completed_levels: number[];
@@ -58,14 +50,12 @@ const Learn = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const dungeonsRes = await fetch("http://localhost:8000/api/dungeons");
-        const dungeonsData = await dungeonsRes.json();
+        const dungeonsData = await api.getDungeons();
         setDungeons(dungeonsData);
 
-        const userId = localStorage.getItem("user_id");
+        const userId = getUserId();
         if (userId) {
-          const profileRes = await fetch(`http://localhost:8000/api/profile/${userId}`);
-          const profileData = await profileRes.json();
+          const profileData = await api.getProfile(userId);
           
           const completedLevels = profileData.completed_levels || [];
           const unlockedDungeons = calculateUnlockedDungeons(dungeonsData, completedLevels);
@@ -77,7 +67,11 @@ const Learn = () => {
           });
         }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        toast({
+          title: "Failed to Load",
+          description: "Could not load dungeon data. Please try again.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
@@ -107,6 +101,7 @@ const Learn = () => {
   };
 
   const getDungeonProgress = (dungeon: Dungeon): number => {
+    if (!dungeon.levels.length) return 0;
     const completed = dungeon.levels.filter(
       levelId => userProgress.completed_levels.includes(levelId)
     ).length;
@@ -136,24 +131,17 @@ const Learn = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Sparkles className="w-12 h-12 text-gold mx-auto animate-pulse" />
-          <p className="text-sm font-pixel text-gold mt-4">Loading Dungeons...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading Dungeons..." />;
   }
 
   const nodeSpacing = 140;
   const svgHeight = dungeons.length * nodeSpacing + 100;
 
   return (
-    <div className="min-h-screen p-4 md:p-8 overflow-x-hidden">
+    <div className="min-h-screen p-4 md:p-8 overflow-x-hidden animate-fade-in">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-4 leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-4 leading-relaxed text-glow">
             Dungeon Arena
           </h1>
           <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
@@ -254,6 +242,7 @@ const Learn = () => {
                   left: `${xPos}%`,
                   top: yPos,
                   transform: "translateX(-50%)",
+                  animationDelay: `${index * 0.1}s`,
                 }}
               >
                 {/* Node */}
@@ -311,7 +300,7 @@ const Learn = () => {
                   </div>
                 </div>
 
-                {/* Info Card (appears on hover or always visible on mobile) */}
+                {/* Info Card */}
                 <div
                   className={`
                     absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 md:w-56 p-3 rounded-lg
@@ -342,16 +331,9 @@ const Learn = () => {
                     </Badge>
                   </div>
                   
-                  <p
-  className="
-    text-[9px] md:text-[10px] text-muted-foreground mb-2
-    overflow-hidden transition-all duration-300 ease-in-out
-    max-h-[2.8rem] md:max-h-[2.8rem] 
-    md:group-hover:max-h-[200px]
-  "
->
-  {dungeon.description}
-</p>
+                  <p className="text-[9px] md:text-[10px] text-muted-foreground mb-2 line-clamp-2">
+                    {dungeon.description}
+                  </p>
 
                   {/* Progress */}
                   <div className="flex items-center gap-2">

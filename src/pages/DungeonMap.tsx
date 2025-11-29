@@ -4,23 +4,9 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Lock, CheckCircle2, Star, ChevronLeft, Sparkles, Crown } from "lucide-react";
-
-interface Level {
-  id: number;
-  dungeon_id: number;
-  title: string;
-  xp: number;
-  difficulty: string;
-  is_boss?: boolean;
-}
-
-interface Dungeon {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: string;
-  levels: number[];
-}
+import { api, getUserId, type Dungeon, type Level } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
+import { LoadingSpinner, DungeonMapSkeleton } from "@/components/LoadingSkeleton";
 
 const difficultyColors: Record<string, string> = {
   easy: "border-emerald bg-emerald/20",
@@ -29,7 +15,7 @@ const difficultyColors: Record<string, string> = {
 };
 
 const DungeonMap = () => {
-  const { dungeonId } = useParams();
+  const { dungeonId } = useParams<{ dungeonId: string }>();
   const navigate = useNavigate();
   const [dungeon, setDungeon] = useState<Dungeon | null>(null);
   const [levels, setLevels] = useState<Level[]>([]);
@@ -38,26 +24,30 @@ const DungeonMap = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!dungeonId) return;
+      
       try {
-        // Fetch dungeon details
-        const dungeonRes = await fetch(`http://localhost:8000/api/dungeons/${dungeonId}`);
-        const dungeonData = await dungeonRes.json();
+        // Fetch dungeon details and levels in parallel
+        const [dungeonData, levelsData] = await Promise.all([
+          api.getDungeon(dungeonId),
+          api.getDungeonLevels(dungeonId),
+        ]);
+        
         setDungeon(dungeonData);
-
-        // Fetch levels for this dungeon
-        const levelsRes = await fetch(`http://localhost:8000/api/dungeons/${dungeonId}/levels`);
-        const levelsData = await levelsRes.json();
         setLevels(levelsData);
 
         // Fetch user progress
-        const userId = localStorage.getItem("user_id");
+        const userId = getUserId();
         if (userId) {
-          const profileRes = await fetch(`http://localhost:8000/api/profile/${userId}`);
-          const profileData = await profileRes.json();
+          const profileData = await api.getProfile(userId);
           setCompletedLevels(profileData.completed_levels || []);
         }
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        toast({
+          title: "Failed to Load",
+          description: "Could not load dungeon data. Please try again.",
+          variant: "destructive",
+        });
       } finally {
         setLoading(false);
       }
@@ -89,11 +79,8 @@ const DungeonMap = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Sparkles className="w-12 h-12 text-gold mx-auto animate-pulse" />
-          <p className="text-sm font-pixel text-gold mt-4">Loading Map...</p>
-        </div>
+      <div className="min-h-screen p-4 md:p-8">
+        <DungeonMapSkeleton />
       </div>
     );
   }
@@ -101,13 +88,21 @@ const DungeonMap = () => {
   if (!dungeon) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-sm font-pixel text-destructive">Dungeon not found</p>
+        <div className="text-center">
+          <p className="text-sm font-pixel text-destructive mb-4">Dungeon not found</p>
+          <Button
+            onClick={() => navigate("/learn")}
+            className="bg-gold text-background font-pixel"
+          >
+            Return to Arena
+          </Button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8 animate-fade-in">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -127,7 +122,7 @@ const DungeonMap = () => {
             >
               {dungeon.difficulty.toUpperCase()}
             </Badge>
-            <h1 className="text-2xl md:text-3xl font-pixel text-gold mb-2 leading-relaxed">
+            <h1 className="text-2xl md:text-3xl font-pixel text-gold mb-2 leading-relaxed text-glow">
               {dungeon.title}
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -157,6 +152,7 @@ const DungeonMap = () => {
                 <div
                   key={level.id}
                   className={`flex items-center gap-4 ${isLeft ? "flex-row" : "flex-row-reverse"}`}
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   {/* Spacer */}
                   <div className="flex-1" />
@@ -169,7 +165,7 @@ const DungeonMap = () => {
                       transition-all duration-300 border-4
                       ${isLocked 
                         ? "bg-muted border-muted-foreground/30 cursor-not-allowed" 
-                        : "cursor-pointer"
+                        : "cursor-pointer hover:scale-110"
                       }
                       ${isCompleted 
                         ? "bg-emerald/20 border-emerald glow-emerald" 
@@ -186,15 +182,12 @@ const DungeonMap = () => {
                     `}
                   >
                     {isLocked && <Lock className="w-6 h-6 text-muted-foreground" />}
-                    {isCompleted && <CheckCircle2 className="w-8 h-8 text-emerald" />}
+                    {isCompleted && !isBoss && <CheckCircle2 className="w-8 h-8 text-emerald" />}
                     {isUnlocked && !isBoss && (
                       <span className="text-xl font-pixel text-gold">{index + 1}</span>
                     )}
-                    {isUnlocked && isBoss && (
-                      <Crown className="w-8 h-8 text-gold" />
-                    )}
-                    {isCompleted && isBoss && (
-                      <Crown className="w-8 h-8 text-emerald" />
+                    {(isUnlocked || isCompleted) && isBoss && (
+                      <Crown className={`w-8 h-8 ${isCompleted ? "text-emerald" : "text-gold"}`} />
                     )}
                     
                     {/* XP Badge */}
@@ -227,7 +220,7 @@ const DungeonMap = () => {
                         <Crown className={`w-4 h-4 ${isCompleted ? "text-emerald" : "text-gold"}`} />
                       )}
                       <h3 className={`
-                        text-sm font-pixel leading-relaxed
+                        text-sm font-pixel leading-relaxed truncate
                         ${isLocked ? "text-muted-foreground" : "text-foreground"}
                         ${isCompleted ? "text-emerald" : ""}
                       `}>

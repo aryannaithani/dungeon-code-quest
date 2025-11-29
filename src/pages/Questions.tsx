@@ -3,19 +3,23 @@ import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Scroll, Lock, CheckCircle, Sparkles } from "lucide-react";
+import { Scroll, Lock, CheckCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { api, getUserId, type Question } from "@/lib/api";
+import { QuestListSkeleton } from "@/components/LoadingSkeleton";
 
-interface Question {
-  id: number;
-  title: string;
-  description: string;
-  difficulty: string;
-  xp: number;
-  status: string;
-  category: string;
-  required_dungeon: number | null;
-}
+const DUNGEON_NAMES: Record<number, string> = {
+  1: "Basics Dungeon",
+  2: "Control Flow Dungeon",
+  3: "Functions Dungeon",
+  4: "Data Structures Dungeon",
+  5: "OOP Dungeon",
+  6: "Recursion Dungeon",
+  7: "Algorithms Dungeon",
+  8: "Advanced Data Structures",
+  9: "Dynamic Programming",
+  10: "Final Boss Dungeon",
+};
 
 const Questions = () => {
   const navigate = useNavigate();
@@ -25,20 +29,13 @@ const Questions = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userId = localStorage.getItem("user_id");
-        const url = userId 
-          ? `http://localhost:8000/api/questions?user_id=${userId}`
-          : "http://localhost:8000/api/questions";
-          
-        const questionsResponse = await fetch(url);
-        if (!questionsResponse.ok) throw new Error("Failed to fetch questions");
-        const questionsData = await questionsResponse.json();
+        const userId = getUserId();
+        const questionsData = await api.getQuestions(userId);
         setQuestions(questionsData);
       } catch (err) {
-        console.error(err);
         toast({
           title: "Quest Board Error",
-          description: "Failed to load questions.",
+          description: "Failed to load questions. Please try again.",
           variant: "destructive",
         });
       } finally {
@@ -48,17 +45,6 @@ const Questions = () => {
 
     fetchData();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Sparkles className="w-12 h-12 text-gold mx-auto animate-pulse" />
-          <p className="text-sm font-pixel text-gold mt-4">Loading Quests...</p>
-        </div>
-      </div>
-    );
-  }
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -73,32 +59,30 @@ const Questions = () => {
     }
   };
 
-  const getDungeonName = (dungeonId: number | null) => {
-    if (!dungeonId) return null;
-    const dungeonNames: Record<number, string> = {
-      1: "Basics Dungeon",
-      2: "Control Flow Dungeon",
-      3: "Functions Dungeon",
-      4: "Data Structures Dungeon",
-      5: "OOP Dungeon",
-      6: "Recursion Dungeon",
-      7: "Algorithms Dungeon",
-      8: "Advanced Data Structures",
-      9: "Dynamic Programming",
-      10: "Final Boss Dungeon",
-    };
-    return dungeonNames[dungeonId] || `Dungeon ${dungeonId}`;
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-4 leading-relaxed text-glow">
+              Quest Board
+            </h1>
+          </div>
+          <QuestListSkeleton />
+        </div>
+      </div>
+    );
+  }
 
   const availableCount = questions.filter(q => q.status === "available").length;
   const completedCount = questions.filter(q => q.status === "completed").length;
   const lockedCount = questions.filter(q => q.status === "locked").length;
 
   return (
-    <div className="min-h-screen p-4 md:p-8">
+    <div className="min-h-screen p-4 md:p-8 animate-fade-in">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-4 leading-relaxed">
+          <h1 className="text-3xl md:text-4xl font-pixel text-gold mb-4 leading-relaxed text-glow">
             Quest Board
           </h1>
           <p className="text-sm text-muted-foreground mb-4">
@@ -171,7 +155,7 @@ const Questions = () => {
                   {quest.status === "locked" && quest.required_dungeon && (
                     <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
                       <Lock className="w-3 h-3" />
-                      Requires: {getDungeonName(quest.required_dungeon)}
+                      Requires: {DUNGEON_NAMES[quest.required_dungeon] || `Dungeon ${quest.required_dungeon}`}
                     </p>
                   )}
                 </div>
