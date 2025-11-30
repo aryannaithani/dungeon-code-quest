@@ -683,6 +683,15 @@ async def get_mistake_count(user_id: int):
 @app.post("/api/personalized_dungeons/generate", tags=["Personalized Learning"])
 async def generate_personalized_dungeon(user_id: int):
     """Generate a personalized dungeon based on user's mistakes"""
+    from google import genai
+
+    # Gemini client
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+    if not GEMINI_API_KEY:
+        raise HTTPException(500, "Gemini API key missing")
+
+    client = genai.Client(api_key=GEMINI_API_KEY)
+
     db = app.state.db
     
     # Get last 5 mistakes
@@ -696,14 +705,19 @@ async def generate_personalized_dungeon(user_id: int):
     mistake_summary = []
     for m in mistakes:
         if m["type"] == "mcq":
-            mistake_summary.append(f"- MCQ mistake in dungeon '{m.get('dungeon_title', 'Unknown')}', level '{m.get('level_title', 'Unknown')}'")
+            mistake_summary.append(
+                f"- MCQ mistake in dungeon '{m.get('dungeon_title', 'Unknown')}', level '{m.get('level_title', 'Unknown')}'"
+            )
         else:
-            mistake_summary.append(f"- Coding mistake in question '{m.get('question_title', 'Unknown')}' (category: {m.get('category', 'Unknown')})")
+            mistake_summary.append(
+                f"- Coding mistake in question '{m.get('question_title', 'Unknown')}' (category: {m.get('category', 'Unknown')})"
+            )
     
     mistake_text = "\n".join(mistake_summary)
     
-    # Generate dungeon using OpenAI
-    prompt = f"""You are creating an educational programming dungeon for a student who made these mistakes:
+    # Prompt for Gemini
+    prompt = f"""
+You are creating an educational programming dungeon for a student who made these mistakes:
 
 {mistake_text}
 
@@ -730,49 +744,39 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
     }}
   ]
 }}
+"""
 
-Make the content educational and directly address the weak areas identified from the mistakes."""
-
+    # -----------------------------
+    # CALL GEMINI INSTEAD OF OPENAI
+    # -----------------------------
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://api.openai.com/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {OPENAI_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": "gpt-4o-mini",
-                    "messages": [
-                        {"role": "system", "content": "You are an expert programming educator. Always respond with valid JSON only."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    "temperature": 0.7,
-                    "max_tokens": 2000
-                },
-                timeout=60.0
-            )
-            
-            if response.status_code != 200:
-                raise HTTPException(500, f"OpenAI API error: {response.text}")
-            
-            result = response.json()
-            content = result["choices"][0]["message"]["content"]
-            
-            # Clean the response - remove markdown code blocks if present
-            content = content.strip()
-            if content.startswith("```"):
-                content = content.split("\n", 1)[1] if "\n" in content else content[3:]
-            if content.endswith("```"):
-                content = content.rsplit("```", 1)[0]
-            content = content.strip()
-            
-            dungeon_data = json.loads(content)
-            
+        gemini_response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=[
+                "You are an expert programming educator. Always respond with valid JSON only.",
+                prompt
+            ],
+            generation_config={
+                "temperature": 0.7,
+                "max_output_tokens": 2000,
+            },
+        )
+
+        content = gemini_response.text.strip()
+
+        # Clean fenced blocks if Gemini uses them
+        if content.startswith("```"):
+            content = content.split("\n", 1)[1]
+        if content.endswith("```"):
+            content = content.rsplit("```", 1)[0]
+
+        content = content.strip()
+        dungeon_data = json.loads(content)
+
     except json.JSONDecodeError as e:
-        raise HTTPException(500, f"Failed to parse LLM response: {str(e)}")
+        raise HTTPException(500, f"Failed to parse LLM response as JSON: {str(e)}")
     except Exception as e:
-        raise HTTPException(500, f"Failed to generate dungeon: {str(e)}")
+        raise HTTPException(500, f"Gemini API error: {str(e)}")
     
     # Get next personalized dungeon ID
     last_dungeon = await db.personalized_dungeons.find_one(sort=[("id", -1)])
@@ -792,7 +796,7 @@ Make the content educational and directly address the weak areas identified from
     
     await db.personalized_dungeons.insert_one(new_dungeon)
     
-    # Remove the processed mistakes
+    # Remove processed mistakes
     mistake_ids = [ObjectId(m["_id"]) for m in mistakes if m.get("_id")]
     if mistake_ids:
         await db.mistake_logs.delete_many({"_id": {"$in": mistake_ids}})
