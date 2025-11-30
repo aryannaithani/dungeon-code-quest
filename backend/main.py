@@ -685,7 +685,6 @@ async def generate_personalized_dungeon(user_id: int):
     """Generate a personalized dungeon based on user's mistakes"""
     from google import genai
 
-    # Gemini client
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
     if not GEMINI_API_KEY:
         raise HTTPException(500, "Gemini API key missing")
@@ -701,7 +700,7 @@ async def generate_personalized_dungeon(user_id: int):
     if len(mistakes) < 5:
         raise HTTPException(400, f"Need at least 5 mistakes to generate. Current: {len(mistakes)}")
     
-    # Prepare mistake summary for LLM
+    # Prepare mistake summary
     mistake_summary = []
     for m in mistakes:
         if m["type"] == "mcq":
@@ -714,8 +713,8 @@ async def generate_personalized_dungeon(user_id: int):
             )
     
     mistake_text = "\n".join(mistake_summary)
-    
-    # Prompt for Gemini
+
+    # Prompt
     prompt = f"""
 You are creating an educational programming dungeon for a student who made these mistakes:
 
@@ -746,25 +745,19 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
 }}
 """
 
-    # -----------------------------
-    # CALL GEMINI INSTEAD OF OPENAI
-    # -----------------------------
+    # ========= FIXED GEMINI CALL ========= #
     try:
         gemini_response = client.models.generate_content(
             model="gemini-1.5-flash",
             contents=[
                 "You are an expert programming educator. Always respond with valid JSON only.",
                 prompt
-            ],
-            generation_config={
-                "temperature": 0.7,
-                "max_output_tokens": 2000,
-            },
+            ]
         )
 
         content = gemini_response.text.strip()
 
-        # Clean fenced blocks if Gemini uses them
+        # Clean fenced blocks
         if content.startswith("```"):
             content = content.split("\n", 1)[1]
         if content.endswith("```"):
@@ -777,12 +770,11 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
         raise HTTPException(500, f"Failed to parse LLM response as JSON: {str(e)}")
     except Exception as e:
         raise HTTPException(500, f"Gemini API error: {str(e)}")
-    
-    # Get next personalized dungeon ID
+
+    # Save dungeon
     last_dungeon = await db.personalized_dungeons.find_one(sort=[("id", -1)])
     new_id = 1 if not last_dungeon else int(last_dungeon.get("id", 0)) + 1
-    
-    # Create the personalized dungeon
+
     new_dungeon = {
         "id": new_id,
         "user_id": user_id,
@@ -795,12 +787,12 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
     }
     
     await db.personalized_dungeons.insert_one(new_dungeon)
-    
-    # Remove processed mistakes
+
+    # Remove used mistakes
     mistake_ids = [ObjectId(m["_id"]) for m in mistakes if m.get("_id")]
     if mistake_ids:
         await db.mistake_logs.delete_many({"_id": {"$in": mistake_ids}})
-    
+
     return {
         "success": True,
         "message": "Personalized dungeon generated!",
