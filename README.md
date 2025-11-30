@@ -1,73 +1,128 @@
-# Welcome to your Lovable project
+# CodeDungeon
 
-## Project info
+CodeDungeon is a gamified, dungeon-themed coding education platform designed to make learning algorithms, data structures, and programming fundamentals feel like an adventure. Instead of traditional topic lists or question banks, users progress through visually rich “dungeons,” each containing structured levels, quizzes, and coding challenges.
 
-**URL**: https://lovable.dev/projects/78d48604-3dde-48d2-920a-b6d0dece8426
+The platform blends:
+• A progressive learning campaign (10 themed dungeons)
+• A fully functioning coding arena with real code execution
+• An XP system, ranks, level-ups, and unlockable challenges
+• Personalized learning powered by AI-generated dungeons
+• A clean UI and immersive dungeon aesthetic
 
-## How can I edit this code?
+It is deployed as a complete, production-ready web application with a separate backend, frontend, and cloud-hosted database.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🔥 Key Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/78d48604-3dde-48d2-920a-b6d0dece8426) and start prompting.
+### 🎮 1. Gamified Learning Path (The Arena)
+Users explore a sequence of 10 handcrafted dungeons:
+Basics → Control Flow → Functions → Data Structures → OOP → Recursion → Algorithms → Advanced DS → Dynamic Programming → Final Boss
 
-Changes made via Lovable will be committed automatically to this repo.
+Each dungeon contains 10 custom-designed levels with:
+• Lessons  
+• Quizzes  
+• XP rewards  
+• Unlock logic  
+• Visual progression on a winding dungeon map  
 
-**Use your preferred IDE**
+This delivers a narrative-driven progression instead of flat tutorial pages.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### ⚔️ 2. Coding Arena (LeetCode-Style)
+A separate question board includes:
+• Monaco code editor  
+• Test run & submission  
+• XP rewards  
+• Automatic quest locking based on dungeon progress  
+• Protected execution sandbox  
+• Instant feedback  
 
-Follow these steps:
+Each question supports:
+• Dynamic testcases  
+• Examples  
+• XP scaling by difficulty  
+• Automatic completion tracking  
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 🔮 3. AI-Powered Personalized Learning
+A dedicated “Personalized Learning” tab analyzes:
+• Failed dungeon quizzes  
+• Incorrect coding submissions  
 
-# Step 3: Install the necessary dependencies.
-npm i
+After every 5 logged mistakes, the system:
+1. Summarizes the user’s weak areas  
+2. Sends them to an LLM  
+3. Generates a new personalized dungeon with custom lessons + quizzes  
+4. Stores it separately in MongoDB  
+5. Unlocks it instantly for the user  
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+The personalized dungeons mirror the core campaign but are tailored in real time.
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### 🧱 4. Clean Architecture
+Backend: FastAPI (Python)  
+Frontend: React (Vite + TypeScript)  
+Database: MongoDB Atlas  
 
-**Use GitHub Codespaces**
+The system uses:
+• JWT-ready auth structure  
+• Modularized routing  
+• Strict JSON schemas  
+• Async database operations  
+• Container-ready code isolation  
+• Structured UX with Toast notifications, protected routes, unlock logic  
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+### 🌍 5. Deployed & Production-Ready
+The project is fully deployed using:
+• Vercel – Frontend  
+• Render – Backend  
+• MongoDB Atlas – Cloud database  
 
-This project is built with:
+Environment variables, CORS controls, API routing, and build optimization are all handled.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 🎯 Project Vision
 
-Simply open [Lovable](https://lovable.dev/projects/78d48604-3dde-48d2-920a-b6d0dece8426) and click on Share -> Publish.
+CodeDungeon aims to transform coding education into an engaging, story-driven experience.  
+Instead of repetitive question grinding, it creates a sense of progression and narrative that motivates learners to continue.
 
-## Can I connect a custom domain to my Lovable project?
+It is ideal for:
+• Students  
+• Coding bootcamps  
+• Schools  
+• Self-learners  
+• Anyone bored of traditional platforms  
 
-Yes, you can!
+With the addition of AI personalization, every user’s journey adapts to their strengths and weaknesses.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+---
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 🏆 About This Project
+
+This project was built as a complete, fully functional, production-level academic + portfolio project, showcasing:
+• Full-stack development  
+• Real-time code execution  
+• Gamification design  
+• FastAPI + MongoDB backend engineering  
+• AI integration  
+• UI/UX polish  
+• Deployment  
+• Database migration & cloud infrastructure  
+
+It demonstrates the ability to design, build, and deploy a complex real-world web platform end-to-end.
+
+---
+
+## 📬 Contact
+
+For feedback, collaboration, or showcasing this project:
+**Developer:** Aryan Naithani  
+**Project:** CodeDungeon  
+
