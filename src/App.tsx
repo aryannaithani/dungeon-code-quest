@@ -14,6 +14,9 @@ import Learn from "./pages/Learn";
 import DungeonMap from "./pages/DungeonMap";
 import LevelDetail from "./pages/LevelDetail";
 import Leaderboard from "./pages/Leaderboard";
+import PersonalizedLearning from "./pages/PersonalizedLearning";
+import PersonalizedDungeonMap from "./pages/PersonalizedDungeonMap";
+import PersonalizedLevelDetail from "./pages/PersonalizedLevelDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +41,9 @@ const App = () => (
               <Route path="/dungeon/:dungeonId" element={<DungeonMap />} />
               <Route path="/level/:levelId" element={<LevelDetail />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/personalized" element={<PersonalizedLearning />} />
+              <Route path="/personalized/:dungeonId" element={<PersonalizedDungeonMap />} />
+              <Route path="/personalized/:dungeonId/level/:levelIndex" element={<PersonalizedLevelDetail />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

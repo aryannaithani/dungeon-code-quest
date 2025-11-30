@@ -7,6 +7,7 @@ from datetime import datetime
 import bcrypt
 import json
 import os
+import httpx
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
@@ -15,6 +16,7 @@ load_dotenv()
 
 MONGODB_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = os.getenv("MONGODB_DB", "codedungeon")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 
 app = FastAPI(title="CodeDungeon API", version="1.0.0")
 
@@ -90,6 +92,25 @@ class LeaderboardEntry(BaseModel):
 class LevelSubmit(BaseModel):
     user_id: int
     answers: List[str]
+
+class MistakeLog(BaseModel):
+    user_id: int
+    type: str  # "mcq" or "coding"
+    dungeon_id: Optional[int] = None
+    dungeon_title: Optional[str] = None
+    level_id: Optional[int] = None
+    level_title: Optional[str] = None
+    question_id: Optional[int] = None
+    question_title: Optional[str] = None
+    category: Optional[str] = None
+
+class PersonalizedDungeon(BaseModel):
+    user_id: int
+    title: str
+    description: str
+    difficulty: str
+    levels: List[Any]
+    generated_at: datetime
 
 # ============== DB STARTUP / HELPERS ==============
 
@@ -595,6 +616,275 @@ async def submit_level(level_id: int, submission: LevelSubmit):
             xp_earned = int(level.get("xp", 0))
 
     return {"success": passed, "correct": correct, "total": len(questions), "xp_earned": xp_earned, "message": "Level completed!" if passed else "Try again!"}
+
+# ============== HEALTH CHECK ==============
+
+# ============== PERSONALIZED LEARNING ENDPOINTS ==============
+
+@app.post("/api/mistakes/log", tags=["Personalized Learning"])
+async def log_mistake(mistake: MistakeLog):
+    """Log a user's mistake for later analysis"""
+    db = app.state.db
+    
+    mistake_doc = {
+        "user_id": mistake.user_id,
+        "type": mistake.type,
+        "dungeon_id": mistake.dungeon_id,
+        "dungeon_title": mistake.dungeon_title,
+        "level_id": mistake.level_id,
+        "level_title": mistake.level_title,
+        "question_id": mistake.question_id,
+        "question_title": mistake.question_title,
+        "category": mistake.category,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    
+    await db.mistake_logs.insert_one(mistake_doc)
+    
+    # Check if user has 5 mistakes - trigger generation
+    mistake_count = await db.mistake_logs.count_documents({"user_id": mistake.user_id})
+    
+    return {
+        "success": True, 
+        "message": "Mistake logged for analysis",
+        "trigger_generation": mistake_count >= 5,
+        "mistake_count": mistake_count
+    }
+
+@app.get("/api/personalized_dungeons/{user_id}", tags=["Personalized Learning"])
+async def get_personalized_dungeons(user_id: int):
+    """Get all personalized dungeons for a user"""
+    db = app.state.db
+    
+    cursor = db.personalized_dungeons.find({"user_id": user_id}).sort("generated_at", -1)
+    dungeons = [clean_doc(d) async for d in cursor]
+    
+    # Add completion status
+    user = await get_user_by_id(user_id)
+    completed_personalized = user.get("completed_personalized_levels", []) if user else []
+    
+    for dungeon in dungeons:
+        dungeon["levels_completed"] = sum(
+            1 for i, _ in enumerate(dungeon.get("levels", []))
+            if f"{dungeon['_id']}_{i}" in completed_personalized
+        )
+        dungeon["total_levels"] = len(dungeon.get("levels", []))
+        dungeon["is_completed"] = dungeon["levels_completed"] == dungeon["total_levels"]
+    
+    return dungeons
+
+@app.get("/api/personalized_dungeons/{user_id}/count", tags=["Personalized Learning"])
+async def get_mistake_count(user_id: int):
+    """Get the current mistake count for a user"""
+    db = app.state.db
+    count = await db.mistake_logs.count_documents({"user_id": user_id})
+    return {"count": count, "threshold": 5}
+
+@app.post("/api/personalized_dungeons/generate", tags=["Personalized Learning"])
+async def generate_personalized_dungeon(user_id: int):
+    """Generate a personalized dungeon based on user's mistakes"""
+    db = app.state.db
+    
+    # Get last 5 mistakes
+    cursor = db.mistake_logs.find({"user_id": user_id}).sort("timestamp", -1).limit(5)
+    mistakes = [clean_doc(m) async for m in cursor]
+    
+    if len(mistakes) < 5:
+        raise HTTPException(400, f"Need at least 5 mistakes to generate. Current: {len(mistakes)}")
+    
+    # Prepare mistake summary for LLM
+    mistake_summary = []
+    for m in mistakes:
+        if m["type"] == "mcq":
+            mistake_summary.append(f"- MCQ mistake in dungeon '{m.get('dungeon_title', 'Unknown')}', level '{m.get('level_title', 'Unknown')}'")
+        else:
+            mistake_summary.append(f"- Coding mistake in question '{m.get('question_title', 'Unknown')}' (category: {m.get('category', 'Unknown')})")
+    
+    mistake_text = "\n".join(mistake_summary)
+    
+    # Generate dungeon using OpenAI
+    prompt = f"""You are creating an educational programming dungeon for a student who made these mistakes:
+
+{mistake_text}
+
+Create a personalized learning dungeon with 3-4 levels that will help strengthen their weak areas.
+
+Return ONLY valid JSON in this exact format (no markdown, no code blocks):
+{{
+  "title": "Dungeon title based on weak areas",
+  "description": "Brief description of what this dungeon will teach",
+  "levels": [
+    {{
+      "title": "Level title",
+      "lesson": "Educational content explaining the concept (2-3 paragraphs with examples)",
+      "quiz": {{
+        "questions": [
+          {{
+            "q": "Question text?",
+            "options": ["A) Option 1", "B) Option 2", "C) Option 3", "D) Option 4"],
+            "answer": "A) Option 1"
+          }}
+        ]
+      }},
+      "xp": 50
+    }}
+  ]
+}}
+
+Make the content educational and directly address the weak areas identified from the mistakes."""
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {OPENAI_API_KEY}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "gpt-4o-mini",
+                    "messages": [
+                        {"role": "system", "content": "You are an expert programming educator. Always respond with valid JSON only."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 2000
+                },
+                timeout=60.0
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(500, f"OpenAI API error: {response.text}")
+            
+            result = response.json()
+            content = result["choices"][0]["message"]["content"]
+            
+            # Clean the response - remove markdown code blocks if present
+            content = content.strip()
+            if content.startswith("```"):
+                content = content.split("\n", 1)[1] if "\n" in content else content[3:]
+            if content.endswith("```"):
+                content = content.rsplit("```", 1)[0]
+            content = content.strip()
+            
+            dungeon_data = json.loads(content)
+            
+    except json.JSONDecodeError as e:
+        raise HTTPException(500, f"Failed to parse LLM response: {str(e)}")
+    except Exception as e:
+        raise HTTPException(500, f"Failed to generate dungeon: {str(e)}")
+    
+    # Get next personalized dungeon ID
+    last_dungeon = await db.personalized_dungeons.find_one(sort=[("id", -1)])
+    new_id = 1 if not last_dungeon else int(last_dungeon.get("id", 0)) + 1
+    
+    # Create the personalized dungeon
+    new_dungeon = {
+        "id": new_id,
+        "user_id": user_id,
+        "title": dungeon_data.get("title", "Personalized Training"),
+        "description": dungeon_data.get("description", "AI-generated dungeon to strengthen your weak areas"),
+        "difficulty": "personalized",
+        "levels": dungeon_data.get("levels", []),
+        "generated_at": datetime.utcnow().isoformat(),
+        "source_mistakes": [str(m.get("_id")) for m in mistakes]
+    }
+    
+    await db.personalized_dungeons.insert_one(new_dungeon)
+    
+    # Remove the processed mistakes
+    mistake_ids = [ObjectId(m["_id"]) for m in mistakes if m.get("_id")]
+    if mistake_ids:
+        await db.mistake_logs.delete_many({"_id": {"$in": mistake_ids}})
+    
+    return {
+        "success": True,
+        "message": "Personalized dungeon generated!",
+        "dungeon": clean_doc(new_dungeon)
+    }
+
+@app.get("/api/personalized_dungeons/detail/{dungeon_id}", tags=["Personalized Learning"])
+async def get_personalized_dungeon(dungeon_id: str):
+    """Get a specific personalized dungeon by ID"""
+    db = app.state.db
+    
+    # Try to find by _id first, then by id
+    try:
+        dungeon = await db.personalized_dungeons.find_one({"_id": ObjectId(dungeon_id)})
+    except:
+        dungeon = await db.personalized_dungeons.find_one({"id": int(dungeon_id)})
+    
+    if not dungeon:
+        raise HTTPException(404, "Personalized dungeon not found")
+    
+    return clean_doc(dungeon)
+
+@app.post("/api/personalized_dungeons/{dungeon_id}/levels/{level_index}/submit", tags=["Personalized Learning"])
+async def submit_personalized_level(dungeon_id: str, level_index: int, submission: LevelSubmit):
+    """Submit answers for a personalized dungeon level"""
+    db = app.state.db
+    
+    # Get the dungeon
+    try:
+        dungeon = await db.personalized_dungeons.find_one({"_id": ObjectId(dungeon_id)})
+    except:
+        dungeon = await db.personalized_dungeons.find_one({"id": int(dungeon_id)})
+    
+    if not dungeon:
+        raise HTTPException(404, "Personalized dungeon not found")
+    
+    levels = dungeon.get("levels", [])
+    if level_index < 0 or level_index >= len(levels):
+        raise HTTPException(404, "Level not found")
+    
+    level = levels[level_index]
+    questions = level.get("quiz", {}).get("questions", [])
+    
+    correct = 0
+    for i, q in enumerate(questions):
+        if i < len(submission.answers) and submission.answers[i] == q.get("answer"):
+            correct += 1
+    
+    passed = correct == len(questions)
+    xp_earned = 0
+    
+    if passed and submission.user_id > 0:
+        user = await get_user_by_id(submission.user_id)
+        if not user:
+            raise HTTPException(404, "User not found")
+        
+        level_key = f"{dungeon_id}_{level_index}"
+        completed = user.get("completed_personalized_levels", []) or []
+        
+        if level_key not in completed:
+            completed.append(level_key)
+            xp_earned = int(level.get("xp", 50))
+            new_xp = int(user.get("xp", 0)) + xp_earned
+            
+            # Level up logic
+            level_num = int(user.get("level", 1))
+            xp_to_next = int(user.get("xp_to_next", 100))
+            while new_xp >= xp_to_next:
+                level_num += 1
+                xp_to_next = level_num * 500
+            
+            await db.users.update_one(
+                {"id": submission.user_id},
+                {"$set": {
+                    "xp": new_xp,
+                    "level": level_num,
+                    "xp_to_next": xp_to_next,
+                    "completed_personalized_levels": completed
+                }}
+            )
+    
+    return {
+        "success": passed,
+        "correct": correct,
+        "total": len(questions),
+        "xp_earned": xp_earned,
+        "message": "Level completed!" if passed else "Try again!"
+    }
 
 # ============== HEALTH CHECK ==============
 

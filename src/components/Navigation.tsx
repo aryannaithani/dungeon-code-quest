@@ -1,5 +1,5 @@
 import { NavLink } from "./NavLink";
-import { Sword, User, Scroll, Trophy, Map, Home, LogIn, UserPlus } from "lucide-react";
+import { Sword, User, Scroll, Trophy, Map, Home, LogIn, UserPlus, Brain } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { isAuthenticated } from "@/lib/api";
@@ -18,6 +18,7 @@ const Navigation = () => {
         { to: "/", icon: Home, label: "Home" },
         { to: "/questions", icon: Scroll, label: "Quests" },
         { to: "/learn", icon: Map, label: "Arena" },
+        { to: "/personalized", icon: Brain, label: "AI Learning" },
         { to: "/leaderboard", icon: Trophy, label: "Hall of Fame" },
         { to: "/profile", icon: User, label: "Profile" },
       ];

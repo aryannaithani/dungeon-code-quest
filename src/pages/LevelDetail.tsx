@@ -108,7 +108,7 @@ const LevelDetail = () => {
       const passed = correct === total;
       
       // Submit to backend
-      await api.submitLevel(levelId, {
+      const response = await api.submitLevel(levelId, {
         user_id: userId ? parseInt(userId) : 0,
         answers: Object.values(answers),
       });
@@ -119,10 +119,33 @@ const LevelDetail = () => {
       if (passed) {
         toast({
           title: "Level Complete!",
-          description: `You earned ${level.xp} XP!`,
+          description: `You earned ${response.xp_earned || level.xp} XP!`,
           className: "bg-emerald/10 border-emerald text-foreground",
         });
       } else {
+        // Log mistake for personalized learning
+        if (userId) {
+          try {
+            const mistakeResult = await api.logMistake({
+              user_id: parseInt(userId),
+              type: 'mcq',
+              dungeon_id: level.dungeon_id,
+              dungeon_title: '', // We don't have this here, backend can fill it
+              level_id: level.id,
+              level_title: level.title,
+            });
+            
+            if (mistakeResult.trigger_generation) {
+              toast({
+                title: "Performance Logged",
+                description: "A personalized dungeon is ready to be generated!",
+              });
+            }
+          } catch (e) {
+            // Silently fail - don't interrupt the main flow
+          }
+        }
+        
         toast({
           title: "Not quite!",
           description: "Review the lesson and try again.",

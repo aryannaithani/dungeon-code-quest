@@ -86,15 +86,53 @@ const QuestionDetail = () => {
         language: "python",
       });
 
-      if (data.output) {
-        setOutput(data.output);
+      // Format submission results
+      if (data.results) {
+        const resultText = data.results.map((result, idx) => 
+          `Test Case ${idx + 1}: ${result.passed ? "✅ PASSED" : "❌ FAILED"}\n` +
+          `Input: ${JSON.stringify(result.input)}\n` +
+          `Expected: ${JSON.stringify(result.expected)}\n` +
+          `Got: ${JSON.stringify(result.output)}\n`
+        ).join("\n");
+        setOutput(resultText);
       }
 
-      toast({
-        title: "Quest Complete!",
-        description: data.message,
-        className: "bg-emerald/10 border-emerald text-foreground",
-      });
+      if (data.success) {
+        toast({
+          title: "Quest Complete!",
+          description: `${data.message} (+${data.xp_earned} XP)`,
+          className: "bg-emerald/10 border-emerald text-foreground",
+        });
+      } else {
+        // Log mistake for personalized learning
+        const userId = getUserId();
+        if (userId && question) {
+          try {
+            const mistakeResult = await api.logMistake({
+              user_id: parseInt(userId),
+              type: 'coding',
+              question_id: question.id,
+              question_title: question.title,
+              category: question.category,
+            });
+            
+            if (mistakeResult.trigger_generation) {
+              toast({
+                title: "Performance Logged",
+                description: "A personalized dungeon is ready to be generated!",
+              });
+            }
+          } catch (e) {
+            // Silently fail - don't interrupt the main flow
+          }
+        }
+        
+        toast({
+          title: "Not Quite!",
+          description: data.message,
+          variant: "destructive",
+        });
+      }
     } catch (err: any) {
       toast({
         title: "Submission Failed",
