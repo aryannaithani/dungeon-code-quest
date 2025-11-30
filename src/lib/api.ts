@@ -121,6 +121,7 @@ export const api = {
       win_streak: number;
       completed_levels: number[];
       completed_questions: number[];
+      completed_personalized_levels?: string[];
     }>(`/api/profile/${userId}`),
 
   // Dungeons
@@ -131,7 +132,7 @@ export const api = {
   // Levels
   getLevel: (id: string) => apiRequest<LevelDetail>(`/api/levels/${id}`),
   submitLevel: (id: string, data: { user_id: number; answers: string[] }) =>
-    apiRequest<{ success: boolean; message: string }>(`/api/levels/${id}/submit`, {
+    apiRequest<{ success: boolean; message: string; xp_earned?: number }>(`/api/levels/${id}/submit`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
@@ -146,13 +147,43 @@ export const api = {
       body: JSON.stringify(data),
     }),
   submitQuestion: (id: string, data: { user_id: string | null; code: string; language: string }) =>
-    apiRequest<{ message: string; output?: string }>(`/api/questions/${id}/submit`, {
+    apiRequest<SubmitResult>(`/api/questions/${id}/submit`, {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
   // Leaderboard
   getLeaderboard: () => apiRequest<LeaderboardEntry[]>('/api/leaderboard'),
+
+  // Personalized Learning
+  logMistake: (data: MistakeLogData) =>
+    apiRequest<{ success: boolean; message: string; trigger_generation: boolean; mistake_count: number }>('/api/mistakes/log', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  
+  getPersonalizedDungeons: (userId: string) =>
+    apiRequest<PersonalizedDungeonResponse[]>(`/api/personalized_dungeons/${userId}`),
+  
+  getMistakeCount: (userId: string) =>
+    apiRequest<{ count: number; threshold: number }>(`/api/personalized_dungeons/${userId}/count`),
+  
+  generatePersonalizedDungeon: (userId: number) =>
+    apiRequest<{ success: boolean; message: string; dungeon: PersonalizedDungeonResponse }>(`/api/personalized_dungeons/generate?user_id=${userId}`, {
+      method: 'POST',
+    }),
+  
+  getPersonalizedDungeon: (dungeonId: string) =>
+    apiRequest<PersonalizedDungeonResponse>(`/api/personalized_dungeons/detail/${dungeonId}`),
+  
+  submitPersonalizedLevel: (dungeonId: string, levelIndex: number, data: { user_id: number; answers: string[] }) =>
+    apiRequest<{ success: boolean; correct: number; total: number; xp_earned: number; message: string }>(
+      `/api/personalized_dungeons/${dungeonId}/levels/${levelIndex}/submit`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }
+    ),
 };
 
 // Types
@@ -222,4 +253,49 @@ export interface LeaderboardEntry {
   title: string;
   level: number;
   xp: number;
+}
+
+export interface MistakeLogData {
+  user_id: number;
+  type: 'mcq' | 'coding';
+  dungeon_id?: number;
+  dungeon_title?: string;
+  level_id?: number;
+  level_title?: string;
+  question_id?: number;
+  question_title?: string;
+  category?: string;
+}
+
+export interface PersonalizedDungeonResponse {
+  _id: string;
+  id: number;
+  user_id: number;
+  title: string;
+  description: string;
+  difficulty: string;
+  levels: Array<{
+    title: string;
+    lesson: string;
+    quiz: { questions: Array<{ q: string; options: string[]; answer: string }> };
+    xp: number;
+  }>;
+  generated_at: string;
+  levels_completed?: number;
+  total_levels?: number;
+  is_completed?: boolean;
+}
+
+export interface SubmitResult {
+  success: boolean;
+  passed: number;
+  total: number;
+  xp_earned: number;
+  message: string;
+  results?: Array<{
+    passed: boolean;
+    input: unknown;
+    expected: unknown;
+    output: unknown;
+  }>;
 }
