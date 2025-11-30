@@ -748,7 +748,7 @@ Return ONLY valid JSON in this exact format (no markdown, no code blocks):
     # ========= FIXED GEMINI CALL ========= #
     try:
         gemini_response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash",
             contents=[
                 "You are an expert programming educator. Always respond with valid JSON only.",
                 prompt
