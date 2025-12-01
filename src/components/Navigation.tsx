@@ -17,7 +17,7 @@ const Navigation = () => {
       return [
         { to: "/", icon: Home, label: "Home" },
         { to: "/questions", icon: Scroll, label: "Quests" },
-        { to: "/learn", icon: Map, label: "Dungeons" },
+        { to: "/learn", icon: Map, label: "Arena" },
         { to: "/personalized", icon: Brain, label: "AI Learning" },
         { to: "/leaderboard", icon: Trophy, label: "Hall of Fame" },
         { to: "/profile", icon: User, label: "Profile" },
