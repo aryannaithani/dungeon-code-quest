@@ -196,7 +196,7 @@ def calculate_xp_in_current_level(total_xp: int, level: int, xp_to_next: int) ->
     # XP earned since reaching current level
     return max(0, total_xp - xp_at_current_level)
 
-def _user_public(user_doc: dict, dungeons_completed: int = 0, total_dungeons: int = 0):
+def _user_public(user_doc: dict, dungeons_completed: int = 0, total_dungeons: int = 0, total_questions: int = 0):
     # Convert DB user doc to API-friendly dict (and ensure JSONable)
     user_doc = to_jsonable(user_doc or {})
     
@@ -214,8 +214,8 @@ def _user_public(user_doc: dict, dungeons_completed: int = 0, total_dungeons: in
         "xp_to_next": xp_to_next,
         "xp_in_current_level": xp_in_current_level,
         "rank": user_doc.get("rank", "Novice"),
-        "quests_completed": int(user_doc.get("quests_completed", 0)),
-        "total_quests": int(user_doc.get("total_quests", 0)),
+        "quests_completed": len(user_doc.get("completed_questions", [])),
+        "total_quests": total_questions,
         "dungeons_completed": dungeons_completed,
         "total_dungeons": total_dungeons,
         "win_streak": int(user_doc.get("win_streak", 0)),
@@ -364,7 +364,7 @@ async def get_profile(user_id: int):
             {"$set": {"total_quests": total_quests}}
         )
     
-    return _user_public(user, dungeons_completed, total_dungeons)
+    return _user_public(user, dungeons_completed, total_dungeons, total_quests)
 
 @app.get("/api/profile/{user_id}/stats", tags=["Profile"])
 async def get_user_stats(user_id: int):
