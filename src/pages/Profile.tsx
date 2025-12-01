@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, Zap, Award, Target, LogOut, Loader2 } from "lucide-react";
+import { Shield, Zap, Award, Target, LogOut, Loader2, Sword, Scroll, Flame } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { api, getUserId, clearAuth } from "@/lib/api";
 import { ProfileSkeleton } from "@/components/LoadingSkeleton";
@@ -14,9 +14,12 @@ interface UserProfile {
   level: number;
   xp: number;
   xpToNext: number;
+  xpInCurrentLevel: number;
   rank: string;
   questsCompleted: number;
   totalQuests: number;
+  dungeonsCompleted: number;
+  totalDungeons: number;
   winStreak: number;
 }
 
@@ -36,14 +39,23 @@ const Profile = () => {
 
       try {
         const data = await api.getProfile(userId);
+        
+        // Calculate XP in current level (XP earned since last level up)
+        // xp_to_next is the total XP needed for next level
+        // We need to calculate how much XP has been earned in the current level
+        const xpInCurrentLevel = data.xp_in_current_level ?? data.xp;
+        
         setUser({
           username: data.username,
           level: data.level,
           xp: data.xp,
           xpToNext: data.xp_to_next,
+          xpInCurrentLevel: xpInCurrentLevel,
           rank: data.rank,
           questsCompleted: data.quests_completed,
           totalQuests: data.total_quests,
+          dungeonsCompleted: data.dungeons_completed ?? 0,
+          totalDungeons: data.total_dungeons ?? 0,
           winStreak: data.win_streak,
         });
       } catch (err) {
@@ -96,15 +108,23 @@ const Profile = () => {
   }
 
   const stats = [
-    { icon: Zap, label: "XP", value: user.xp.toLocaleString() },
-    { icon: Shield, label: "Level", value: user.level },
-    { icon: Award, label: "Rank", value: user.rank },
-    { icon: Target, label: "Streak", value: user.winStreak },
+    { icon: Zap, label: "Total XP", value: user.xp.toLocaleString(), color: "text-gold" },
+    { icon: Shield, label: "Level", value: user.level, color: "text-emerald" },
+    { icon: Award, label: "Rank", value: user.rank, color: "text-gold" },
+    { icon: Flame, label: "Streak", value: `${user.winStreak} 🔥`, color: "text-destructive" },
   ];
 
-  const xpProgress = Math.min((user.xp / user.xpToNext) * 100, 100);
+  // XP progress within current level (starts at 0 when leveling up)
+  const xpProgress = user.xpToNext > 0 
+    ? Math.min((user.xpInCurrentLevel / user.xpToNext) * 100, 100)
+    : 0;
+    
   const questProgress = user.totalQuests > 0 
     ? Math.min((user.questsCompleted / user.totalQuests) * 100, 100)
+    : 0;
+    
+  const dungeonProgress = user.totalDungeons > 0
+    ? Math.min((user.dungeonsCompleted / user.totalDungeons) * 100, 100)
     : 0;
 
   return (
@@ -143,13 +163,29 @@ const Profile = () => {
             <Badge className="bg-emerald text-background font-pixel text-xs glow-emerald">
               {user.rank}
             </Badge>
+            
+            {/* Streak Display */}
+            {user.winStreak > 0 && (
+              <div className="mt-4 flex items-center justify-center gap-2">
+                <Flame className="w-5 h-5 text-destructive animate-pulse" />
+                <span className="font-pixel text-sm text-destructive">
+                  {user.winStreak} Day Streak!
+                </span>
+                <Flame className="w-5 h-5 text-destructive animate-pulse" />
+              </div>
+            )}
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-5">
+            {/* XP Progress */}
             <div>
-              <div className="flex justify-between text-sm font-pixel text-foreground mb-2">
-                <span>Level {user.level}</span>
-                <span>{user.xp.toLocaleString()} / {user.xpToNext.toLocaleString()} XP</span>
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-4 h-4 text-gold" />
+                <span className="text-sm font-pixel text-foreground">Level {user.level} Progress</span>
+              </div>
+              <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
+                <span>{user.xpInCurrentLevel.toLocaleString()} XP</span>
+                <span>{user.xpToNext.toLocaleString()} XP to Level {user.level + 1}</span>
               </div>
               <Progress 
                 value={xpProgress} 
@@ -157,14 +193,35 @@ const Profile = () => {
               />
             </div>
 
+            {/* Dungeon Progress */}
             <div>
-              <div className="flex justify-between text-sm font-pixel text-foreground mb-2">
-                <span>Quests Progress</span>
-                <span>{user.questsCompleted} / {user.totalQuests}</span>
+              <div className="flex items-center gap-2 mb-2">
+                <Sword className="w-4 h-4 text-emerald" />
+                <span className="text-sm font-pixel text-foreground">Dungeon Conquest</span>
+              </div>
+              <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
+                <span>{user.dungeonsCompleted} Dungeons Cleared</span>
+                <span>{user.totalDungeons} Total</span>
+              </div>
+              <Progress 
+                value={dungeonProgress} 
+                className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-emerald [&>div]:to-emerald-glow" 
+              />
+            </div>
+
+            {/* Quest Progress */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Scroll className="w-4 h-4 text-gold" />
+                <span className="text-sm font-pixel text-foreground">Quest Mastery</span>
+              </div>
+              <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
+                <span>{user.questsCompleted} Quests Completed</span>
+                <span>{user.totalQuests} Total</span>
               </div>
               <Progress 
                 value={questProgress} 
-                className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-emerald [&>div]:to-emerald-glow" 
+                className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-gold [&>div]:to-emerald" 
               />
             </div>
           </div>
@@ -177,7 +234,7 @@ const Profile = () => {
               className="bg-card p-4 md:p-6 pixel-border hover:pixel-border-gold transition-all hover:glow-gold group"
               style={{ animationDelay: `${idx * 0.1}s` }}
             >
-              <stat.icon className="w-8 h-8 md:w-12 md:h-12 text-emerald mx-auto mb-4 group-hover:scale-110 transition-transform" />
+              <stat.icon className={`w-8 h-8 md:w-12 md:h-12 ${stat.color} mx-auto mb-4 group-hover:scale-110 transition-transform`} />
               <p className="text-xs font-pixel text-muted-foreground text-center mb-2">{stat.label}</p>
               <p className="text-lg md:text-xl font-pixel text-gold text-center">{stat.value}</p>
             </Card>
