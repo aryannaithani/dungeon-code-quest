@@ -115,9 +115,12 @@ export const api = {
       level: number;
       xp: number;
       xp_to_next: number;
+      xp_in_current_level?: number;
       rank: string;
       quests_completed: number;
       total_quests: number;
+      dungeons_completed?: number;
+      total_dungeons?: number;
       win_streak: number;
       completed_levels: number[];
       completed_questions: number[];
