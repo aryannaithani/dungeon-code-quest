@@ -146,23 +146,84 @@ def clean_docs(docs: List[dict]) -> List[dict]:
     """Convert list of docs to JSON-safe versions."""
     return [clean_doc(d) for d in docs]
 
-def _user_public(user_doc: dict):
+async def update_user_streak(user_id: int, user_doc: dict) -> int:
+    """
+    Update user's win streak based on daily activity.
+    Returns the new streak value.
+    """
+    db = app.state.db
+    today = datetime.utcnow().date().isoformat()
+    last_activity = user_doc.get("last_activity_date")
+    current_streak = int(user_doc.get("win_streak", 0))
+    
+    if last_activity == today:
+        # Already active today, no change
+        return current_streak
+    
+    if last_activity:
+        # Check if last activity was yesterday
+        from datetime import timedelta
+        yesterday = (datetime.utcnow().date() - timedelta(days=1)).isoformat()
+        if last_activity == yesterday:
+            # Consecutive day - increment streak
+            new_streak = current_streak + 1
+        else:
+            # Streak broken - reset to 1
+            new_streak = 1
+    else:
+        # First activity
+        new_streak = 1
+    
+    # Update user's streak and last activity date
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"win_streak": new_streak, "last_activity_date": today}}
+    )
+    
+    return new_streak
+
+def calculate_xp_for_level(level: int) -> int:
+    """Calculate total XP required to reach a given level."""
+    # Level 1 requires 0 XP, Level 2 requires 100 XP, etc.
+    if level <= 1:
+        return 0
+    return (level - 1) * 100  # Cumulative XP to reach this level
+
+def calculate_xp_in_current_level(total_xp: int, level: int, xp_to_next: int) -> int:
+    """Calculate XP earned within the current level (starts at 0 after level up)."""
+    # XP needed to reach current level
+    xp_at_current_level = calculate_xp_for_level(level)
+    # XP earned since reaching current level
+    return max(0, total_xp - xp_at_current_level)
+
+def _user_public(user_doc: dict, dungeons_completed: int = 0, total_dungeons: int = 0):
     # Convert DB user doc to API-friendly dict (and ensure JSONable)
     user_doc = to_jsonable(user_doc or {})
+    
+    level = int(user_doc.get("level", 1))
+    xp = int(user_doc.get("xp", 0))
+    xp_to_next = int(user_doc.get("xp_to_next", 100))
+    xp_in_current_level = calculate_xp_in_current_level(xp, level, xp_to_next)
+    
     return {
         "id": int(user_doc.get("id")),
         "username": user_doc.get("username"),
         "email": user_doc.get("email"),
-        "level": int(user_doc.get("level", 1)),
-        "xp": int(user_doc.get("xp", 0)),
-        "xp_to_next": int(user_doc.get("xp_to_next", 100)),
+        "level": level,
+        "xp": xp,
+        "xp_to_next": xp_to_next,
+        "xp_in_current_level": xp_in_current_level,
         "rank": user_doc.get("rank", "Novice"),
         "quests_completed": int(user_doc.get("quests_completed", 0)),
         "total_quests": int(user_doc.get("total_quests", 0)),
+        "dungeons_completed": dungeons_completed,
+        "total_dungeons": total_dungeons,
         "win_streak": int(user_doc.get("win_streak", 0)),
+        "last_activity_date": user_doc.get("last_activity_date"),
         "created_at": user_doc.get("created_at"),
         "completed_questions": user_doc.get("completed_questions", []),
-        "completed_levels": user_doc.get("completed_levels", [])
+        "completed_levels": user_doc.get("completed_levels", []),
+        "completed_personalized_levels": user_doc.get("completed_personalized_levels", [])
     }
 
 async def get_user_by_username(username: str):
@@ -282,7 +343,28 @@ async def get_profile(user_id: int):
     user = await get_user_by_id(user_id)
     if not user:
         raise HTTPException(404, "User not found")
-    return _user_public(user)
+    
+    # Calculate dungeons completed and total
+    completed_levels = user.get("completed_levels", []) or []
+    completed_dungeons = await get_completed_dungeons_from_levels(completed_levels)
+    
+    # Get total dungeons count
+    all_dungeons = await get_dungeons_from_db()
+    total_dungeons = len(all_dungeons)
+    dungeons_completed = len(completed_dungeons)
+    
+    # Get total quests count
+    all_questions = await get_questions_from_db()
+    total_quests = len(all_questions)
+    
+    # Update total_quests in user if different
+    if user.get("total_quests", 0) != total_quests:
+        await app.state.db.users.update_one(
+            {"id": user_id},
+            {"$set": {"total_quests": total_quests}}
+        )
+    
+    return _user_public(user, dungeons_completed, total_dungeons)
 
 @app.get("/api/profile/{user_id}/stats", tags=["Profile"])
 async def get_user_stats(user_id: int):
@@ -448,6 +530,9 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
             level += 1
             xp_to_next = level * 500
 
+        # Update streak
+        new_streak = await update_user_streak(submission.user_id, user)
+
         await app.state.db.users.update_one(
             {"id": submission.user_id},
             {"$set": {
@@ -455,7 +540,8 @@ async def submit_solution(question_id: int, submission: QuestionSubmit):
                 "level": level,
                 "xp_to_next": xp_to_next,
                 "quests_completed": new_quests_completed,
-                "completed_questions": completed_questions
+                "completed_questions": completed_questions,
+                "win_streak": new_streak
             }}
         )
 
@@ -526,13 +612,20 @@ async def test_solution(question_id: int, submission: TestSubmit):
 # ============== LEADERBOARD ENDPOINTS ==============
 
 @app.get("/api/leaderboard", tags=["Leaderboard"])
-async def get_leaderboard(limit: int = 10):
+async def get_leaderboard(limit: int = 100):
     cursor = app.state.db.users.find({}).sort("xp", -1).limit(limit)
     users = [to_jsonable(u) for u in [u async for u in cursor]]
     leaderboard = []
     rank_counter = 1
     for u in users:
-        leaderboard.append({"rank": rank_counter, "username": u["username"], "level": int(u.get("level", 1)), "xp": int(u.get("xp", 0)), "title": u.get("rank", "")})
+        leaderboard.append({
+            "rank": rank_counter, 
+            "username": u["username"], 
+            "level": int(u.get("level", 1)), 
+            "xp": int(u.get("xp", 0)), 
+            "title": u.get("rank", ""),
+            "win_streak": int(u.get("win_streak", 0))
+        })
         rank_counter += 1
     return leaderboard
 
@@ -603,6 +696,9 @@ async def submit_level(level_id: int, submission: LevelSubmit):
                 level_num += 1
                 xp_to_next = level_num * 500
 
+            # Update streak
+            new_streak = await update_user_streak(submission.user_id, user)
+
             await app.state.db.users.update_one(
                 {"id": submission.user_id},
                 {"$set": {
@@ -610,7 +706,8 @@ async def submit_level(level_id: int, submission: LevelSubmit):
                     "level": level_num,
                     "xp_to_next": xp_to_next,
                     "quests_completed": new_quests_completed,
-                    "completed_levels": completed
+                    "completed_levels": completed,
+                    "win_streak": new_streak
                 }}
             )
             xp_earned = int(level.get("xp", 0))
