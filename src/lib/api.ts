@@ -256,6 +256,7 @@ export interface LeaderboardEntry {
   title: string;
   level: number;
   xp: number;
+  win_streak?: number;
 }
 
 export interface MistakeLogData {
