@@ -4,10 +4,12 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Shield, Zap, Award, Target, LogOut, Loader2, Sword, Scroll, Flame } from "lucide-react";
+import { Zap, Award, LogOut, Loader2, Sword, Scroll, Flame, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { api, getUserId, clearAuth } from "@/lib/api";
 import { ProfileSkeleton } from "@/components/LoadingSkeleton";
+import { Avatar, AvatarConfig, DEFAULT_AVATAR, AvatarCustomizer } from "@/components/game";
+import { AchievementGrid, Achievement, DEFAULT_ACHIEVEMENTS } from "@/components/game";
 
 interface UserProfile {
   username: string;
@@ -21,6 +23,8 @@ interface UserProfile {
   dungeonsCompleted: number;
   totalDungeons: number;
   winStreak: number;
+  avatar?: AvatarConfig;
+  achievements?: Achievement[];
 }
 
 const Profile = () => {
@@ -28,6 +32,7 @@ const Profile = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(DEFAULT_AVATAR);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -40,10 +45,14 @@ const Profile = () => {
       try {
         const data = await api.getProfile(userId);
         
-        // Calculate XP in current level (XP earned since last level up)
-        // xp_to_next is the total XP needed for next level
-        // We need to calculate how much XP has been earned in the current level
         const xpInCurrentLevel = data.xp_in_current_level ?? data.xp;
+        
+        // Parse avatar config if stored
+        const avatar = data.avatar ? (typeof data.avatar === 'string' ? JSON.parse(data.avatar) : data.avatar) : DEFAULT_AVATAR;
+        setAvatarConfig(avatar);
+        
+        // Build achievements from user data
+        const achievements = buildAchievements(data);
         
         setUser({
           username: data.username,
@@ -57,6 +66,8 @@ const Profile = () => {
           dungeonsCompleted: data.dungeons_completed ?? 0,
           totalDungeons: data.total_dungeons ?? 0,
           winStreak: data.win_streak,
+          avatar: avatar,
+          achievements: achievements,
         });
       } catch (err) {
         toast({
@@ -71,6 +82,70 @@ const Profile = () => {
 
     fetchProfile();
   }, [navigate]);
+
+  const buildAchievements = (data: any): Achievement[] => {
+    const achievements = [...DEFAULT_ACHIEVEMENTS];
+    
+    // Update achievements based on user data
+    achievements.forEach((a) => {
+      switch (a.id) {
+        case "first_quest":
+          a.unlocked = data.quests_completed > 0;
+          break;
+        case "dungeon_master":
+          a.unlocked = data.dungeons_completed > 0;
+          break;
+        case "streak_7":
+          a.progress = Math.min(data.win_streak, 7);
+          a.unlocked = data.win_streak >= 7;
+          break;
+        case "streak_30":
+          a.progress = Math.min(data.win_streak, 30);
+          a.unlocked = data.win_streak >= 30;
+          break;
+        case "level_10":
+          a.unlocked = data.level >= 10;
+          break;
+        case "level_25":
+          a.unlocked = data.level >= 25;
+          break;
+        case "level_50":
+          a.unlocked = data.level >= 50;
+          break;
+        case "quests_10":
+          a.progress = Math.min(data.quests_completed, 10);
+          a.unlocked = data.quests_completed >= 10;
+          break;
+        case "quests_50":
+          a.progress = Math.min(data.quests_completed, 50);
+          a.unlocked = data.quests_completed >= 50;
+          break;
+      }
+    });
+    
+    return achievements;
+  };
+
+  const handleAvatarSave = async (newConfig: AvatarConfig) => {
+    const userId = getUserId();
+    if (!userId) return;
+
+    try {
+      await api.updateAvatar(userId, newConfig);
+      setAvatarConfig(newConfig);
+      toast({
+        title: "Character Updated!",
+        description: "Your hero's appearance has been saved.",
+        className: "bg-emerald/10 border-emerald text-foreground",
+      });
+    } catch (err) {
+      toast({
+        title: "Save Failed",
+        description: "Could not save character. Try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleLogout = () => {
     setLoggingOut(true);
@@ -109,12 +184,11 @@ const Profile = () => {
 
   const stats = [
     { icon: Zap, label: "Total XP", value: user.xp.toLocaleString(), color: "text-gold" },
-    { icon: Shield, label: "Level", value: user.level, color: "text-emerald" },
     { icon: Award, label: "Rank", value: user.rank, color: "text-gold" },
     { icon: Flame, label: "Streak", value: `${user.winStreak} 🔥`, color: "text-destructive" },
+    { icon: Sword, label: "Dungeons", value: user.dungeonsCompleted, color: "text-emerald" },
   ];
 
-  // XP progress within current level (starts at 0 when leveling up)
   const xpProgress = user.xpToNext > 0 
     ? Math.min((user.xpInCurrentLevel / user.xpToNext) * 100, 100)
     : 0;
@@ -152,82 +226,98 @@ const Profile = () => {
         </div>
 
         <Card className="bg-card p-6 md:p-8 pixel-border-gold glow-gold mb-8">
-          <div className="text-center mb-6">
-            <div className="w-24 h-24 md:w-32 md:h-32 bg-dungeon-stone pixel-border-gold mx-auto mb-4 flex items-center justify-center relative overflow-hidden">
-              <Shield className="w-12 h-12 md:w-16 md:h-16 text-gold" />
-              <div className="absolute inset-0 bg-gradient-to-t from-gold/10 to-transparent" />
-            </div>
-            <h2 className="text-xl md:text-2xl font-pixel text-gold mb-2 text-glow">
-              {user.username}
-            </h2>
-            <Badge className="bg-emerald text-background font-pixel text-xs glow-emerald">
-              {user.rank}
-            </Badge>
-            
-            {/* Streak Display */}
-            {user.winStreak > 0 && (
-              <div className="mt-4 flex items-center justify-center gap-2">
-                <Flame className="w-5 h-5 text-destructive animate-pulse" />
-                <span className="font-pixel text-sm text-destructive">
-                  {user.winStreak} Day Streak!
-                </span>
-                <Flame className="w-5 h-5 text-destructive animate-pulse" />
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-5">
-            {/* XP Progress */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Zap className="w-4 h-4 text-gold" />
-                <span className="text-sm font-pixel text-foreground">Level {user.level} Progress</span>
-              </div>
-              <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
-                <span>{user.xpInCurrentLevel.toLocaleString()} XP</span>
-                <span>{user.xpToNext.toLocaleString()} XP to Level {user.level + 1}</span>
-              </div>
-              <Progress 
-                value={xpProgress} 
-                className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-gold [&>div]:to-gold-glow" 
+          <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
+            {/* Avatar Section */}
+            <div className="flex flex-col items-center gap-3">
+              <Avatar config={avatarConfig} size="xl" animated showBackground />
+              <AvatarCustomizer
+                currentConfig={avatarConfig}
+                onSave={handleAvatarSave}
+                userLevel={user.level}
+                trigger={
+                  <Button variant="outline" size="sm" className="font-pixel text-xs border-gold text-gold hover:bg-gold hover:text-background">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    Customize
+                  </Button>
+                }
               />
             </div>
 
-            {/* Dungeon Progress */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Sword className="w-4 h-4 text-emerald" />
-                <span className="text-sm font-pixel text-foreground">Dungeon Conquest</span>
+            {/* User Info */}
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-xl md:text-2xl font-pixel text-gold mb-2 text-glow">
+                {user.username}
+              </h2>
+              <div className="flex flex-wrap gap-2 justify-center md:justify-start mb-4">
+                <Badge className="bg-emerald text-background font-pixel text-xs glow-emerald">
+                  Level {user.level}
+                </Badge>
+                <Badge className="bg-gold/20 text-gold font-pixel text-xs border border-gold">
+                  {user.rank}
+                </Badge>
               </div>
-              <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
-                <span>{user.dungeonsCompleted} Dungeons Cleared</span>
-                <span>{user.totalDungeons} Total</span>
-              </div>
-              <Progress 
-                value={dungeonProgress} 
-                className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-emerald [&>div]:to-emerald-glow" 
-              />
-            </div>
+              
+              {/* Streak Display */}
+              {user.winStreak > 0 && (
+                <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+                  <Flame className="w-5 h-5 text-destructive animate-pulse" />
+                  <span className="font-pixel text-sm text-destructive">
+                    {user.winStreak} Day Streak!
+                  </span>
+                  <Flame className="w-5 h-5 text-destructive animate-pulse" />
+                </div>
+              )}
 
-            {/* Quest Progress */}
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Scroll className="w-4 h-4 text-gold" />
-                <span className="text-sm font-pixel text-foreground">Quest Mastery</span>
+              {/* XP Progress */}
+              <div className="mt-4">
+                <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
+                  <span>{user.xpInCurrentLevel.toLocaleString()} XP</span>
+                  <span>{user.xpToNext.toLocaleString()} XP to Level {user.level + 1}</span>
+                </div>
+                <Progress 
+                  value={xpProgress} 
+                  className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-gold [&>div]:to-gold-glow" 
+                />
               </div>
-              <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
-                <span>{user.questsCompleted} Quests Completed</span>
-                <span>{user.totalQuests} Total</span>
-              </div>
-              <Progress 
-                value={questProgress} 
-                className="h-4 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-gold [&>div]:to-emerald" 
-              />
             </div>
           </div>
         </Card>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Progress Bars */}
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <Card className="bg-card p-4 pixel-border hover:pixel-border-emerald transition-all">
+            <div className="flex items-center gap-2 mb-2">
+              <Sword className="w-4 h-4 text-emerald" />
+              <span className="text-sm font-pixel text-foreground">Dungeon Conquest</span>
+            </div>
+            <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
+              <span>{user.dungeonsCompleted} Cleared</span>
+              <span>{user.totalDungeons} Total</span>
+            </div>
+            <Progress 
+              value={dungeonProgress} 
+              className="h-3 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-emerald [&>div]:to-emerald-glow" 
+            />
+          </Card>
+
+          <Card className="bg-card p-4 pixel-border hover:pixel-border-gold transition-all">
+            <div className="flex items-center gap-2 mb-2">
+              <Scroll className="w-4 h-4 text-gold" />
+              <span className="text-sm font-pixel text-foreground">Quest Mastery</span>
+            </div>
+            <div className="flex justify-between text-xs font-pixel text-muted-foreground mb-2">
+              <span>{user.questsCompleted} Completed</span>
+              <span>{user.totalQuests} Total</span>
+            </div>
+            <Progress 
+              value={questProgress} 
+              className="h-3 bg-dungeon-stone [&>div]:bg-gradient-to-r [&>div]:from-gold [&>div]:to-emerald" 
+            />
+          </Card>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {stats.map((stat, idx) => (
             <Card 
               key={stat.label} 
@@ -240,6 +330,13 @@ const Profile = () => {
             </Card>
           ))}
         </div>
+
+        {/* Achievements */}
+        {user.achievements && (
+          <Card className="bg-card p-6 pixel-border">
+            <AchievementGrid achievements={user.achievements} columns={5} />
+          </Card>
+        )}
       </div>
     </div>
   );
