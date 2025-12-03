@@ -125,7 +125,14 @@ export const api = {
       completed_levels: number[];
       completed_questions: number[];
       completed_personalized_levels?: string[];
+      avatar?: any;
     }>(`/api/profile/${userId}`),
+
+  updateAvatar: (userId: string, avatar: any) =>
+    apiRequest<{ success: boolean }>(`/api/profile/${userId}/avatar`, {
+      method: 'PUT',
+      body: JSON.stringify({ avatar }),
+    }),
 
   // Dungeons
   getDungeons: () => apiRequest<Dungeon[]>('/api/dungeons'),

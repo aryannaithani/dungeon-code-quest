@@ -223,7 +223,8 @@ def _user_public(user_doc: dict, dungeons_completed: int = 0, total_dungeons: in
         "created_at": user_doc.get("created_at"),
         "completed_questions": user_doc.get("completed_questions", []),
         "completed_levels": user_doc.get("completed_levels", []),
-        "completed_personalized_levels": user_doc.get("completed_personalized_levels", [])
+        "completed_personalized_levels": user_doc.get("completed_personalized_levels", []),
+        "avatar": user_doc.get("avatar")
     }
 
 async def get_user_by_username(username: str):
@@ -365,6 +366,21 @@ async def get_profile(user_id: int):
         )
     
     return _user_public(user, dungeons_completed, total_dungeons, total_quests)
+
+class AvatarUpdate(BaseModel):
+    avatar: dict
+
+@app.put("/api/profile/{user_id}/avatar", tags=["Profile"])
+async def update_avatar(user_id: int, data: AvatarUpdate):
+    user = await get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(404, "User not found")
+    
+    await app.state.db.users.update_one(
+        {"id": user_id},
+        {"$set": {"avatar": data.avatar}}
+    )
+    return {"success": True}
 
 @app.get("/api/profile/{user_id}/stats", tags=["Profile"])
 async def get_user_stats(user_id: int):
