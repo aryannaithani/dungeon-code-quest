@@ -6,3 +6,5 @@ export { TreasureChest, MiniChest } from "./TreasureChest";
 export { AchievementBadge, AchievementGrid, DEFAULT_ACHIEVEMENTS } from "./AchievementBadge";
 export type { Achievement } from "./AchievementBadge";
 export { InteractiveDiagram, DIAGRAM_TEMPLATES, detectDiagramType } from "./InteractiveDiagram";
+export { DailyLoginBonus, useDailyLogin } from "./DailyLoginBonus";
+export { LessonDiagram } from "./LessonDiagram";

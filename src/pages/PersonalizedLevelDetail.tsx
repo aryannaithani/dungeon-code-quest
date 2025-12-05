@@ -10,6 +10,7 @@ import { api, getUserId } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
 import { LoadingSpinner } from "@/components/LoadingSkeleton";
 import { parseLesson } from "@/lib/sanitize";
+import { LessonDiagram } from "@/components/game";
 
 interface QuizQuestion {
   q: string;
@@ -194,6 +195,16 @@ const PersonalizedLevelDetail = () => {
               className="prose prose-sm prose-invert max-w-none text-muted-foreground"
               dangerouslySetInnerHTML={{ __html: parseLesson(level.lesson) }}
             />
+            
+            {/* Interactive Diagram */}
+            {level.lesson && (
+              <LessonDiagram 
+                lessonContent={level.lesson} 
+                lessonTitle={level.title}
+                className="mt-6"
+              />
+            )}
+            
             <Button
               onClick={() => setShowQuiz(true)}
               className="mt-6 bg-purple-600 hover:bg-purple-700 text-white font-pixel"
