@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { api, getUserId, type LevelDetail as LevelDetailType } from "@/lib/api";
 import { LoadingSpinner } from "@/components/LoadingSkeleton";
 import { parseLesson } from "@/lib/sanitize";
+import { LessonDiagram } from "@/components/game";
 
 const difficultyColors: Record<string, string> = {
   easy: "bg-emerald/20 text-emerald border-emerald",
@@ -237,6 +238,15 @@ const LevelDetail = () => {
                 dangerouslySetInnerHTML={{ __html: parsedLesson }}
               />
             </div>
+            
+            {/* Interactive Diagram */}
+            {level.lesson && (
+              <LessonDiagram 
+                lessonContent={level.lesson} 
+                lessonTitle={level.title}
+                className="mb-8"
+              />
+            )}
             
             <Button 
               onClick={handleStartQuiz}

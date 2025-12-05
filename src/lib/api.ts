@@ -194,6 +194,19 @@ export const api = {
         body: JSON.stringify(data),
       }
     ),
+
+  // Daily Login
+  checkDailyLogin: (userId: string) =>
+    apiRequest<{ show_bonus: boolean; streak?: number; xp_reward?: number; total_xp?: number }>(
+      `/api/daily-login/${userId}`,
+      { method: 'POST' }
+    ),
+  
+  claimDailyLogin: (userId: string) =>
+    apiRequest<{ success: boolean; xp_earned?: number; new_streak?: number; new_xp?: number; new_level?: number }>(
+      `/api/daily-login/${userId}/claim`,
+      { method: 'POST' }
+    ),
 };
 
 // Types

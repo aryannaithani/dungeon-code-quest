@@ -8,7 +8,7 @@ import { Zap, Award, LogOut, Loader2, Sword, Scroll, Flame, Sparkles } from "luc
 import { toast } from "@/hooks/use-toast";
 import { api, getUserId, clearAuth } from "@/lib/api";
 import { ProfileSkeleton } from "@/components/LoadingSkeleton";
-import { Avatar, AvatarConfig, DEFAULT_AVATAR, AvatarCustomizer } from "@/components/game";
+import { Avatar, AvatarConfig, DEFAULT_AVATAR, AvatarCustomizer, DailyLoginBonus, useDailyLogin } from "@/components/game";
 import { AchievementGrid, Achievement, DEFAULT_ACHIEVEMENTS } from "@/components/game";
 
 interface UserProfile {
@@ -33,10 +33,12 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   const [loggingOut, setLoggingOut] = useState(false);
   const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(DEFAULT_AVATAR);
+  
+  const userId = getUserId();
+  const { showBonus, bonusData, checkDailyLogin, claimBonus, closeBonus } = useDailyLogin(userId);
 
   useEffect(() => {
     const fetchProfile = async () => {
-      const userId = getUserId();
       if (!userId) {
         navigate("/login");
         return;
@@ -69,6 +71,9 @@ const Profile = () => {
           avatar: avatar,
           achievements: achievements,
         });
+        
+        // Check for daily login bonus after profile loads
+        checkDailyLogin();
       } catch (err) {
         toast({
           title: "Profile Error",
@@ -81,7 +86,7 @@ const Profile = () => {
     };
 
     fetchProfile();
-  }, [navigate]);
+  }, [navigate, userId]);
 
   const buildAchievements = (data: any): Achievement[] => {
     const achievements = [...DEFAULT_ACHIEVEMENTS];
@@ -156,6 +161,24 @@ const Profile = () => {
       className: "bg-emerald/10 border-emerald text-foreground",
     });
     navigate("/");
+  };
+
+  const handleClaimBonus = async () => {
+    await claimBonus();
+    // Refresh profile to get updated XP
+    if (userId) {
+      const data = await api.getProfile(userId);
+      if (user) {
+        setUser({
+          ...user,
+          xp: data.xp,
+          level: data.level,
+          xpToNext: data.xp_to_next,
+          xpInCurrentLevel: data.xp_in_current_level ?? data.xp,
+          winStreak: data.win_streak,
+        });
+      }
+    }
   };
 
   if (loading) {
@@ -338,6 +361,17 @@ const Profile = () => {
           </Card>
         )}
       </div>
+      
+      {/* Daily Login Bonus Modal */}
+      {bonusData && (
+        <DailyLoginBonus
+          streak={bonusData.streak}
+          xpReward={bonusData.xp}
+          onClaim={handleClaimBonus}
+          isOpen={showBonus}
+          onClose={closeBonus}
+        />
+      )}
     </div>
   );
 };

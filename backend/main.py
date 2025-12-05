@@ -399,6 +399,116 @@ async def get_user_stats(user_id: int):
         "accuracy": 94.0
     }
 
+# ============== DAILY LOGIN BONUS ==============
+
+@app.post("/api/daily-login/{user_id}", tags=["Profile"])
+async def check_daily_login(user_id: int):
+    """Check if user should receive daily login bonus"""
+    user = await get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(404, "User not found")
+    
+    from datetime import timedelta
+    today = datetime.utcnow().date().isoformat()
+    last_login_bonus = user.get("last_login_bonus_date")
+    
+    # If already claimed today, don't show bonus
+    if last_login_bonus == today:
+        return {"show_bonus": False}
+    
+    # Calculate streak
+    current_streak = int(user.get("win_streak", 0))
+    last_activity = user.get("last_activity_date")
+    
+    if last_activity:
+        yesterday = (datetime.utcnow().date() - timedelta(days=1)).isoformat()
+        if last_activity == yesterday:
+            new_streak = current_streak + 1
+        elif last_activity == today:
+            new_streak = current_streak
+        else:
+            new_streak = 1
+    else:
+        new_streak = 1
+    
+    # Base XP reward: 25 XP + (streak bonus: 5 XP per day, max 35)
+    base_xp = 25
+    streak_bonus = min(new_streak, 7) * 5
+    total_xp = base_xp + streak_bonus
+    
+    return {
+        "show_bonus": True,
+        "streak": new_streak,
+        "xp_reward": base_xp,
+        "streak_bonus": streak_bonus,
+        "total_xp": total_xp
+    }
+
+@app.post("/api/daily-login/{user_id}/claim", tags=["Profile"])
+async def claim_daily_login(user_id: int):
+    """Claim daily login bonus"""
+    user = await get_user_by_id(user_id)
+    if not user:
+        raise HTTPException(404, "User not found")
+    
+    from datetime import timedelta
+    today = datetime.utcnow().date().isoformat()
+    last_login_bonus = user.get("last_login_bonus_date")
+    
+    # Prevent double claiming
+    if last_login_bonus == today:
+        return {"success": False, "message": "Already claimed today"}
+    
+    # Calculate streak and XP
+    current_streak = int(user.get("win_streak", 0))
+    last_activity = user.get("last_activity_date")
+    
+    if last_activity:
+        yesterday = (datetime.utcnow().date() - timedelta(days=1)).isoformat()
+        if last_activity == yesterday:
+            new_streak = current_streak + 1
+        elif last_activity == today:
+            new_streak = current_streak
+        else:
+            new_streak = 1
+    else:
+        new_streak = 1
+    
+    # Calculate XP
+    base_xp = 25
+    streak_bonus = min(new_streak, 7) * 5
+    total_xp = base_xp + streak_bonus
+    
+    # Update user
+    new_xp = int(user.get("xp", 0)) + total_xp
+    level = int(user.get("level", 1))
+    xp_to_next = int(user.get("xp_to_next", 100))
+    
+    # Check for level up
+    while new_xp >= xp_to_next:
+        level += 1
+        xp_to_next = level * 500
+    
+    await app.state.db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "xp": new_xp,
+            "level": level,
+            "xp_to_next": xp_to_next,
+            "win_streak": new_streak,
+            "last_activity_date": today,
+            "last_login_bonus_date": today
+        }}
+    )
+    
+    return {
+        "success": True,
+        "xp_earned": total_xp,
+        "new_streak": new_streak,
+        "new_xp": new_xp,
+        "new_level": level
+    }
+
 # ============== QUESTIONS/QUESTS ENDPOINTS ==============
 
 @app.get("/api/questions", tags=["Questions"])
