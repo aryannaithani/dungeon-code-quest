@@ -1,128 +1,182 @@
-# CodeDungeon
+# CodeDungeon  
+Gamified Programming Learning Platform (React + FastAPI + MongoDB)
 
-CodeDungeon is a gamified, dungeon-themed coding education platform designed to make learning algorithms, data structures, and programming fundamentals feel like an adventure. Instead of traditional topic lists or question banks, users progress through visually rich “dungeons,” each containing structured levels, quizzes, and coding challenges.
+CodeDungeon is a full-stack web platform that teaches programming and computer science concepts through a structured, game-inspired progression system. Instead of traditional lists of coding problems, users progress through themed “dungeons,” each containing lessons, quizzes, and coding challenges.
 
-The platform blends:
-• A progressive learning campaign (10 themed dungeons)
-• A fully functioning coding arena with real code execution
-• An XP system, ranks, level-ups, and unlockable challenges
-• Personalized learning powered by AI-generated dungeons
-• A clean UI and immersive dungeon aesthetic
-
-It is deployed as a complete, production-ready web application with a separate backend, frontend, and cloud-hosted database.
+The platform combines a narrative progression system with a LeetCode-style coding environment and AI-driven personalized learning.
 
 ---
 
-## 🔥 Key Features
+## Overview
 
-### 🎮 1. Gamified Learning Path (The Arena)
-Users explore a sequence of 10 handcrafted dungeons:
-Basics → Control Flow → Functions → Data Structures → OOP → Recursion → Algorithms → Advanced DS → Dynamic Programming → Final Boss
+CodeDungeon was designed to explore how gamification and adaptive learning can improve engagement in programming education.
 
-Each dungeon contains 10 custom-designed levels with:
-• Lessons  
-• Quizzes  
-• XP rewards  
-• Unlock logic  
-• Visual progression on a winding dungeon map  
+The system includes:
 
-This delivers a narrative-driven progression instead of flat tutorial pages.
+- A dungeon-based progression campaign covering core CS topics
+- A coding arena with live code execution and automated evaluation
+- An XP and level progression system
+- AI-generated personalized learning modules
+- A production-ready web architecture with separate frontend and backend services
 
 ---
 
-### ⚔️ 2. Coding Arena (LeetCode-Style)
-A separate question board includes:
-• Monaco code editor  
-• Test run & submission  
-• XP rewards  
-• Automatic quest locking based on dungeon progress  
-• Protected execution sandbox  
-• Instant feedback  
+## System Architecture
 
-Each question supports:
-• Dynamic testcases  
-• Examples  
-• XP scaling by difficulty  
-• Automatic completion tracking  
+**Frontend**
+- React (Vite + TypeScript)
+- Monaco Editor for code editing
+- Tailwind-based UI
+- State-driven dungeon progression
 
----
+**Backend**
+- FastAPI (Python)
+- Modular routing and API layer
+- Async request handling
 
-### 🔮 3. AI-Powered Personalized Learning
-A dedicated “Personalized Learning” tab analyzes:
-• Failed dungeon quizzes  
-• Incorrect coding submissions  
+**Database**
+- MongoDB Atlas
+- Stores users, dungeon progress, quizzes, submissions, and generated content
 
-After every 5 logged mistakes, the system:
-1. Summarizes the user’s weak areas  
-2. Sends them to an LLM  
-3. Generates a new personalized dungeon with custom lessons + quizzes  
-4. Stores it separately in MongoDB  
-5. Unlocks it instantly for the user  
+**Deployment**
+- Frontend: Vercel
+- Backend: Render
+- Database: MongoDB Atlas
 
-The personalized dungeons mirror the core campaign but are tailored in real time.
-
----
-
-### 🧱 4. Clean Architecture
-Backend: FastAPI (Python)  
-Frontend: React (Vite + TypeScript)  
-Database: MongoDB Atlas  
-
-The system uses:
-• JWT-ready auth structure  
-• Modularized routing  
-• Strict JSON schemas  
-• Async database operations  
-• Container-ready code isolation  
-• Structured UX with Toast notifications, protected routes, unlock logic  
+```
+User Browser
+      │
+      ▼
+React Frontend (Vite)
+      │
+      ▼
+FastAPI Backend
+      │
+      ▼
+MongoDB Atlas
+```
 
 ---
 
-### 🌍 5. Deployed & Production-Ready
-The project is fully deployed using:
-• Vercel – Frontend  
-• Render – Backend  
-• MongoDB Atlas – Cloud database  
+## Core Features
 
-Environment variables, CORS controls, API routing, and build optimization are all handled.
+### 1. Dungeon-Based Learning Campaign
 
----
+The core learning experience is structured as a sequence of themed dungeons covering programming topics:
 
-## 🎯 Project Vision
+Basics → Control Flow → Functions → Data Structures → OOP → Recursion → Algorithms → Advanced Data Structures → Dynamic Programming → Final Challenge
 
-CodeDungeon aims to transform coding education into an engaging, story-driven experience.  
-Instead of repetitive question grinding, it creates a sense of progression and narrative that motivates learners to continue.
+Each dungeon contains multiple levels consisting of:
 
-It is ideal for:
-• Students  
-• Coding bootcamps  
-• Schools  
-• Self-learners  
-• Anyone bored of traditional platforms  
+- Concept explanations
+- Quizzes
+- XP rewards
+- Unlock conditions
 
-With the addition of AI personalization, every user’s journey adapts to their strengths and weaknesses.
+This creates a progression system instead of a static problem list.
 
 ---
 
-## 🏆 About This Project
+### 2. Coding Arena
 
-This project was built as a complete, fully functional, production-level academic + portfolio project, showcasing:
-• Full-stack development  
-• Real-time code execution  
-• Gamification design  
-• FastAPI + MongoDB backend engineering  
-• AI integration  
-• UI/UX polish  
-• Deployment  
-• Database migration & cloud infrastructure  
+A dedicated coding interface allows users to solve programming challenges.
 
-It demonstrates the ability to design, build, and deploy a complex real-world web platform end-to-end.
+Key capabilities include:
+
+- Monaco code editor
+- Code execution with test cases
+- Instant feedback
+- XP rewards based on difficulty
+- Progress tracking tied to dungeon progression
+
+Each challenge includes:
+
+- Problem description
+- Example cases
+- Hidden evaluation tests
+- Completion tracking
 
 ---
 
-## 📬 Contact
+### 3. AI-Powered Personalized Learning
 
-For feedback, collaboration, or showcasing this project:
-**Developer:** Aryan Naithani  
-**Project:** CodeDungeon  
+The platform includes a system for generating personalized learning modules.
 
+Workflow:
+
+1. The system tracks incorrect quiz answers and coding submissions.
+2. After a threshold of mistakes is reached, weak concepts are identified.
+3. These concepts are summarized and sent to an LLM.
+4. The model generates a custom dungeon containing:
+   - targeted lessons
+   - new quizzes
+   - additional exercises
+5. The generated dungeon is stored in MongoDB and unlocked for the user.
+
+This creates adaptive learning paths based on individual weaknesses.
+
+---
+
+### 4. Backend Design
+
+The FastAPI backend is structured with:
+
+- Modular route architecture
+- JSON schema validation
+- Async database operations
+- Authentication-ready design
+- Separate modules for progression, quizzes, and code execution
+
+The API handles:
+
+- user progress
+- challenge evaluation
+- dungeon unlocking
+- personalized dungeon generation
+
+---
+
+### 5. Deployment
+
+The application is deployed as a full-stack system.
+
+- **Frontend:** Vercel
+- **Backend:** Render
+- **Database:** MongoDB Atlas
+
+Environment variables, API routing, and CORS configuration are managed for production deployment.
+
+---
+
+## Project Goals
+
+CodeDungeon explores how structured progression and gamification can improve the learning experience for programming students.
+
+Instead of presenting isolated problems, the platform introduces:
+
+- narrative progression
+- skill-based unlock systems
+- adaptive learning paths
+
+The goal is to create a system that keeps learners engaged while still teaching core computer science concepts.
+
+---
+
+## What This Project Demonstrates
+
+This project showcases:
+
+- Full-stack web application development
+- API design with FastAPI
+- React-based interactive interfaces
+- Database design with MongoDB
+- Integration of AI for adaptive learning
+- End-to-end deployment of a production web platform
+
+---
+
+## Author
+
+Aryan Naithani  
+Computer Science (AI & Analytics)  
+GLA University
